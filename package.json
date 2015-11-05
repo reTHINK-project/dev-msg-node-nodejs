@@ -1,0 +1,64 @@
+{
+  "name": "dev-msg-node-nodejs",
+  "version": "0.1.0",
+  "description": "msg nodejs development",
+  "main": "dist/msg-node.js",
+  "scripts": {
+    "init-setup": "npm init && npm install jspm karma-cli gulp-cli && npm install && jspm init && node setup.js",
+    "test": "karma start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/reTHINK-project/dev-msg-node-nodejs.git"
+  },
+  "keywords": [
+    "reThink",
+    "webRTC"
+  ],
+  "author": "reThink Project",
+  "contributors": [
+    "Nicolas Daviaud <nicolas.daviaud@apizee.com>",
+    "Frédéric Luart <frederic.luart@apizee.com>"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/reTHINK-project/dev-msg-node-nodejs/issues"
+  },
+  "homepage": "https://rethink-project.eu/",
+  "devDependencies": {
+    "assert": "^1.3.0",
+    "babelify": "^6.3.0",
+    "browserify": "^11.2.0",
+    "chai": "^3.3.0",
+    "expect.js": "^0.3.1",
+    "gulp": "^3.9.0",
+    "gulp-bump": "^1.0.0",
+    "gulp-insert": "^0.5.0",
+    "gulp-replace": "^0.5.4",
+    "gulp-uglify": "^1.4.2",
+    "jsdoc": "git+https://github.com/jsdoc3/jsdoc.git",
+    "jspm": "^0.16.10",
+    "karma": "^0.13.10",
+    "karma-browserify": "^4.4.0",
+    "karma-chrome-launcher": "^0.2.1",
+    "karma-mocha": "^0.2.0",
+    "karma-mocha-reporter": "^1.1.1",
+    "mocha": "^2.3.2",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.4.0"
+  },
+  "jspm": {
+    "directories": {
+      "packages": "vendor"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4"
+    }
+  },
+  "directories": {
+    "test": "test"
+  }
+}
