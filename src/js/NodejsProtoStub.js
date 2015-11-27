@@ -1,3 +1,5 @@
+var io = require('socket.io-client');
+
 export default class NodejsProtoStub {
 
   /**
@@ -19,7 +21,7 @@ export default class NodejsProtoStub {
 
     bus.addListener('*', (msg) => {
       _this._open(() => {
-        _this._sock.send(JSON.stringify(msg));
+        _this._sock.emit('message', JSON.stringify(msg));
       });
     });
   }
@@ -49,13 +51,16 @@ export default class NodejsProtoStub {
    */
   disconnect() {
     let _this = this;
-    
+
     if (_this._sock) {
       _this._sendClose();
     }
+
+    _this._sock.disconnect();
   }
 
   _sendOpen(callback) {
+    console.warn('###_sendOpen ok');
     let _this = this;
 
     _this._id++;
@@ -143,29 +148,34 @@ export default class NodejsProtoStub {
   }
 
   _open(callback) {
+    
     let _this = this;
 
     if (!_this._sock) {
 
       _this._sock = io(_this._config.url);
-      
+
       _this._sock.on('connect', function() {
         _this._sendOpen(() => {
           callback();
         });
       });
-      
+
       _this._sock.on('message', function(msg) {
-//        var msg = JSON.parse(e.data);
-//        if (msg.header.from === 'mn:/session') {
-//          if (_this._sessionCallback) {
-//            _this._sessionCallback(msg);
-//          }
-//        } else {
+        var msg = JSON.parse(msg);
+        console.log('#########');
+        console.log(msg);
+        console.log(msg.header);
+        console.log(msg.body);
+        if (msg.header.from === 'mn:/session') {
+          if (_this._sessionCallback) {
+            _this._sessionCallback(msg);
+          }
+        } else {
           _this._bus.postMessage(msg);
-//        }
+        }
       });
-      
+
       _this._sock.on('disconnect', function(event) {
         let reason;
 

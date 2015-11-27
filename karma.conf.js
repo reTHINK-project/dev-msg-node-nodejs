@@ -2,6 +2,7 @@
 // Generated on Wed Sep 16 2015 12:17:06 GMT+0100 (WEST)
 
 module.exports = function(config) {
+  'use strict';
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -13,13 +14,9 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'src/**/*.js',
+      'src/js/*.js',
       'test/*.spec.js'
     ],
-
-//    proxies: {
-//      '/': 'http://localhost:4000/'
-//    },
 
     urlRoot: '/',
 
@@ -30,8 +27,8 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/**/*.js': ['browserify'],
-      'test/**/*.spec.js': ['browserify']
+      'src/js/*.js': ['browserify'],
+      'test/*.spec.js': ['browserify']
     },
 
     browserify: {
@@ -63,7 +60,9 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: false,
+    
+    captureConsole: true
   });
 
 };
