@@ -60,7 +60,6 @@ export default class NodejsProtoStub {
   }
 
   _sendOpen(callback) {
-    console.warn('###_sendOpen ok');
     let _this = this;
 
     _this._id++;
@@ -148,7 +147,6 @@ export default class NodejsProtoStub {
   }
 
   _open(callback) {
-    
     let _this = this;
 
     if (!_this._sock) {
@@ -162,12 +160,15 @@ export default class NodejsProtoStub {
       });
 
       _this._sock.on('message', function(msg) {
-        var msg = JSON.parse(msg);
-        console.log('#########');
-        console.log(msg);
-        console.log(msg.header);
-        console.log(msg.body);
-        if (msg.header.from === 'mn:/session') {
+        
+        if (typeof msg !== 'object') {
+          try {
+            msg = JSON.parse(msg);
+          } catch (e) {
+            msg = {};
+          }
+        }
+        if (msg.hasOwnProperty('header') && msg.header.hasOwnProperty('from') && msg.header.from === 'mn:/session') {
           if (_this._sessionCallback) {
             _this._sessionCallback(msg);
           }

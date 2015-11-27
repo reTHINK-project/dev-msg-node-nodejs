@@ -7,6 +7,7 @@ class AddressAllocationManager {
     this.registry = registry;
     this.name = 'domain://msg-node.' + this.registry.getDomain()  + '/hyperty-address-allocation';
     this.baseURL = 'hyperty-instance://' + this.registry.getDomain() + '/';
+    this.logger = this.registry.getLogger();
   }
 
   getName() {
@@ -17,6 +18,7 @@ class AddressAllocationManager {
     let msg = clientMessage.getMessage();
 
     if (msg.getType() === 'create') {
+      this.logger.info('[', this.getName(), '] handle create msg');
       let number = msg.getBody().number;
       let allocated = this.allocate(clientMessage, number);
 
@@ -42,6 +44,7 @@ class AddressAllocationManager {
       }
     }
 
+    this.logger.info('[', this.getName(), '] allocate URLs', list);
     return list;
   }
 }

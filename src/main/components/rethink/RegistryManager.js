@@ -20,11 +20,13 @@ class RegistryManager {
     }
 
     if (msg.getType() === 'add') {
+      this.logger.info('[', this.getName(), '] handle add msg');
       this.registry.bind(url, clientMessage.getResourceUid());
       clientMessage.replyOK(this.getName());
     }
 
     if (msg.getType() === 'remove') {
+      this.logger.info('[', this.getName(), '] handle remove msg');
       this.registry.unbind(url);
       clientMessage.replyOK(this.getName());
     }
