@@ -6,7 +6,7 @@ class Client {
 
   constructor(registry, socket) {
     this.registry = registry;
-    this.uid = socket.handshake.sessionID;
+    this.uid = socket.id;//socket.handshake.sessionID;
     this.socket = socket;
     this.logger = this.registry.getLogger();
     this.runtimeUrl = null;
@@ -34,12 +34,14 @@ class Client {
   }
 	
   reply(msg) {
-    this.logger.info('[S->C] emit msg', msg, 'to', this.getUid());
+    this.logger.info('[S->C] emit msg', msg.getJson(), 'to', this.getUid());
 //    this.registry.getWSServer().to(this.registry.resolve(msg.getTo())).emit();
-    this.socket.emit('message', msg);
+    this.socket.emit('message', msg.getJson());
   }
   
   disconnect() {
+    // unallocate url from runtime ?
+    this.registry.unbind(this.getRuntimeUrl());
     this.socket.disconnect();
   }
 }

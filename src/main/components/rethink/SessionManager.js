@@ -4,6 +4,7 @@ class SessionManager {
   constructor(name, registry) {
     this.name = name;
     this.registry = registry;
+    this.logger = this.registry.getLogger();
   }
 
   getName() {

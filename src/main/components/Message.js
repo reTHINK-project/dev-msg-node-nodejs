@@ -87,7 +87,7 @@ class Message {
   }
 
   toString() {
-    return JSON.stringify(msg);
+    return JSON.stringify(this.msg.msg);
   }
 }
 module.exports = Message;

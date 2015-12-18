@@ -3,10 +3,10 @@ let Message = require('./../Message');
 let uuid = require('uuid');
 
 class AddressAllocationManager {
-  constructor(registry) {
+  constructor(name, registry) {
     this.registry = registry;
-    this.name = 'domain://msg-node.' + this.registry.getDomain()  + '/hyperty-address-allocation';
-    this.baseURL = 'hyperty-instance://' + this.registry.getDomain() + '/';
+    this.name = name;
+    this.baseURL = 'hyperty://' + this.registry.getDomain() + '/';
     this.logger = this.registry.getLogger();
   }
 
@@ -26,9 +26,9 @@ class AddressAllocationManager {
       reply.setId(msg.getId());
       reply.setFrom(this.name);
       reply.setTo(msg.getFrom());
+      reply.setType('reply');
       reply.setReplyCode('ok');
-
-      reply.body.allocated = allocated;
+      reply.getBody().allocated = allocated;
 
       clientMessage.reply(reply);
     }
@@ -44,7 +44,7 @@ class AddressAllocationManager {
       }
     }
 
-    this.logger.info('[', this.getName(), '] allocate URLs', list);
+    this.logger.info('[' + this.getName() + '] allocate URLs', list);
     return list;
   }
 }

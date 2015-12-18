@@ -15,34 +15,24 @@ describe('NodejsProtoStub', function() {
 
     let bus = {
       postMessage: (msg) => {
+        expect(msg).to.be.an('object');
         if (seq === 0) {
-          expect(msg).to.be.an('object');
           expect(msg).to.eql({
             header: {type: 'update', from: 'hyperty-runtime://sp1/protostub/123', to: 'hyperty-runtime://sp1/protostub/123/status'},
             body: {value: 'connected'}
           });
-
-          //send loopback ping
-          //          send({
-          //            header: {id: 1, type: 'ping', from: 'runtime:/alice1', to: 'runtime:/alice1'}
-          //          });
-
-        }
-
-        if (seq === 1) {
-          //if the runtime is registered, ping should arrive here
-          //          expect(msg).to.eql({
-          //            header: {id: 1, type: 'ping', from: 'runtime:/alice1', to: 'runtime:/alice1'}
-          //          });
-
           proto.disconnect();
         }
 
-        if (seq === 2) {
-          expect(msg).to.be.an('object');
+        if (seq === 1) {
+          // socket.io disconnect event doesn't report rfc compliant reason, exclude this property in test
+          if (msg.body.hasOwnProperty('desc')) {
+            delete msg.body.desc;
+          }
+
           expect(msg).to.eql({
             header: {type: 'update', from: 'hyperty-runtime://sp1/protostub/123', to: 'hyperty-runtime://sp1/protostub/123/status'},
-            body: {value: 'disconnected', desc: 'Normal closure, meaning that the purpose for which the connection was established has been fulfilled.'}
+            body: {value: 'disconnected'}
           });
           done();
         }
@@ -71,42 +61,34 @@ describe('NodejsProtoStub', function() {
     let send;
 
     let seq = 0;
-    let firstURL;
-    let secondURL;
+    let proto;
+    let nbUrl = 2;
 
     let bus = {
       postMessage: (msg) => {
+        expect(msg).to.be.an('object');
         if (seq === 0) {
           expect(msg).to.eql({
             header: {type: 'update', from: 'hyperty-runtime://sp1/protostub/123', to: 'hyperty-runtime://sp1/protostub/123/status'},
             body: {value: 'connected'}
           });
+          
+          proto.postMessage({
+            header: {id: 1, type: 'create', from: 'hyperty-runtime:/alice/registry/allocation', to: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation'},
+            body: {number: nbUrl}
+          });
         }
 
         if (seq === 1) {
-          /*expect something like -> {
-            header: {id: 1, type: 'reply', from: 'domain://msg-node.ua.pt/hyperty-address-allocation', to: 'runtime:/alice/registry/allocation'},
-            body: {code: 'ok', allocated: ['hyperty-instance://ua.pt/fbf7dc26-ff4f-454f-961e-22edda927561', 'hyperty-instance://ua.pt/6e8f126b-1c56-4525-9a38-5dcd340194da']}
-          }*/
-          expect(msg.header).to.eql({id: 1, type: 'reply', from: 'domain://msg-node.ua.pt/hyperty-address-allocation', to: 'runtime:/alice/registry/allocation'});
+          expect(msg.header).to.eql({id: 1, type: 'reply', from: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation', to: 'hyperty-runtime:/alice/registry/allocation'});
           expect(msg.body.code).to.eql('ok');
-          expect(msg.body.allocated).to.have.length(2);
-
-          firstURL = msg.body.allocated[0];
-          secondURL = msg.body.allocated[1];
-
-          send({
-            header: {id: 1, type: 'ping', from: firstURL, to: secondURL}
+          expect(msg.body.allocated).to.have.length(nbUrl);
+          msg.body.allocated.forEach(function(v) {
+            expect(v).to.match(/^hyperty:\/\/localhost\/[a-z0-9-]{36}/); //uuid of 36 characters length
           });
-        }
-
-        if (seq === 2) {
-          expect(msg).to.eql({
-            header: {id: 1, type: 'ping', from: firstURL, to: secondURL}
-          });
-
-          proto.disconnect();
+          
           done();
+          proto.disconnect();
         }
 
         seq++;
@@ -119,15 +101,121 @@ describe('NodejsProtoStub', function() {
 
     let config = {
       url: serverConfig.url + ':' + serverConfig.port,
-      runtimeURL: 'runtime:/alice2'
+      runtimeURL: 'runtime:/alice'
     };
 
-    let proto = new NodejsProtoStub('hyperty-runtime://sp1/protostub/123', bus, config);
+    try {
+      proto = new NodejsProtoStub('hyperty-runtime://sp1/protostub/123', bus, config);
+      proto.connect();
+    } catch (e) {
+      console.log(e);
+    }
+  });
+  
+  it('hyperty hello', function(done) {
+    let send;
 
-    send({
-      header: {id: 1, type: 'create', from: 'runtime:/alice/registry/allocation', to: 'domain://msg-node.ua.pt/hyperty-address-allocation'},
-      body: {number: 2}
-    });
+    let seqAlice = 0;
+    let seqBob = 0;
+    let alice, bob;
+    let nbUrl = 1;
+    
+    let aliceUrl, bobUrl;
+
+    let aliceBus = {
+      postMessage: (msg) => {
+        expect(msg).to.be.an('object');
+        if (seqAlice === 0) {
+          expect(msg).to.eql({
+            header: {type: 'update', from: 'hyperty-runtime://sp1/protostub/123', to: 'hyperty-runtime://sp1/protostub/123/status'},
+            body: {value: 'connected'}
+          });
+          
+          bob.connect();
+          
+          alice.postMessage({
+            header: {id: 1, type: 'create', from: 'hyperty-runtime:/alice/registry/allocation', to: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation'},
+            body: {number: nbUrl}
+          });
+        }
+
+        if (seqAlice === 1) {
+          expect(msg.body.allocated).to.have.length(nbUrl);
+          aliceUrl = msg.body.allocated[0];
+        }
+        
+        if (seqAlice === 2) {
+          console.log('#### receive msg', msg);
+          alice.disconnect();
+          bob.disconnect();
+          done();
+        }
+
+        seqAlice++;
+      },
+
+      addListener: (url, callback) => {
+        send = callback;
+      }
+    };
+    
+    let bobBus = {
+      postMessage: (msg) => {
+        expect(msg).to.be.an('object');
+        if (seqBob === 0) {
+          expect(msg).to.eql({
+            header: {type: 'update', from: 'hyperty-runtime://sp1/protostub/123', to: 'hyperty-runtime://sp1/protostub/123/status'},
+            body: {value: 'connected'}
+          });
+          
+          bob.postMessage({
+            header: {id: 1, type: 'create', from: 'hyperty-runtime:/bob/registry/allocation', to: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation'},
+            body: {number: nbUrl}
+          });
+        }
+
+        if (seqBob === 1) {
+          expect(msg.body.allocated).to.have.length(nbUrl);
+          bobUrl = msg.body.allocated[0];
+          console.log('receive addr send message from', bobUrl, 'to', aliceUrl);
+          bob.postMessage({
+            header: {id: 1, from: bobUrl, to: aliceUrl},
+            body: {message: 'hello'}
+          });
+        }
+        
+//        if (seqBob === 2) {
+//          console.log('receive msg', msg);
+//          bob.disconnect();
+//          done();
+//        }
+
+        seqBob++;
+      },
+
+      addListener: (url, callback) => {
+        send = callback;
+      }
+    };
+
+    let aliceConfig = {
+      url: serverConfig.url + ':' + serverConfig.port,
+      runtimeURL: 'runtime:/alice'
+    };
+    
+    let bobConfig = {
+      url: serverConfig.url + ':' + serverConfig.port,
+      runtimeURL: 'runtime:/bob'
+    };
+
+    try {
+      alice = new NodejsProtoStub('hyperty-runtime://sp1/protostub/123', aliceBus, aliceConfig);
+      alice.connect();
+      bob = new NodejsProtoStub('hyperty-runtime://sp1/protostub/123', bobBus, bobConfig);
+    
+    } catch (e) {
+      console.log(e);
+    }
   });
 
 });

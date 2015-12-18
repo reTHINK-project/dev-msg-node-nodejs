@@ -28,21 +28,22 @@ class ClientMessage {
 
   dispatch() {
     let url = this.registry.resolve(this.msg.getTo());
-    if (url !== false) {
+    if (url !== false) { // publish on bus
       this.logger.info('[ClientMessage] "to" was resolved, publish msg to', url);
-
       //TODO publish message on MessageBus
       let msgBus = this.registry.getComponent('MessageBus');
-      msgBus.publish(url, this.msg.toString());
-    } else {
+      msgBus.publish(url, this.msg);
+    } else { // dispatch to internal component
       let comp = this.registry.getComponent(this.msg.getTo());
-      this.logger.info('[ClientMessage] url not found, publish msg to', comp.getName());
       if (comp != null) {
+        this.logger.info('[ClientMessage] url not found, dispatch msg to', comp.getName());
         try {
           comp.handle(this);
         } catch (e) {
           this.replyError(comp.getName(), e);
         }
+      } else {
+        this.logger.warn('[ClientMessage] component not found for', this.msg.getTo());
       }
     }
   }
@@ -57,6 +58,7 @@ class ClientMessage {
     reply.setFrom(from);
     reply.setTo(this.msg.getFrom());
     reply.setReplyCode('ok');
+    reply.setType('reply');
     this.client.reply(reply);
   }
 
@@ -67,10 +69,12 @@ class ClientMessage {
     reply.setTo(this.msg.getFrom());
     reply.setReplyCode('error');
     reply.setErrorDescription(error);
+    reply.setType('reply');
     this.client.reply(reply);
   }
 
   disconnect() {
+    this.logger.info('[S] Force close socket', this.getResourceUid());
     this.client.disconnect();
   }
 }

@@ -44,6 +44,7 @@ class Registry {
     }
 
     this.urlSpace[url] = runtimeURL;
+    console.log(this.urlSpace);
     return true;
   }
 
@@ -62,14 +63,8 @@ class Registry {
   }
 
   bind(runtimeURL, resourceUID) {
-    this.logger.info('[S] bind', runtimeURL, 'with', resourceUID);
-
-    //		final MessageConsumer<Object> consumer = eb.consumer(runtimeURL, msg -> {
-    //			eb.send(resourceUID, msg.body());
-    //		});
-    this.allocate(runtimeURL, runtimeURL);
-
-    //      consumers.put(runtimeURL, consumer);
+    this.logger.info('[S] bind', runtimeURL, 'with socket', resourceUID);
+    this.allocate(runtimeURL, resourceUID);
     return this;
   }
 
@@ -81,12 +76,9 @@ class Registry {
   unbind(runtimeURL) {
     this.logger.info('[S] unbind', runtimeURL);
     this.deallocate(runtimeURL);
-
-    //    final MessageConsumer<Object> consumer = consumers.remove(runtimeURL);
-    if (consumer != null) {
-      consumer.unregister();
-    }
-
+    this.urlSpace.forEach(function(v) {
+      console.log(v);
+    });
     return this;
   }
 }

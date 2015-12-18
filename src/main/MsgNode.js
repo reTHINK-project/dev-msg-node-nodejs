@@ -137,14 +137,15 @@ class MsgNode {
     this.registry.setLogger(this.logger);
     this.registry.setWSServer(this.io);
     
-    let alm = new AddressAllocationManager(this.registry);
+    let alm = new AddressAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/hyperty-address-allocation', this.registry);
     this.registry.registerComponent(alm);
     let sm = new SessionManager("mn:/session", this.registry);
     this.registry.registerComponent(sm);
     let rm = new RegistryManager("mn:/registry", this.registry);
     this.registry.registerComponent(rm);
-    let bus = new MessageBus('MessageBus', this.registry);
+    let bus = new MessageBus('MessageBus', this.registry, this.io);
     this.registry.registerComponent(bus);
+    
     this.io.on('connection', this.onConnection.bind(this));
 
     this.logger.info('[S] HTTP & WS server listening on', this.config.port);
@@ -169,7 +170,7 @@ class MsgNode {
     //socket.id : socket.io id
     //socket.handshake.sessionID : express shared sessionId
     this.logger.info('[C->S] new client connection', socket.id, socket.handshake.sessionID);
-
+//    socket.join(socket.id);
     let client = new Client(this.registry, socket);
 
 //    socket.on('*', function(frame) {
@@ -186,6 +187,7 @@ class MsgNode {
 
     socket.on('disconnect', function() {
       _this.logger.info('[C->S] client disconnect', socket.handshake.sessionID);
+      client.disconnect();
     });
 
     socket.on('error', function(e) {
