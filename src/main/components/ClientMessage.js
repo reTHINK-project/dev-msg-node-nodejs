@@ -32,7 +32,7 @@ class ClientMessage {
       this.logger.info('[ClientMessage] "to" was resolved, publish msg to', url);
       //TODO publish message on MessageBus
       let msgBus = this.registry.getComponent('MessageBus');
-      msgBus.publish(url, this.msg);
+      msgBus.publish(url, this.msg.msg);
     } else { // dispatch to internal component
       let comp = this.registry.getComponent(this.msg.getTo());
       if (comp != null) {

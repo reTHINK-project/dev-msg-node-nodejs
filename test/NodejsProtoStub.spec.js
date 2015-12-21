@@ -145,10 +145,12 @@ describe('NodejsProtoStub', function() {
         }
         
         if (seqAlice === 2) {
-          console.log('#### receive msg', msg);
-          alice.disconnect();
-          bob.disconnect();
-          done();
+          expect(msg.body.message).to.eql('hello');
+          
+          alice.postMessage({
+            header: {id: 1, from: aliceUrl, to: bobUrl},
+            body: {message: 'world'}
+          });
         }
 
         seqAlice++;
@@ -177,18 +179,18 @@ describe('NodejsProtoStub', function() {
         if (seqBob === 1) {
           expect(msg.body.allocated).to.have.length(nbUrl);
           bobUrl = msg.body.allocated[0];
-          console.log('receive addr send message from', bobUrl, 'to', aliceUrl);
           bob.postMessage({
             header: {id: 1, from: bobUrl, to: aliceUrl},
             body: {message: 'hello'}
           });
         }
         
-//        if (seqBob === 2) {
-//          console.log('receive msg', msg);
-//          bob.disconnect();
-//          done();
-//        }
+        if (seqBob === 2) {
+          expect(msg.body.message).to.eql('world');
+          alice.disconnect();
+          bob.disconnect();
+          done();
+        }
 
         seqBob++;
       },

@@ -20,7 +20,6 @@ class MessageBus {
       url = this.registry.resolve(url);
       this.logger.info('corresponding to socket', url);
     }
-    console.log(this.io.sockets.connected[url]);
     this.io.to(url).emit('message', msgString);
   }
 

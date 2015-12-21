@@ -35,7 +35,6 @@ class Client {
 	
   reply(msg) {
     this.logger.info('[S->C] emit msg', msg.getJson(), 'to', this.getUid());
-//    this.registry.getWSServer().to(this.registry.resolve(msg.getTo())).emit();
     this.socket.emit('message', msg.getJson());
   }
   

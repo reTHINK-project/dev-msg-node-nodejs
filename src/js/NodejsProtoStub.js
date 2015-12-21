@@ -172,7 +172,6 @@ export default class NodejsProtoStub {
             msg = {};
           }
         }
-
         if (msg.hasOwnProperty('header') && msg.header.hasOwnProperty('from') && msg.header.from === 'mn:/session') {
           if (_this._sessionCallback) {
             _this._sessionCallback(msg);
