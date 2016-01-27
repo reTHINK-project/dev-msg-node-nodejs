@@ -137,7 +137,7 @@ class MsgNode {
     this.registry.setLogger(this.logger);
     this.registry.setWSServer(this.io);
     
-    let alm = new AddressAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/hyperty-address-allocation', this.registry);
+    let alm = new AddressAllocationManager('domain://' + this.registry.getDomain()  + '/hyperty-address-allocation', this.registry);
     this.registry.registerComponent(alm);
     let sm = new SessionManager("mn:/session", this.registry);
     this.registry.registerComponent(sm);

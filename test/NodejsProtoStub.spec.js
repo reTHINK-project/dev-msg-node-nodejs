@@ -1,5 +1,5 @@
 import expect from 'expect.js';
-import NodejsProtoStub from '../src/js/NodejsProtoStub';
+import activate from '../src/js/NodejsProtoStub';
 import serverConfig from '../src/configs/server-settings.js';
 
 var chai = require('chai');
@@ -50,7 +50,7 @@ describe('NodejsProtoStub', function() {
       runtimeURL: 'runtime:/alice1'
     };
     try {
-      proto = new NodejsProtoStub('hyperty-runtime://sp1/protostub/123', bus, config);
+      proto = activate('hyperty-runtime://sp1/protostub/123', bus, config).instance;
       proto.connect();
     } catch (e) {
       console.log(e);
@@ -74,17 +74,17 @@ describe('NodejsProtoStub', function() {
           });
           
           proto.postMessage({
-            header: {id: 1, type: 'create', from: 'hyperty-runtime:/alice/registry/allocation', to: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation'},
+            header: {id: 1, type: 'create', from: 'hyperty-runtime:/alice/registry/allocation', to: 'domain://' + serverConfig.url  + '/hyperty-address-allocation'},
             body: {number: nbUrl}
           });
         }
 
         if (seq === 1) {
-          expect(msg.header).to.eql({id: 1, type: 'reply', from: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation', to: 'hyperty-runtime:/alice/registry/allocation'});
+          expect(msg.header).to.eql({id: 1, type: 'reply', from: 'domain://' + serverConfig.url  + '/hyperty-address-allocation', to: 'hyperty-runtime:/alice/registry/allocation'});
           expect(msg.body.code).to.eql('ok');
           expect(msg.body.allocated).to.have.length(nbUrl);
           msg.body.allocated.forEach(function(v) {
-            expect(v).to.match(/^hyperty:\/\/localhost\/[a-z0-9-]{36}/); //uuid of 36 characters length
+            expect(v).to.match(/^hyperty:\/\/[a-z0-9-\.]+\/[a-z0-9-]{36}/); //uuid of 36 characters length
           });
           
           done();
@@ -105,7 +105,7 @@ describe('NodejsProtoStub', function() {
     };
 
     try {
-      proto = new NodejsProtoStub('hyperty-runtime://sp1/protostub/123', bus, config);
+      proto = activate('hyperty-runtime://sp1/protostub/123', bus, config).instance;
       proto.connect();
     } catch (e) {
       console.log(e);
@@ -134,7 +134,7 @@ describe('NodejsProtoStub', function() {
           bob.connect();
           
           alice.postMessage({
-            header: {id: 1, type: 'create', from: 'hyperty-runtime:/alice/registry/allocation', to: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation'},
+            header: {id: 1, type: 'create', from: 'hyperty-runtime:/alice/registry/allocation', to: 'domain://' + serverConfig.url  + '/hyperty-address-allocation'},
             body: {number: nbUrl}
           });
         }
@@ -171,7 +171,7 @@ describe('NodejsProtoStub', function() {
           });
           
           bob.postMessage({
-            header: {id: 1, type: 'create', from: 'hyperty-runtime:/bob/registry/allocation', to: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation'},
+            header: {id: 1, type: 'create', from: 'hyperty-runtime:/bob/registry/allocation', to: 'domain://' + serverConfig.url  + '/hyperty-address-allocation'},
             body: {number: nbUrl}
           });
         }
@@ -211,9 +211,9 @@ describe('NodejsProtoStub', function() {
     };
 
     try {
-      alice = new NodejsProtoStub('hyperty-runtime://sp1/protostub/123', aliceBus, aliceConfig);
+      alice = activate('hyperty-runtime://sp1/protostub/123', aliceBus, aliceConfig).instance;
       alice.connect();
-      bob = new NodejsProtoStub('hyperty-runtime://sp1/protostub/123', bobBus, bobConfig);
+      bob = activate('hyperty-runtime://sp1/protostub/123', bobBus, bobConfig).instance;
     
     } catch (e) {
       console.log(e);

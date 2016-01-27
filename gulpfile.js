@@ -12,27 +12,59 @@ gulp.task('doc', function(done) {
 });
 
 // Task and dependencies to convert ES6 to ES5 with babel;
+//var babel = require('babelify');
+//var browserify = require('browserify');
+//var source = require('vinyl-source-stream');
+//
+//gulp.task('build', function() {
+//  var bundler = browserify('./src/js/NodejsProtoStub.js', {
+//    standalone: 'activate',
+//    debug: false
+//  }).transform(babel);
+//
+//  function rebundle() {
+//    bundler.bundle()
+//    .on('error', function(err) {
+//      console.error(err);
+//      this.emit('end');
+//    })
+//    .pipe(source('NodejsProtoStub.js'))
+//    .pipe(gulp.dest('./target'));
+//  }
+//
+//  rebundle();
+//});
+
+// Task and dependencies to convert ES6 to ES5 with babel distribute for all environments;
 var babel = require('babelify');
 var browserify = require('browserify');
+var buffer = require('vinyl-buffer');
 var source = require('vinyl-source-stream');
+var replace = require('gulp-replace');
+var insert = require('gulp-insert');
+var uglify = require('gulp-uglify');
+var bump = require('gulp-bump');
+
+var pkg = require('./package.json');
 
 gulp.task('build', function() {
-  var bundler = browserify('./src/js/NodejsProtoStub.js', {
-    standalone: 'NodejsProtoStub',
-    debug: false
-  }).transform(babel);
 
-  function rebundle() {
-    bundler.bundle()
+  return browserify('./src/js/NodejsProtoStub.js', {
+      standalone: 'activate',
+      debug: false
+    })
+    .transform(babel)
+    .bundle()
     .on('error', function(err) {
       console.error(err);
       this.emit('end');
     })
     .pipe(source('NodejsProtoStub.js'))
+    .pipe(buffer())
+    .pipe(uglify())
+    .pipe(insert.prepend('// Node JS ProtoStub \n\n// version: {{version}}\n\n'))
+    .pipe(replace('{{version}}', pkg.version))
     .pipe(gulp.dest('./target'));
-  }
-
-  rebundle();
 });
 
 /**

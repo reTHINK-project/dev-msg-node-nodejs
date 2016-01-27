@@ -1,19 +1,19 @@
 var io = require('socket.io-client');
 
-export default class NodejsProtoStub {
-
+class NodejsProtoStub {
+  
   /**
    * Nodejs ProtoStub creation
    * @param  {string} runtimeProtoStubURL - URL used internally for message delivery point. Not used for MessageNode deliver.
    * @param  {MiniBus} bus - MiniBus used to send/receive messages. Normally connected to the MessageBus.
-   * @param  {Object} config - Mandatory fields are: "url" of the MessageNode address and "runtimeURL".
+   * @param  {Object} config - Mandatory fields are: "url" of the MessageNode address and "runtimeURL".s
    * @return {NodejsProtoStub}
    */
   constructor(runtimeProtoStubURL, bus, config) {
     let _this = this;
 
     this._id = 0;
-
+    
     this._runtimeProtoStubURL = runtimeProtoStubURL;
     this._bus = bus;
     this._config = config;
@@ -190,4 +190,12 @@ export default class NodejsProtoStub {
       _this._waitReady(callback);
     }
   }
+}
+
+
+export default function activate(url, bus, config) {
+  return {
+    name: 'NodejsProtoStub',
+    instance: new NodejsProtoStub(url, bus, config)
+  };
 }
