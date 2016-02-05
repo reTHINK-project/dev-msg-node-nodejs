@@ -1,4 +1,0 @@
-msg-node-nodejs:
-    image: msg-node:latest
-    ports:
-        - "9090:9090"
