@@ -131,12 +131,11 @@ class MsgNode {
     //    this.io.on('connection', function(socket) {
     //      _this.onConnection(socket);
     //    });
-    
+
     // global registry
     this.registry = new Registry(this.config.url);
     this.registry.setLogger(this.logger);
     this.registry.setWSServer(this.io);
-    
     let alm = new AddressAllocationManager('domain://' + this.registry.getDomain()  + '/hyperty-address-allocation', this.registry);
     this.registry.registerComponent(alm);
     let sm = new SessionManager("mn:/session", this.registry);
@@ -145,7 +144,7 @@ class MsgNode {
     this.registry.registerComponent(rm);
     let bus = new MessageBus('MessageBus', this.registry, this.io);
     this.registry.registerComponent(bus);
-    
+
     this.io.on('connection', this.onConnection.bind(this));
 
     this.logger.info('[S] HTTP & WS server listening on', this.config.port);
@@ -193,7 +192,7 @@ class MsgNode {
     socket.on('error', function(e) {
       _this.logger.info('[C->S] socket error', socket.handshake.sessionID, e);
     });
-    
+
     // test ws route
     socket.on('echo', function(msg, callback) {
       _this.logger.info('[C->S] receive echo');

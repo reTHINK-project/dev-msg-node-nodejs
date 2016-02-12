@@ -1,7 +1,7 @@
 var io = require('socket.io-client');
 
 class NodejsProtoStub {
-  
+
   /**
    * Nodejs ProtoStub creation
    * @param  {string} runtimeProtoStubURL - URL used internally for message delivery point. Not used for MessageNode deliver.
@@ -13,7 +13,7 @@ class NodejsProtoStub {
     let _this = this;
 
     this._id = 0;
-    
+
     this._runtimeProtoStubURL = runtimeProtoStubURL;
     this._bus = bus;
     this._config = config;
@@ -55,9 +55,9 @@ class NodejsProtoStub {
       _this._sendClose();
     }
   }
-  
+
   postMessage(msg) {
-    this._sock.send(JSON.stringify(msg)); 
+    this._sock.send(JSON.stringify(msg));
   }
 
   _sendOpen(callback) {
@@ -65,23 +65,20 @@ class NodejsProtoStub {
 
     _this._id++;
     let msg = {
-      header: {
-        id: _this._id,
-        type: 'open',
-        from: _this._config.runtimeURL,
-        to: 'mn:/session',
-        tokenID: '??'
-      }
+      id: _this._id,
+      type: 'open',
+      from: _this._config.runtimeURL,
+      to: 'mn:/session'
     };
 
     //register and wait for open reply...
     let hasResponse = false;
     _this._sessionCallback = function(reply) {
 
-      if (reply.header.type === 'reply' & reply.header.id === msg.header.id) {
+      if (reply.type === 'response' & reply.id === msg.id) {
         hasResponse = true;
 
-        if (reply.body.code === 'ok') {
+        if (reply.body.code === 200) {
           _this._sendStatus('connected');
           callback();
         } else {
@@ -104,13 +101,10 @@ class NodejsProtoStub {
 
     _this._id++;
     let msg = {
-      header: {
-        id: _this._id,
-        type: 'close',
-        from: _this._config.runtimeURL,
-        to: 'mn:/session',
-        tokenID: '??'
-      }
+      id: _this._id,
+      type: 'close',
+      from: _this._config.runtimeURL,
+      to: 'mn:/session'
     };
 
     _this._sock.send(JSON.stringify(msg));
@@ -120,11 +114,9 @@ class NodejsProtoStub {
     let _this = this;
 
     let msg = {
-      header: {
-        type: 'update',
-        from: _this._runtimeProtoStubURL,
-        to: _this._runtimeProtoStubURL + '/status'
-      },
+      type: 'update',
+      from: _this._runtimeProtoStubURL,
+      to: _this._runtimeProtoStubURL + '/status',
       body: {
         value: value
       }
@@ -172,7 +164,7 @@ class NodejsProtoStub {
             msg = {};
           }
         }
-        if (msg.hasOwnProperty('header') && msg.header.hasOwnProperty('from') && msg.header.from === 'mn:/session') {
+        if (msg.hasOwnProperty('from') && msg.from === 'mn:/session') {
           if (_this._sessionCallback) {
             _this._sessionCallback(msg);
           }

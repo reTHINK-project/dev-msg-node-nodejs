@@ -1,6 +1,6 @@
 'use strict';
 class Message {
-	
+
   constructor(msg) {
     if (typeof msg === 'undefined') {
       msg = {};
@@ -10,9 +10,6 @@ class Message {
       } catch(e) {
         msg = {};
       }
-    }
-    if (!msg.hasOwnProperty('header')) {
-      msg.header = {};
     }
     if (!msg.hasOwnProperty('body')) {
       msg.body = {};
@@ -24,54 +21,50 @@ class Message {
     return this.msg;
   }
 
-  getHeader() {
-    return this.msg.header;
-  }
-
   getBody() {
-    return this.msg.body; 
+    return this.msg.body;
   }
 
   getId() {
-    return this.getHeader().id;
+    return this.msg.id;
   }
-  
+
   setId(id) {
-    this.msg.header.id = id;
+    this.msg.id = id;
     return this;
   }
 
   getFrom() {
-    return this.getHeader().from;
+    return this.msg.from;
   }
-  
+
   setFrom(from) {
-    this.msg.header.from = from;
+    this.msg.from = from;
     return this;
   }
 
   getTo() {
-    return this.getHeader().to;
+    return this.msg.to;
   }
-  
+
   setTo(to) {
-    this.msg.header.to = to;
+    this.msg.to = to;
     return this;
   }
 
   getType() {
-    return this.getHeader().type;
+    return this.msg.type;
   }
-  
+
   setType(type) {
-    this.msg.header.type = type;
+    this.msg.type = type;
     return this;
   }
 
   getReplyCode() {
     return this.getBody().code;
   }
-  
+
   setReplyCode(code) {
     this.msg.body.code = code;
     return this;
@@ -80,7 +73,7 @@ class Message {
   getErrorDescription() {
     return this.getBody().desc;
   }
-  
+
   setErrorDescription(desc) {
     this.msg.body.desc = desc;
     return this;

@@ -4,6 +4,7 @@
   "description": "msg nodejs development",
   "main": "dist/msg-node.js",
   "scripts": {
+    "start": "node src/main/server.js",
     "init-setup": "npm init && npm install jspm karma-cli gulp-cli && npm install && jspm init && node setup.js",
     "test": "karma start"
   },

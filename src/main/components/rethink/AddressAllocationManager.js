@@ -26,8 +26,8 @@ class AddressAllocationManager {
       reply.setId(msg.getId());
       reply.setFrom(this.name);
       reply.setTo(msg.getFrom());
-      reply.setType('reply');
-      reply.setReplyCode('ok');
+      reply.setType('response');
+      reply.setReplyCode(200);
       reply.getBody().allocated = allocated;
 
       clientMessage.reply(reply);

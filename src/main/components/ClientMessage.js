@@ -57,8 +57,8 @@ class ClientMessage {
     reply.setId(this.msg.getId());
     reply.setFrom(from);
     reply.setTo(this.msg.getFrom());
-    reply.setReplyCode('ok');
-    reply.setType('reply');
+    reply.setReplyCode(200);
+    reply.setType('response');
     this.client.reply(reply);
   }
 
@@ -69,7 +69,7 @@ class ClientMessage {
     reply.setTo(this.msg.getFrom());
     reply.setReplyCode('error');
     reply.setErrorDescription(error);
-    reply.setType('reply');
+    reply.setType('response');
     this.client.reply(reply);
   }
 
