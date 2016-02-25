@@ -1,4 +1,5 @@
 {
   "esnext": true,
-  "browser" : false,
+  "esversion": "6",
+  "browser" : false
 }
