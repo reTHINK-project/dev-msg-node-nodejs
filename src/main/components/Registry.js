@@ -1,11 +1,16 @@
 'use strict';
 class Registry {
 
-  constructor(domain) {
-    this.domain = domain;
+  constructor(config) {
+    this.config = config;
+    this.domain = config.url;
     this.urlSpace = [];
     this.components = [];
     this.logger = null;
+  }
+
+  getConfig() {
+    return this.config;
   }
 
   setLogger(logger) {
@@ -15,7 +20,7 @@ class Registry {
   getLogger() {
     return this.logger;
   }
-  
+
   setWSServer(wss) {
     this.wss = wss;
   }
@@ -79,6 +84,7 @@ class Registry {
     this.urlSpace.forEach(function(v) {
       console.log(v);
     });
+
     return this;
   }
 }
