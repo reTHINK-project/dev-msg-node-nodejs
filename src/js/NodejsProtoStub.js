@@ -14,6 +14,7 @@ class NodejsProtoStub {
 
     this._id = 0;
 
+    config.url = config.url.replace(/.*?:\/\//g, '');
     this._runtimeProtoStubURL = runtimeProtoStubURL;
     this._bus = bus;
     this._config = config;
@@ -46,7 +47,6 @@ class NodejsProtoStub {
    */
   connect() {
     let _this = this;
-
     _this._open(() => {});
   }
 
@@ -166,18 +166,16 @@ class NodejsProtoStub {
     if (!msg.body) msg.body = {};
 
     msg.body.via = this._runtimeProtoStubURL;
+
     this._bus.postMessage(msg);
   }
 
   _open(callback) {
     let _this = this;
-
     if (!_this._sock) {
-
       _this._sock = io(_this._config.url, {
         forceNew: true
       });
-
       _this._sock.on('connect', function() {
         _this._sendOpen(() => {
           callback();
@@ -198,7 +196,7 @@ class NodejsProtoStub {
             _this._sessionCallback(msg);
           }
         } else {
-          _this._bus.postMessage(msg);
+          _this._deliver(msg);
         }
       });
 
@@ -207,6 +205,8 @@ class NodejsProtoStub {
         delete _this._sock;
       });
 
+      _this._sock.on('error', function(reason) {
+      });
     } else {
       _this._waitReady(callback);
     }

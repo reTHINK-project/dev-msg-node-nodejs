@@ -68,7 +68,6 @@ describe('NodejsProtoStub', function() {
     let proto;
     let nbUrl = 2;
 
-
     let bus = {
       postMessage: (msg) => {
         expect(msg).to.be.an('object');
@@ -84,18 +83,19 @@ describe('NodejsProtoStub', function() {
             id: 1,
             type: 'create',
             from: 'hyperty-runtime:/alice/registry/allocation',
-            to: 'domain://' + serverConfig.url  + '/hyperty-address-allocation',
+            to: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation',
             body: {number: nbUrl}
           });
         }
 
         if (seq === 1) {
-          expect(msg).to.eql({id: 1, type: 'response', from: 'domain://' + serverConfig.url  + '/hyperty-address-allocation', to: 'hyperty-runtime:/alice/registry/allocation', body: msg.body});
+          expect(msg).to.eql({id: 1, type: 'response', from: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation', to: 'hyperty-runtime:/alice/registry/allocation', body: msg.body});
           expect(msg.body.code).to.eql(200);
           expect(msg.body.allocated).to.have.length(nbUrl);
           msg.body.allocated.forEach(function(v) {
             expect(v).to.match(/^hyperty:\/\/[a-z0-9-\.]+\/[a-z0-9-]{36}/); //uuid of 36 characters length
           });
+
           done();
           proto.disconnect();
         }
@@ -126,10 +126,12 @@ describe('NodejsProtoStub', function() {
 
     let seqAlice = 0;
     let seqBob = 0;
-    let alice, bob;
+    let alice;
+    let bob;
     let nbUrl = 1;
 
-    let aliceUrl, bobUrl;
+    let aliceUrl;
+    let bobUrl;
 
     let aliceBus = {
       postMessage: (msg) => {
@@ -148,7 +150,7 @@ describe('NodejsProtoStub', function() {
             id: 1,
             type: 'create',
             from: 'hyperty-runtime:/alice/registry/allocation',
-            to: 'domain://' + serverConfig.url  + '/hyperty-address-allocation',
+            to: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation',
             body: {number: nbUrl}
           });
         }
@@ -192,7 +194,7 @@ describe('NodejsProtoStub', function() {
             id: 1,
             type: 'create',
             from: 'hyperty-runtime:/bob/registry/allocation',
-            to: 'domain://' + serverConfig.url  + '/hyperty-address-allocation',
+            to: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation',
             body: {number: nbUrl}
           });
         }

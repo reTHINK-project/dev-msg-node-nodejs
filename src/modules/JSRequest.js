@@ -1,3 +1,4 @@
+'use strict';
 class JSRequest {
     constructor() {
       this._client = require('request');
@@ -5,9 +6,9 @@ class JSRequest {
 
     get(url, callback) {
       this._client.get(url)
-        .on('response', function(response) {
-          callback(null, response);
-        });
+          .on('response', function(response) {
+            callback(null, response);
+          });
     }
 
     put(url, message, callback) {
@@ -15,7 +16,7 @@ class JSRequest {
         headers: {'content-type': 'application/json'},
         url: url,
         body: message
-      }, function(error, response, body) {
+      }, function(err, response, body) {
         if (err) {
           callback(err, null, null);
         }

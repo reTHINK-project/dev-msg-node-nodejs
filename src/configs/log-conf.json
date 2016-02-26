@@ -1,7 +1,7 @@
 {
   "appenders": [
    	{ "type": "console" },
-    { 
+    {
         "category": "server",
         "type": "file",
         "filename": "server.log",
@@ -9,8 +9,8 @@
         "backups": 5
     }
   ],
-  
+
   "levels": {
-      "server":  "INFO"
+      "server":  "DEBUG"
   }
 }

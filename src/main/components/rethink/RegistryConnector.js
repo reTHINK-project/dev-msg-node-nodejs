@@ -1,5 +1,5 @@
 'use strict';
-let JSRequest = require('./JSRequest');
+let JSRequest = require('./../../../modules/JSRequest');
 
 class RegistryConnector {
     constructor(registryURL, registry) {
@@ -10,29 +10,32 @@ class RegistryConnector {
     }
 
     processMessage(msg, callback) {
-      switch (msg.type) {
-        case 'READ':
-          this.logger.info('[Registry-Connector] Get user with ' + msg.body.resource);
-          this.getUser(msg.body.resource, callback);
+      this.logger.info(msg);
+      let body = msg.getBody();
+      switch (msg.getType().toLowerCase()) {
+        case 'read':
+          this.logger.info('[Registry-Connector] Get user with ' + body.resource);
+          this.getUser(body.resource, callback);
         break;
 
-        case 'CREATE':
-          this.logger.info('[Registry-Connector] Add Hyperty with ' + msg.body.value.hypertyURL);
-          this.addHyperty(msg.body.value.user, msg.body.value.hypertyURL, msg.body.value.hypertyDescriptorURL, callback);
+        case 'create':
+          this.logger.info('[Registry-Connector] Add hyperty with ' + body.value.hypertyURL);
+          this.addHyperty(body.value.user, body.value.hypertyURL, body.value.hypertyDescriptorURL, callback);
         break;
 
-        case 'DELETE':
-          this.logger.info('[Registry-Connector] Delete Hyperty with ' + msg.body.value.hypertyURL);
-          this.deleteHyperty(msg.body.value.user, msg.body.value.hypertyURL, callback);
+        case 'delete':
+          this.logger.info('[Registry-Connector] Delete hyperty with ' + body.value.hypertyURL);
+          this.deleteHyperty(body.value.user, body.value.hypertyURL, callback);
         break;
       }
     }
 
     getUser(userid, callback) {
+      let _this = this;
       this.request.get(this.registryURL + '/hyperty/user/' + encodeURIComponent(userid), function(err, response, statusCode) {
-          this.logger.info('Get user: ' + response);
+          _this.logger.info('Get user: ' + response);
 
-          var body = {
+          let body = {
             code: statusCode,
             value: JSON.parse(response)
           };
@@ -42,13 +45,18 @@ class RegistryConnector {
     }
 
     addHyperty(userid, hypertyid, hypertyDescriptor, callback) {
-      var endpoint = '/hyperty/user/' + encodeURIComponent(userid) + '/' + encodeURIComponent(hypertyid);
-      var data = { descriptor: hypertyDescriptor };
-
+      let _this = this;
+      let endpoint = '/hyperty/user/' + encodeURIComponent(userid) + '/' + encodeURIComponent(hypertyid);
+      let data = { descriptor: hypertyDescriptor };
+      this.logger.debug('addHyperty', this.registryURL + endpoint);
       this.request.put(this.registryURL + endpoint, JSON.stringify(data), function(err, response, statusCode) {
-        this.logger.info('Add hyperty: ' + response);
+        _this.logger.debug('Domain registry response:', response);
+        if (err) {
+          _this.logger.error('Domain registry error: ', err);
+        }
 
-        var body = {
+        console.log();
+        let body = {
           code: statusCode
         };
 
@@ -57,12 +65,13 @@ class RegistryConnector {
     }
 
     deleteHyperty(userid, hypertyid, callback) {
-      var endpoint = '/hyperty/user/' + encodeURIComponent(userid) + '/' + encodeURIComponent(hypertyid);
+      let _this = this;
+      let endpoint = '/hyperty/user/' + encodeURIComponent(userid) + '/' + encodeURIComponent(hypertyid);
 
       this.request.del(this.registryURL + endpoint, function(err, response, statusCode) {
-        this.logger.info('Delete hyperty: ' + response);
+        _this.logger.info('Delete hyperty: ' + response);
 
-        var body = {
+        let body = {
           code: statusCode
         };
 

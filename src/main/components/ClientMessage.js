@@ -30,6 +30,7 @@ class ClientMessage {
     let url = this.registry.resolve(this.msg.getTo());
     if (url !== false) { // publish on bus
       this.logger.info('[ClientMessage] "to" was resolved, publish msg to', url);
+
       //TODO publish message on MessageBus
       let msgBus = this.registry.getComponent('MessageBus');
       msgBus.publish(url, this.msg.msg);

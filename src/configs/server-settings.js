@@ -2,8 +2,9 @@
 var path = require('path');
 
 module.exports = {
-  url: 'localhost',
-  port: 9080,
+  url: 'apizee.nico',
+  domainRegistryUrl: 'http://registry-domain.apizee.nico',
+  port: 9090,
   ioConfig: {
     transports: [
       'polling',

@@ -7,13 +7,15 @@ class Message {
     } else if (typeof msg === 'string') {
       try {
         msg = JSON.parse(msg);
-      } catch(e) {
+      } catch (e) {
         msg = {};
       }
     }
+
     if (!msg.hasOwnProperty('body')) {
       msg.body = {};
     }
+
     this.msg = msg;
   }
 

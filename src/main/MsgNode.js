@@ -74,11 +74,11 @@ class MsgNode {
     this.registry = new Registry(this.config);
     this.registry.setLogger(this.logger);
     this.registry.setWSServer(this.io);
-    let alm = new AddressAllocationManager('domain://' + this.registry.getDomain()  + '/hyperty-address-allocation', this.registry);
+    let alm = new AddressAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/hyperty-address-allocation', this.registry);
     this.registry.registerComponent(alm);
     let sm = new SessionManager('mn:/session', this.registry);
     this.registry.registerComponent(sm);
-    let rm = new RegistryManager('mn:/registry', this.registry);
+    let rm = new RegistryManager('domain://registry.' + this.registry.getDomain() + '/', this.registry);
     this.registry.registerComponent(rm);
     let bus = new MessageBus('MessageBus', this.registry, this.io);
     this.registry.registerComponent(bus);
@@ -112,13 +112,6 @@ class MsgNode {
     //    socket.join(socket.id);
     let client = new Client(this.registry, socket);
 
-    //    socket.on('*', function(frame) {
-    //      if (frame.data[0] !== 'echo') { // exclude echo test event
-    //        let msgData = frame.data[1]; // retrieve msg data in wildcard event
-    //        _this.logger.info('[C->S] new event', msgData);
-    //        client.processMessage(new Message(msgData));
-    //      }
-    //    });
     socket.on('message', function(data) {
       _this.logger.info('[C->S] new event', data);
       client.processMessage(new Message(data));
@@ -126,6 +119,8 @@ class MsgNode {
 
     socket.on('disconnect', function() {
       _this.logger.info('[C->S] client disconnect', socket.handshake.sessionID);
+
+      //   _this.logger.warn();
       client.disconnect();
     });
 
