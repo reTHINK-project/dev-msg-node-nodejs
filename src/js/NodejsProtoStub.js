@@ -20,7 +20,9 @@ class NodejsProtoStub {
 
     this._bus.addListener('*', (msg) => {
       _this._open(() => {
-        _this._sock.emit('message', JSON.stringify(msg));
+        if (_this._filter(msg)) {
+          _this._sock.emit('message', JSON.stringify(msg));
+        }
       });
     });
   }
@@ -31,6 +33,10 @@ class NodejsProtoStub {
    */
   get config() {
     return this._config;
+  }
+
+  get runtimeSession() {
+    return this._runtimeSessionURL;
   }
 
   /**
@@ -141,6 +147,28 @@ class NodejsProtoStub {
     }
   }
 
+  /**
+   * Filter method that should be used for every messages in direction: Protostub -> MessageNode
+   * @param  {Message} msg Original message from the MessageBus
+   * @return {boolean} true if it's to be deliver in the MessageNode
+   */
+  _filter(msg) {
+    if (msg.body && msg.body.via === this._runtimeProtoStubURL)
+      return false;
+    return true;
+  }
+
+  /**
+   * Method that should be used to deliver the message in direction: Protostub -> MessageBus (core)
+   * @param  {Message} msg Original message from the MessageNode
+   */
+  _deliver(msg) {
+    if (!msg.body) msg.body = {};
+
+    msg.body.via = this._runtimeProtoStubURL;
+    this._bus.postMessage(msg);
+  }
+
   _open(callback) {
     let _this = this;
 
@@ -164,6 +192,7 @@ class NodejsProtoStub {
             msg = {};
           }
         }
+
         if (msg.hasOwnProperty('from') && msg.from === 'mn:/session') {
           if (_this._sessionCallback) {
             _this._sessionCallback(msg);
@@ -183,7 +212,6 @@ class NodejsProtoStub {
     }
   }
 }
-
 
 export default function activate(url, bus, config) {
   return {
