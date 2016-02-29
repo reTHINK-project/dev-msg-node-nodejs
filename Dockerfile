@@ -9,5 +9,5 @@ WORKDIR /usr/src/app
 RUN mkdir logs
 RUN npm install
 
-EXPOSE  10000
+EXPOSE  9090
 CMD ["node", "src/main/server.js"]
