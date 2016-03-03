@@ -1,3 +1,26 @@
+/**
+* Copyright 2016 PT Inovação e Sistemas SA
+* Copyright 2016 INESC-ID
+* Copyright 2016 QUOBIS NETWORKS SL
+* Copyright 2016 FRAUNHOFER-GESELLSCHAFT ZUR FOERDERUNG DER ANGEWANDTEN FORSCHUNG E.V
+* Copyright 2016 ORANGE SA
+* Copyright 2016 Deutsche Telekom AG
+* Copyright 2016 Apizee
+* Copyright 2016 TECHNISCHE UNIVERSITAT BERLIN
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+**/
+
 'use strict';
 let Message = require('./Message');
 
@@ -29,7 +52,7 @@ class ClientMessage {
   dispatch() {
     let url = this.registry.resolve(this.msg.getTo());
     if (url !== false) { // publish on bus
-      this.logger.info('[ClientMessage] "to" was resolved, publish msg to', url);
+      this.logger.info('[ClientMessage] publish msg to', url);
 
       //TODO publish message on MessageBus
       let msgBus = this.registry.getComponent('MessageBus');
@@ -37,7 +60,7 @@ class ClientMessage {
     } else { // dispatch to internal component
       let comp = this.registry.getComponent(this.msg.getTo());
       if (comp != null) {
-        this.logger.info('[ClientMessage] url not found, dispatch msg to', comp.getName());
+        this.logger.info('[ClientMessage] dispatch msg to', comp.getName());
         try {
           comp.handle(this);
         } catch (e) {
@@ -50,6 +73,7 @@ class ClientMessage {
   }
 
   reply(msg) {
+    msg.setType('response');
     this.client.reply(msg);
   }
 

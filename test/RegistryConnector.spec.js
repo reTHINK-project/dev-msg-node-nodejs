@@ -40,9 +40,38 @@ describe('RegistryConnector', function() {
         value: {
           user: 'user://google.com/testuser10',
           hypertyDescriptorURL: 'hyper-1',
-          hypertyURL: 'hyperty-instance://' + serverConfig.url  + '/1'
+          hypertyURL: 'hyperty://' + serverConfig.url  + '/1'
         }
       }
+    });
+  });
+
+  it('read user', function(done) {
+    let send;
+    let proto;
+
+    let bus = {
+      postMessage: (msg) => {
+        if (msg.id === 2) {
+          expect(msg).to.eql({
+            id: 2, type: 'response', from: 'domain://registry.' + serverConfig.url  + '/', to: 'hyper-1',
+            body: { code: 200, via: protoURL, value: msg.body.value }
+          });
+
+          done();
+        }
+      },
+
+      addListener: (url, callback) => {
+        send = callback;
+      }
+    };
+
+    proto = activate(protoURL, bus, config).activate;
+
+    send({
+      id: 2, type: 'READ', from: 'hyper-1', to: 'domain://registry.' + serverConfig.url  + '/',
+      body: { resource: 'user://google.com/testuser10' }
     });
   });
 });
