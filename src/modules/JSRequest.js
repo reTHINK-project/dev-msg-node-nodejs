@@ -28,10 +28,15 @@ class JSRequest {
     }
 
     get(url, callback) {
-      this._client.get(url)
-          .on('response', function(response) {
-            callback(null, response);
-          });
+      this._client.get({
+        url: url
+      }, function(err, response, body) {
+        if (err) {
+          callback(err, null, null);
+        }
+
+        callback(null, body, response.statusCode);
+      });
     }
 
     put(url, message, callback) {
@@ -40,7 +45,6 @@ class JSRequest {
         url: url,
         body: message
       }, function(err, response, body) {
-        console.error(response.statusCode);
         if (err) {
           callback(err, null, null);
         }
@@ -50,10 +54,15 @@ class JSRequest {
     }
 
     del(url, callback) {
-      this._client.del(url)
-        .on('response', function(response) {
-          callback(null, response.statusCode);
-        });
+      this._client.del({
+        url: url
+      }, function(err, response, body) {
+        if (err) {
+          callback(err, null, null);
+        }
+
+        callback(null, body, response.statusCode);
+      });
     }
 }
 module.exports = JSRequest;

@@ -2,7 +2,6 @@ FROM node:5.4
 
 ADD src /usr/src/app/src
 ADD package.json /usr/src/app/
-ADD config.js /usr/src/app/
 
 WORKDIR /usr/src/app
 

@@ -50,25 +50,28 @@ class ClientMessage {
   }
 
   dispatch() {
-    let url = this.registry.resolve(this.msg.getTo());
-    if (url !== false) { // publish on bus
-      this.logger.info('[ClientMessage] publish msg to', url);
-
-      //TODO publish message on MessageBus
-      let msgBus = this.registry.getComponent('MessageBus');
-      msgBus.publish(url, this.msg.msg);
-    } else { // dispatch to internal component
-      let comp = this.registry.getComponent(this.msg.getTo());
-      if (comp != null) {
-        this.logger.info('[ClientMessage] dispatch msg to', comp.getName());
-        try {
-          comp.handle(this);
-        } catch (e) {
-          this.replyError(comp.getName(), e);
-        }
-      } else {
-        this.logger.warn('[ClientMessage] component not found for', this.msg.getTo());
+    let comp = this.registry.getComponent(this.msg.getTo());
+    if (comp != null) {
+      this.logger.info('[ClientMessage] dispatch msg to', comp.getName());
+      try {
+        comp.handle(this);
+      } catch (e) {
+        this.replyError(comp.getName(), e);
       }
+    } else {
+      //   if (this.msg.getType() === 'update' && this.msg.getTo() === this.msg.getFrom() + '/changes') {
+      //     this.logger.info('[ClientMessage] forward update message to room', this.msg.getTo());
+      //
+      //     // this.client.broadcast.to(this.msg.getTo()).emit('message', this.msg.getJson());
+      //
+      //     this.registry.getComponent('MessageBus').publish(this.msg.getTo(), this.msg.msg);
+
+      //   this.registry.socket.rooms
+      //   } else {
+      this.logger.info('[ClientMessage] forward msg to', this.msg.getTo());
+      this.registry.getComponent('MessageBus').publish(this.msg.getTo(), this.msg.msg);
+
+      //   }
     }
   }
 

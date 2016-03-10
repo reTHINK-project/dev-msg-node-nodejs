@@ -41,10 +41,13 @@ let Client = require('./components/Client');
 let Registry = require('./components/Registry');
 let Message = require('./components/Message');
 
+let MessageBus = require('./components/MessageBus');
+let SessionManager = require('./components/SessionManager');
+
 let AddressAllocationManager = require('./components/rethink/AddressAllocationManager');
 let RegistryManager = require('./components/rethink/RegistryManager');
-let SessionManager = require('./components/rethink/SessionManager');
-let MessageBus = require('./components/rethink/MessageBus');
+let SubscriptionManager = require('./components/rethink/SubscriptionManager');
+let ObjectAllocationManager = require('./components/rethink/ObjectAllocationManager');
 
 class MsgNode {
 
@@ -97,14 +100,18 @@ class MsgNode {
     this.registry = new Registry(this.config);
     this.registry.setLogger(this.logger);
     this.registry.setWSServer(this.io);
-    let alm = new AddressAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/hyperty-address-allocation', this.registry);
-    this.registry.registerComponent(alm);
+    let bus = new MessageBus('MessageBus', this.registry);
+    this.registry.registerComponent(bus);
     let sm = new SessionManager('mn:/session', this.registry);
     this.registry.registerComponent(sm);
+    let alm = new AddressAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/hyperty-address-allocation', this.registry);
+    this.registry.registerComponent(alm);
+    let olm = new ObjectAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/object-address-allocation', this.registry);
+    this.registry.registerComponent(olm);
+    let syncm = new SubscriptionManager('domain://msg-node.' + this.registry.getDomain()  + '/sm', this.registry);
+    this.registry.registerComponent(syncm);
     let rm = new RegistryManager('domain://registry.' + this.registry.getDomain() + '/', this.registry);
     this.registry.registerComponent(rm);
-    let bus = new MessageBus('MessageBus', this.registry, this.io);
-    this.registry.registerComponent(bus);
 
     this.io.on('connection', this.onConnection.bind(this));
 

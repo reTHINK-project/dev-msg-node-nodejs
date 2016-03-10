@@ -33,8 +33,6 @@ class NodejsProtoStub {
    * @return {NodejsProtoStub}
    */
   constructor(runtimeProtoStubURL, bus, config) {
-    let _this = this;
-
     this._id = 0;
 
     config.url = config.url.replace(/.*?:\/\//g, '');
@@ -42,12 +40,12 @@ class NodejsProtoStub {
     this._bus = bus;
     this._config = config;
 
+    this._sock = null;
+
     this._bus.addListener('*', (msg) => {
-      _this._open(() => {
-        if (_this._filter(msg)) {
-          _this._sock.emit('message', JSON.stringify(msg));
-        }
-      });
+      //   console.log('event detected', msg);
+      this._assumeOpen = true;
+      this._sendMsg(msg);
     });
   }
 
@@ -69,8 +67,56 @@ class NodejsProtoStub {
    * A status message is sent to "runtimeProtoStubURL/status", containing the value "connected" if successful, or "disconnected" if some error occurs.
    */
   connect() {
-    let _this = this;
-    _this._open(() => {});
+    this._assumeOpen = true;
+    return new Promise((resolve, reject) => {
+      let _this = this;
+
+      if (this._sock !== null && this._sock.connected) {
+        // console.log('io already defined');
+        resolve(this._sock);
+        return;
+      }
+
+      //   console.log('init socket.io');
+      this._sock = io(this._config.url, {
+        forceNew: true
+      });
+      this._sock.on('connect', function() {
+        // console.log('io connected');
+        _this._sendOpen();
+      });
+
+      this._sock.on('message', function(msg) {
+        if (typeof msg !== 'object') {
+          try {
+            msg = JSON.parse(msg);
+          } catch (e) {
+            msg = {};
+          }
+        }
+
+        if (msg.hasOwnProperty('from') && msg.from === 'mn:/session') {
+          //   console.log('msg from mn:/session', msg.type, msg.id);
+          if (msg.body.code === 200) {
+            _this._sendStatus('connected');
+          } else {
+            _this._sendStatus('disconnected', reply.body.desc);
+          }
+
+          resolve(_this._sock);
+        } else {
+          _this._deliver(msg);
+        }
+      });
+
+      this._sock.on('disconnect', function(reason) {
+        _this._sendStatus('disconnected', reason);
+        delete _this._sock;
+      });
+
+      this._sock.on('error', function(reason) {
+      });
+    });
   }
 
   /**
@@ -78,73 +124,58 @@ class NodejsProtoStub {
    * A status message is sent to "runtimeProtoStubURL/status" with value "disconnected".
    */
   disconnect() {
-    let _this = this;
-    if (_this._sock) {
-      _this._sendClose();
-    }
+    // console.log('disconnect');
+    this._sendClose();
+    this._assumeOpen = false;
   }
 
   postMessage(msg) {
+    // console.log('postMessage');
     this._sock.send(JSON.stringify(msg));
   }
 
-  _sendOpen(callback) {
-    let _this = this;
+  _sendMsg(msg) {
+    // console.log('_sendMsg', msg);
+    if (this._filter(msg)) {
+      if (this._assumeOpen)
+        this.connect().then(() => {
+          //   console.log('then post message', msg);
+          this.postMessage(msg);
+        });
+    }
+  }
 
-    _this._id++;
-    let msg = {
-      id: _this._id,
+  _sendOpen() {
+    // console.log('_sendOpen');
+    this._id++;
+
+    this._sendMsg({
+      id: this._id,
       type: 'open',
-      from: _this._config.runtimeURL,
+      from: this._config.runtimeURL,
       to: 'mn:/session'
-    };
-
-    //register and wait for open reply...
-    let hasResponse = false;
-    _this._sessionCallback = function(reply) {
-
-      if (reply.type === 'response' & reply.id === msg.id) {
-        hasResponse = true;
-
-        if (reply.body.code === 200) {
-          _this._sendStatus('connected');
-          callback();
-        } else {
-          _this._sendStatus('disconnected', reply.body.desc);
-        }
-      }
-    };
-
-    _this._sock.send(JSON.stringify(msg));
-    setTimeout(() => {
-      if (!hasResponse) {
-        //no response after x seconds...
-        _this._sendStatus('disconnected', 'Timeout from mn:/session');
-      }
-    }, 3000);
+    });
   }
 
   _sendClose() {
-    let _this = this;
+    // console.log('_sendClose');
 
-    _this._id++;
-    let msg = {
-      id: _this._id,
+    this._id++;
+    this._sendMsg({
+      id: this._id,
       type: 'close',
-      from: _this._config.runtimeURL,
+      from: this._config.runtimeURL,
       to: 'mn:/session'
-    };
-
-    _this._sock.send(JSON.stringify(msg));
+    });
   }
 
   _sendStatus(value, reason) {
-    let _this = this;
+    // console.log('_sendStatus', value);
 
     let msg = {
       type: 'update',
-      from: _this._runtimeProtoStubURL,
-      to: _this._runtimeProtoStubURL + '/status',
+      from: this._runtimeProtoStubURL,
+      to: this._runtimeProtoStubURL + '/status',
       body: {
         value: value
       }
@@ -154,19 +185,7 @@ class NodejsProtoStub {
       msg.body.desc = reason;
     }
 
-    _this._bus.postMessage(msg);
-  }
-
-  _waitReady(callback) {
-    let _this = this;
-
-    if (_this._sock.connected) {
-      callback();
-    } else {
-      setTimeout(() => {
-        _this._waitReady(callback);
-      });
-    }
+    this._bus.postMessage(msg);
   }
 
   /**
@@ -185,54 +204,12 @@ class NodejsProtoStub {
    * @param  {Message} msg Original message from the MessageNode
    */
   _deliver(msg) {
+    // console.log('_deliver', msg);
     if (!msg.body) msg.body = {};
 
     msg.body.via = this._runtimeProtoStubURL;
 
     this._bus.postMessage(msg);
-  }
-
-  _open(callback) {
-    let _this = this;
-
-    if (!_this._sock) {
-      _this._sock = io(_this._config.url, {
-        forceNew: true
-      });
-      _this._sock.on('connect', function() {
-        _this._sendOpen(() => {
-          callback();
-        });
-      });
-
-      _this._sock.on('message', function(msg) {
-        if (typeof msg !== 'object') {
-          try {
-            msg = JSON.parse(msg);
-          } catch (e) {
-            msg = {};
-          }
-        }
-
-        if (msg.hasOwnProperty('from') && msg.from === 'mn:/session') {
-          if (_this._sessionCallback) {
-            _this._sessionCallback(msg);
-          }
-        } else {
-          _this._deliver(msg);
-        }
-      });
-
-      _this._sock.on('disconnect', function(reason) {
-        _this._sendStatus('disconnected', reason);
-        delete _this._sock;
-      });
-
-      _this._sock.on('error', function(reason) {
-      });
-    } else {
-      _this._waitReady(callback);
-    }
   }
 }
 

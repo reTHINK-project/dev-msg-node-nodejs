@@ -1,7 +1,7 @@
 // Karma configuration
 // Generated on Wed Sep 16 2015 12:17:06 GMT+0100 (WEST)
 
-module.exports = function(config) {
+module.exports = function (config) {
   'use strict';
   config.set({
 
@@ -15,7 +15,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'src/js/*.js',
-      'test/*.spec.js'
+      'test/*.spec.js',
     ],
 
     urlRoot: '/',
@@ -28,13 +28,13 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'src/js/*.js': ['browserify'],
-      'test/*.spec.js': ['browserify']
+      'test/*.spec.js': ['browserify'],
     },
 
     browserify: {
       debug: true,
       watch: true,
-      transform: ['babelify']
+      transform: ['babelify'],
     },
 
     // test results reporter to use
@@ -63,7 +63,7 @@ module.exports = function(config) {
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: false,
 
-    captureConsole: true
+    captureConsole: false
   });
 
 };

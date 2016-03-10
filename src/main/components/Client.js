@@ -62,9 +62,18 @@ class Client {
   }
 
   disconnect() {
-    // unallocate url from runtime ?
-    this.registry.unbind(this.getRuntimeUrl());
     this.socket.disconnect();
+  }
+
+  subscribe(url) {
+    this.logger.debug('subscribe', url);
+    this.socket.join(url);
+    this.logger.debug(this.registry.getWSServer().sockets.adapter.rooms);
+  }
+
+  unsubscribe(url) {
+    this.logger.debug('unsubscribe', url);
+    this.socket.leave(url);
   }
 }
 module.exports = Client;

@@ -40,18 +40,21 @@ class RegistryManager {
   }
 
   handle(clientMessage) {
-    let _this = this;
     let msg = clientMessage.getMessage();
     this.logger.info('[', this.getName(), '] handle registry message');
-    this.registryConnector.processMessage(msg, function(res) {
+    this.registryConnector.processMessage(msg, (res) => {
       //   _this.logger.info('[', _this.getName(), '] Reply from domain registry', res);
 
       let reply = new Message();
       reply.setId(msg.getId());
-      reply.setFrom(_this.getName());
+      reply.setFrom(this.getName());
       reply.setTo(msg.getFrom());
       reply.setReplyCode(res.code);
-      reply.body = msg.getJson();
+      reply.setBody(res);
+
+      this.logger.error(reply);
+
+      //   reply.body = msg.getJson();
 
       clientMessage.reply(reply);
     });

@@ -25,11 +25,11 @@
 let Message = require('./../Message');
 let uuid = require('uuid');
 
-class AddressAllocationManager {
+class ObjectAllocationManager {
   constructor(name, registry) {
     this.registry = registry;
     this.name = name;
-    this.baseURL = 'hyperty://' + this.registry.getDomain() + '/';
+    this.baseURL = '://' + this.registry.getDomain() + '/';
     this.logger = this.registry.getLogger();
   }
 
@@ -39,17 +39,21 @@ class AddressAllocationManager {
 
   handle(clientMessage) {
     let msg = clientMessage.getMessage();
+    let body = msg.getBody();
 
     if (msg.getType() === 'create') {
       this.logger.info('[', this.getName(), '] handle create msg');
-      let number = msg.getBody().value.number;
-      let allocated = this.allocate(clientMessage, number);
+
+      let scheme = body.scheme;
+      let children = body.childrenResources;
+      let number = body.value.number;
+
+      let allocated = this.allocate(clientMessage, scheme, children, number);
 
       let reply = new Message();
       reply.setId(msg.getId());
       reply.setFrom(this.name);
       reply.setTo(msg.getFrom());
-      reply.setType('response');
       reply.setReplyCode(200);
       reply.getBody().value = {};
       reply.getBody().value.allocated = allocated;
@@ -58,17 +62,21 @@ class AddressAllocationManager {
     }
   }
 
-  allocate(clientMessage, number) {
+  allocate(clientMessage, scheme, children, number) {
     let list = [];
     let i;
     for (i = 0; i < number; i++) {
-      let url = this.baseURL + uuid.v4();
+      let url = scheme + this.baseURL + uuid.v4();
       list.push(url);
-      clientMessage.getResource().subscribe(url);
+      clientMessage.getResource().subscribe(url + '/subscription');
+
+      children.forEach(function(child) {
+        clientMessage.getResource().subscribe(url + '/children/' + child);
+      });
     }
 
-    this.logger.info('[' + this.getName() + '] allocate URLs', list);
+    this.logger.info('[' + this.getName() + '] allocate scheme', list);
     return list;
   }
 }
-module.exports = AddressAllocationManager;
+module.exports = ObjectAllocationManager;

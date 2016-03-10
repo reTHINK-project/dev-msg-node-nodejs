@@ -50,6 +50,10 @@ class Message {
     return this.msg.body;
   }
 
+  setBody(body) {
+    this.msg.body = body;
+  }
+
   getId() {
     return this.msg.id;
   }

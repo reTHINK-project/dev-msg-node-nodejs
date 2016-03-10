@@ -53,28 +53,32 @@ class RegistryConnector {
     }
 
     getUser(userid, callback) {
-      let _this = this;
-      this.request.get(this.registryURL + '/hyperty/user/' + encodeURIComponent(userid), function(err, response, statusCode) {
-        _this.logger.info('Get user: ' + response);
+      let endpoint = '/hyperty/user/' + encodeURIComponent(userid);
+
+      this.logger.debug('getUser', this.registryURL + endpoint);
+      this.request.get(this.registryURL + endpoint, (err, response, statusCode) => {
+        this.logger.debug('Get user:', statusCode);
+        if (err) {
+          this.logger.error('Domain registry error: ', err);
+        }
 
         let body = {
-            code: statusCode,
-            value: response
-          };
-
+          code: statusCode,
+          value: response
+        };
         callback(body);
       });
     }
 
     addHyperty(userid, hypertyid, hypertyDescriptor, callback) {
-      let _this = this;
       let endpoint = '/hyperty/user/' + encodeURIComponent(userid) + '/' + encodeURIComponent(hypertyid);
       let data = { descriptor: hypertyDescriptor };
+
       this.logger.debug('addHyperty', this.registryURL + endpoint);
-      this.request.put(this.registryURL + endpoint, JSON.stringify(data), function(err, response, statusCode) {
-        _this.logger.debug('Domain registry response:', response);
+      this.request.put(this.registryURL + endpoint, JSON.stringify(data), (err, response, statusCode) => {
+        this.logger.debug('Domain registry response:', statusCode);
         if (err) {
-          _this.logger.error('Domain registry error: ', err);
+          this.logger.error('Domain registry error: ', err);
         }
 
         let body = {
@@ -86,11 +90,11 @@ class RegistryConnector {
     }
 
     deleteHyperty(userid, hypertyid, callback) {
-      let _this = this;
       let endpoint = '/hyperty/user/' + encodeURIComponent(userid) + '/' + encodeURIComponent(hypertyid);
 
-      this.request.del(this.registryURL + endpoint, function(err, response, statusCode) {
-        _this.logger.info('Delete hyperty: ' + response);
+      this.logger.debug('deleteHyperty', this.registryURL + endpoint);
+      this.request.del(this.registryURL + endpoint, (err, response, statusCode) => {
+        this.logger.debug('Delete hyperty:', statusCode);
 
         let body = {
           code: statusCode

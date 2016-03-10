@@ -27,6 +27,7 @@ class Registry {
   constructor(config) {
     this.config = config;
     this.domain = config.url;
+
     this.urlSpace = [];
     this.components = [];
     this.logger = null;
@@ -72,17 +73,19 @@ class Registry {
     }
 
     this.urlSpace[url] = runtimeURL;
-    console.log(this.urlSpace);
+    this.logger.debug('urlSpace after allocate', this.urlSpace);
     return true;
   }
 
   deallocate(url) {
     if (url in this.urlSpace) {
       delete this.urlSpace[url];
+      this.logger.debug('urlSpace after deallocate', this.urlSpace);
     }
   }
 
   resolve(url) {
+    this.logger.debug('resolving', url);
     if (url in this.urlSpace) {
       return this.urlSpace[url];
     } else {

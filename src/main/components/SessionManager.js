@@ -22,33 +22,40 @@
 **/
 
 'use strict';
-class MessageBus {
+class SessionManager {
 
-  constructor(name, registry, io) {
+  constructor(name, registry) {
     this.name = name;
     this.registry = registry;
     this.logger = this.registry.getLogger();
-    this.io = io;
-
-    //TODO manage redis pub/sub client
   }
 
   getName() {
     return this.name;
   }
 
-  publish(url, msgString) {
-    this.logger.info('[' + this.getName() + '] publish', msgString, 'to url', url);
-    if (url.startsWith('runtime:/')) {
-      url = this.registry.resolve(url);
-      this.logger.info('corresponding to socket', url);
+  handle(clientMessage) {
+    let msg = clientMessage.getMessage();
+
+    if (msg.getType() === 'open') {
+
+      this.logger.info('[', this.getName(), '] handle open msg');
+      clientMessage.getResource().setRuntimeUrl(msg.getFrom());
+      clientMessage.replyOK(this.getName());
+
+    } else if (msg.getType() === 're-open') {
+
+      this.logger.info('[', this.getName(), '] handle re-open msg');
+      clientMessage.replyOK(this.getName());
+
+    } else if (msg.getType() === 'close') {
+
+      //TODO manage room suppression on ws close
+      this.logger.info('[', this.getName(), '] handle close msg');
+      this.registry.unbind(msg.getFrom());
+      clientMessage.disconnect();
+
     }
-
-    this.io.to(url).emit('message', msgString);
-  }
-
-  onEvent() {
-    //listen and dispatch message from bus
   }
 }
-module.exports = MessageBus;
+module.exports = SessionManager;
