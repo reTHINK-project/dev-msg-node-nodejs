@@ -36,8 +36,22 @@ class MessageBus {
     return this.name;
   }
 
+  // publish(url, msgString) {
+  //   this.logger.info('[' + this.getName() + '] publish', msgString, 'to', url);
+  //   this.registry.getWSServer().to(url).emit('message', msgString);
+  // }
+
   publish(url, msgString) {
+    let io = this.registry.getWSServer();
+    let room = io.sockets.adapter.rooms[url];
+
     this.logger.info('[' + this.getName() + '] publish', msgString, 'to room', url);
+    if (typeof room !== 'undefined') {
+      this.logger.debug('[' + this.getName() + ']', room.length, ' sockets in room');
+    } else {
+      this.logger.error('[' + this.getName() + '] no socket in room', url);
+    }
+
     this.registry.getWSServer().to(url).emit('message', msgString);
   }
 

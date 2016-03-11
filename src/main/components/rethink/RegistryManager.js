@@ -51,11 +51,6 @@ class RegistryManager {
       reply.setTo(msg.getFrom());
       reply.setReplyCode(res.code);
       reply.setBody(res);
-
-      this.logger.error(reply);
-
-      //   reply.body = msg.getJson();
-
       clientMessage.reply(reply);
     });
   }

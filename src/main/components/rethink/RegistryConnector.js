@@ -64,7 +64,7 @@ class RegistryConnector {
 
         let body = {
           code: statusCode,
-          value: response
+          value: JSON.parse(response)
         };
         callback(body);
       });
