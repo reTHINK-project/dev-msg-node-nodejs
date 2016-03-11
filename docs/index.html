@@ -43,41 +43,78 @@
 
 
     <section>
-        <article><h1>dev-msg-node-nodejs</h1><h3>Setup Environment</h3><p>On the first time you are cloning this repository, you need to run the command <code>npm run init-setup</code>;</p>
-<p>After running successfully this command you will have 2 folders (node_modules and vendor), these folders are excluded from the commit process, and are only for development.</p>
-<p>if you already have the project configured on your machine, you only need run the command <code>npm install</code> to add new dependencies;</p>
-<p>if you have some trouble with the environment, you can open an issue;</p>
-<h3>Javascript Environment</h3><p>JavaScript code should be written in ES6.
-There are direct dependencies from nodejs and npm, these can be installed separately or in conjunction with <a href="https://github.com/creationix/nvm">nvm</a></p>
-<h4>dependencies:</h4><ul>
+        <article><h2>dev-msg-node-nodejs</h2><h3>Overview</h3><p>The NodeJS based Message Node is one of the reference implementations of the Message Node component in the reTHINK Architecture.</p>
+<p>Like other Message Nodes, it has responsibilities to perform messages delivering between different hyperties.
+And by design, it interact with other Rethink components like the domain registry or runtime.</p>
+<p>So, that implies to have an running instance of the domain registry to get the nodejs message node running correctly.</p>
+<p>You will find a general documentation and guideline Message nodes Development in <a href="https://github.com/reTHINK-project/dev-service-framework/blob/d3.2-working-docs/docs/manuals/development-of-protostubs-and-msg-nodes.md">Message Nodes and Protostubs Development</a>.</p>
+<h3>User View</h3><h4>Setup Environment</h4><p>This documentation does not provide a OS dependant instructions : NodeJS message node can be used on any OS compatible with redis &amp; nodejs tools.
+A dockerfile is provided, so it can be integrated in a docker instance as well.</p>
+<h5>Javascript Environment</h5><p>JavaScript code should be written in ES6.</p>
+<p>Please follow instructions on <a href="https://nodejs.org/en/download/package-manager/">official nodejs installation documentation</a> to setup the NodeJS environnement.<br>This include the npm manager for node modules.</p>
+<h5>dependencies:</h5><ul>
 <li>nodejs</li>
 <li>npm</li>
-<li>karma - Make the communication between unit test tool and jenkins. See more on <a href="http://karma-runner.github.io/0.13/index.html">karma</a></li>
+<li>karma - A simple tool that allows you to execute JavaScript code in multiple real browsers. See more on <a href="http://karma-runner.github.io/0.13/index.html">karma</a></li>
 <li>mocha - Unit test tool. See more on <a href="http://mochajs.org/">http://mochajs.org</a></li>
-<li>jspm - Don't need compile the code, it uses babel (or traucer or typescript) to run ES6 code on browser. Know more in <a href="http://jspm.io/">jspm.io</a></li>
 <li>gulp - Automate and enhance your workflow. See more about gulp on <a href="http://gulpjs.com/">gulp</a></li>
 </ul>
+<h5>Quick start</h5><p>On the first time you are cloning this repository, you need to run the command<br>$ <strong>npm run init-setup</strong>;</p>
+<p>After running successfully this command you will have 2 folders (node_modules and vendor), these folders are excluded from the commit process, and are only for development.</p>
+<p>Check the server configuration file for custom setting (url, port, ...) :  </p>
+<p>Now start server with command :<br>$ <strong>node src/main/server.js</strong>;</p>
+<p>You should see a notice like that :<br>[Date] [INFO] server - [S] HTTP &amp; WS server listening on 9090</p>
+<p>if you already have the project configured on your machine, you only need run the command <code>npm install</code> to update package &amp; new dependencies.</p>
+<h4>Service architecture</h4><p>The figure below illustrates the service architecture of the NodeJS Messaging Node.  </p>
+<p>Combine with node redis sentinel client, each node share session datas with each others through redis storage.<br>Redis-Sentinel monitor &amp; notify redis cluster of data change between nodejs instance.</p>
+<p><img src="nodejs-redis-cluster.png" alt="NodeJS &amp; Redis clustering using Redis-Sentinel"></p>
+<p>For security consideration, it's advized to use a proxy (as describe in the following scheme) in front of node instance to not give direct access to nodejs instance.
+It's recommanded to use NGinx server for that (<a href="https://www.nginx.com/blog/nginx-nodejs-websockets-socketio/">from NGiNX</a>, <a href="http://socket.io/docs/using-multiple-nodes/#">from Socket.io</a>).<br>By the way it also provide a good load balancer solution (HAProxy is another good one).  </p>
+<p><img src="web-proxy-node.png" alt="Web proxy in front of node instances"></p>
+<h4>Hyperty development</h4><p>To use the message nodes in client side, please refer to <a href="https://github.com/reTHINK-project/dev-service-framework/blob/d3.2-working-docs/docs/manuals/development-of-hyperties.md">Hyperty development tutorial</a></p>
+<h3>Developer View</h3><h4>Repository structure</h4><p>This repository is ready to start working on development.<br>The code will go to the <strong>src</strong> folder, it contains also the main server script in src/main/ folder.  </p>
+<p>The unit tests will be on <strong>test</strong> folder, following the name standard <component>.spec.js  </p>
+<p>Server (config.js) &amp; tools (gulp, karma, etc...) configuration is located in root folder.</p>
 <h4>Code Style and Hinting</h4><p>On the root directory you will find <strong>.jshintrc</strong> and <strong>.jscsrc</strong>, these files are helpers to maintain syntax consistency, it signals syntax mistakes and makes the code equal for all developers.</p>
 <ul>
 <li><a href="http://jscs.info/">jscs</a> - Maintain JavaScript Code Style</li>
 <li><a href="http://jshint.com/">jshint</a> - Detect errors and potential problems in JavaScript code.</li>
 </ul>
-<p>All IDE's and Text Editors can handle these tools.</p>
-<h4>Documentation</h4><p>To generates api documentation you can run <code>gulp doc</code></p>
-<h3>Unit Testing</h3><p>Unit testing can be launched manually with <strong>karma start</strong>.</p>
-<p><del>It's advisable to use <a href="https://github.com/Automattic/expect.js">expect.js</a> instead of assert.</del></p>
-<p>After investigate and testing the <a href="https://github.com/Automattic/expect.js">expect.js</a> it don't support some features for ES6, because this tool hasn't activity at some time, that is why, it is recomended use the <a href="http://chaijs.com/">chaijs</a> it is more versatile and have expect.js (but updated) and others tools that can be useful;</p>
-<h3>Karma</h3><p>if you have some problems starting the karma tests, try running this commands for the following order:</p>
-<ol>
-<li><code>npm uninstall karma karma-browserify karma-mocha karma-mocha-reporter karma-chrome-launcher -g</code></li>
-<li><code>npm install karma-cli -g</code></li>
-<li><code>npm install</code></li>
-<li><code>jspm update</code></li>
-</ol>
-<h4>Note</h4><p>This repository is ready to start working on development.
-The code will go to the <strong>src</strong> folder.
-The unit tests will be on <strong>test</strong> folder, following the name standard <component>.spec.js</p>
-<p>The npm module <strong>live-server</strong> can be used for development tests, but it's not mandatory: <a href="https://www.npmjs.com/package/live-server">live-server</a></p></article>
+<p>Most IDEs and Text Editors can handle these tools.</p>
+<h4>Documentation</h4><p>To generates api documentation you can run :<br>$ <strong>gulp doc</strong><br>This will generate HTML documentation in docs/ folder.</p>
+<h4>Unit Testing</h4><p>We use Karma test runner to execute mocha test.</p>
+<p>To run unit test, you need first to lauch a server node with command :<br>$ <strong>node src/main/server.js</strong><br>... then start karma test runner (from main directory) :<br>$ <strong>karma start</strong>  </p>
+<p>Karma will launch the browser (chromium in this case) to execute all tests in test/ folder and show result in console.
+Tests are automatically redone when code is modified.</p>
+<h4>Server components</h4><h5>NodeJS</h5><h6>Socket.io</h6><p>Socket.io is a well-known library that provide real-time bidirectionnal event-based communication.<br>It able to handle the connection transparently for developpers :  </p>
+<ul>
+<li>the protocol negociation (long-polling, websocket,etc...) with client depending of network capabilities</li>
+<li>connection always on with heartbeat packets</li>
+<li>message broadcasting</li>
+<li>session datas</li>
+<li>clustering consideration with multiple data storage drivers</li>
+</ul>
+<h6>ExpressJS</h6><p>Express.js is a minimalist web framework commonly used in front of socket.io server.<br>It provide a robust set of features for web and mobile applications, like request routing, and a solid stack for third-party middleware.</p>
+<h5>Redis</h5><p>Redis is an in-memory data structure store, used as database, cache and message broker. It supports various type of data structures such as string, hashes, lists...
+It have a persistent mode, but it's mainly used to store temporary datas like session or connection information.  </p>
+<p>Redis has built-in replication, and provides high availability via Redis Sentinel and automatic partitioning with Redis Cluster.</p>
+<h4>Core components</h4><p>This section describe the functional blocks of the Messaging Node architecture.</p>
+<p>The graphic below describe message event processing with components.
+<img src="event-mgmt.png" alt="MsgNode event message"></p>
+<h5>Entry point</h5><p>Msg node start with server.js script that read configuration from config.js and instanciate &lt;<MsgNode>&gt; class.</p>
+<p>This unique class initialize main components and start listening for incoming websocket client.
+On each new protostub connection, socket.io events are bind to &lt;<Client>&gt; instance associated with socket ressource.</p>
+<h5>Registry</h5><p>A global Registry class is used by MsgNode to manage internal components and configuration.
+It allow internal component to share reference to configuration and others components.</p>
+<h5>SessionManager</h5><p>The SessionManager class handle client connection state change.</p>
+<h6>Note</h6><p>Link with identity service ?</p>
+<h5>Message bus</h5><p>MessageBus class provide a message system that publish information to all components.  </p>
+<h6>Note</h6><p>/!\ Redis bus manager is not implemented yet, so message cannot be broadcast in a msg node cluster : code in place allow only to publish message through current node instance.</p>
+<h5>Address allocation management</h5><p>The class AddressAllocationManager handle hyperty URLs allocation once client ask for registration.  </p>
+<h6>Note</h6><p>/!\ For the moment, foreign hyperty instance pool are not managed.
+Link with global domain registry ?</p>
+<h5>Message</h5><p>On each message received from protostub, MsgNode built a ClientMessage instance containing Message, and dispatch to Client instance.
+It's also used as container to built reply on client.</p></article>
     </section>
 
 
@@ -88,13 +125,13 @@ The unit tests will be on <strong>test</strong> folder, following the name stand
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NodejsProtoStub.html">NodejsProtoStub</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NodejsProtoStub.html">NodejsProtoStub</a></li></ul><h3>Global</h3><ul><li><a href="global.html#io">io</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Jan 28 2016 11:46:28 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Mar 11 2016 09:11:57 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
