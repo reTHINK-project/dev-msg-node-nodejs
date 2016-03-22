@@ -87,8 +87,7 @@ class MsgNode {
     // });
     // this.app.use(sessionManager);
     // let fs = require('fs');
-    this.app.get('/hello', (req, res) => {
-      //   res.send(this.config.logDir);
+    this.app.get('/logs', (req, res) => {
       require('fs').createReadStream(this.config.logDir + '/server.log').pipe(res);
     });
 
