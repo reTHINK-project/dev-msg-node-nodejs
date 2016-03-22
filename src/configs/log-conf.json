@@ -5,7 +5,7 @@
         "category": "server",
         "type": "file",
         "filename": "server.log",
-        "maxLogSize": 30000000,
+        "maxLogSize": 3000000,
         "backups": 5
     }
   ],

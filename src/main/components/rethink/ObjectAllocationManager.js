@@ -48,7 +48,7 @@ class ObjectAllocationManager {
       let children = body.childrenResources;
       let number = body.value.number;
 
-      let allocated = this.allocate(clientMessage, scheme, children, number);
+      let allocated = this.allocate(clientMessage, scheme, number);
 
       let reply = new Message();
       reply.setId(msg.getId());
@@ -59,24 +59,27 @@ class ObjectAllocationManager {
       reply.getBody().value.allocated = allocated;
 
       clientMessage.reply(reply);
+    } else if (msg.getType() === 'delete') {
+      this.logger.info('[', this.getName(), '] handle delete msg');
+      clientMessage.replyOk();
     }
   }
 
-  allocate(clientMessage, scheme, children, number) {
+  allocate(clientMessage, scheme, number) {
     let list = [];
     let i;
     for (i = 0; i < number; i++) {
       let url = scheme + this.baseURL + uuid.v4();
       list.push(url);
       clientMessage.getResource().subscribe(url + '/subscription');
-
-      children.forEach(function(child) {
-        clientMessage.getResource().subscribe(url + '/children/' + child);
-      });
     }
 
     this.logger.info('[' + this.getName() + '] allocate scheme', list);
     return list;
+  }
+
+  deallocate(clientMessage, url) {
+    clientMessage.getResource().unsubscribe(url + '/subscription');
   }
 }
 module.exports = ObjectAllocationManager;

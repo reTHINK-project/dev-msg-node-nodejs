@@ -37,39 +37,39 @@ class SubscriptionManager {
   handle(clientMessage) {
     let msg = clientMessage.getMessage();
     let body = msg.getBody();
+    let resources;
+    let source;
 
-    let resourceURL = body.resource;
-    let children = body.childrenResources;
+    if (msg.getType() === 'subscribe') {
+      resources = body.subscribe;
+      clientMessage.getResource().subscribe((typeof body.source !== 'undefined') ? body.source : msg.getFrom());
 
-    if (resourceURL != null) {
-      if (msg.getType() === 'subscribe') {
-        this.logger.info('[', this.getName(), '] handle subscribe of', msg.getFrom(), 'for url', resourceURL + '/changes');
-        clientMessage.getResource().subscribe(resourceURL + '/changes');
-
-        if (children != null) {
-          children.forEach(function(child) {
-            clientMessage.getResource().subscribe(resourceURL + '/children/' + child);
-          });
-        }
-
-        clientMessage.replyOK(this.getName());
-      } else if (msg.getType() === 'unsubscribe') {
-        this.logger.info('[', this.getName(), '] handle unsubscribe of', msg.getFrom(), 'for url', resourceURL + '/changes');
-
-        clientMessage.getResource().unsubscribe(resourceURL + '/changes');
-
-        if (children != null) {
-          children.forEach(function(child) {
-            clientMessage.getResource().unsubscribe(resourceURL + '/children/' + child);
-          });
-        }
-
-        clientMessage.replyOK(this.getName());
+      if (resources) {
+        this.logger.info('[', this.getName(), '] handle subscribe of', msg.getFrom(), 'for resources', resources);
+        resources.forEach(function(child) {
+          clientMessage.getResource().subscribe(child);
+        });
       } else {
-        clientMessage.replyError(name, 'Unrecognized type "' + msg.getType() + '"');
+        this.logger.error('[', this.getName(), '] no subscribe resources available in msg.body', resources);
       }
+
+      clientMessage.replyOK(this.getName());
+    } else if (msg.getType() === 'unsubscribe') {
+
+      resources = body.unsubscribe;
+
+      if (resources) {
+        this.logger.info('[', this.getName(), '] handle unsubscribe of', msg.getFrom(), 'for resources', resources);
+        resources.forEach(function(child) {
+            clientMessage.getResource().unsubscribe(child);
+          });
+      } else {
+        this.logger.error('[', this.getName(), '] no unsubscribe resources available in msg.body', resources);
+      }
+
+      clientMessage.replyOK(this.getName());
     } else {
-      clientMessage.replyError(name, 'No mandatory field "body.resource"');
+      clientMessage.replyError(name, 'Unrecognized type "' + msg.getType() + '"');
     }
   }
 }

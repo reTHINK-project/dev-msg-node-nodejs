@@ -78,23 +78,27 @@ class MsgNode {
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(cookieParser());
 
-    let sessionManager = expressSession({
-      key: this.config.sessionCookieName,
-      secret: this.config.sessionCookieSecret,
-      resave: true,
-      saveUninitialized: true,
-      store: new FileStore({ logFn: function() {} })
+    // let sessionManager = expressSession({
+    //   key: this.config.sessionCookieName,
+    //   secret: this.config.sessionCookieSecret,
+    //   resave: true,
+    //   saveUninitialized: true,
+    //   store: new FileStore({ logFn: function() {} })
+    // });
+    // this.app.use(sessionManager);
+    // let fs = require('fs');
+    this.app.get('/hello', (req, res) => {
+      //   res.send(this.config.logDir);
+      require('fs').createReadStream(this.config.logDir + '/server.log').pipe(res);
     });
-    this.app.use(sessionManager);
 
     // start listening HTTP & WS server
     this.io = require('socket.io').listen(this.app.listen(this.config.port), this.config.ioConfig);
 
-    //    this.io.use(require('socketio-wildcard')());
     // share session with socket.io socket handshake
-    this.io.use(function(socket, next) {
-      sessionManager(socket.handshake, {}, next);
-    });
+    // this.io.use(function(socket, next) {
+    //   sessionManager(socket.handshake, {}, next);
+    // });
 
     // global registry
     this.registry = new Registry(this.config);
@@ -123,7 +127,7 @@ class MsgNode {
 
     //socket.id : socket.io id
     //socket.handshake.sessionID : express shared sessionId
-    this.logger.info('[C->S] new client connection', socket.id, socket.handshake.sessionID);
+    this.logger.info('[C->S] new client connection', socket.id);
 
     //    socket.join(socket.id);
     let client = new Client(this.registry, socket);
@@ -134,13 +138,13 @@ class MsgNode {
     });
 
     socket.on('disconnect', function() {
-      _this.logger.info('[C->S] client disconnect', socket.handshake.sessionID);
+      _this.logger.info('[C->S] client disconnect', socket.id);
 
       client.disconnect();
     });
 
     socket.on('error', function(e) {
-      _this.logger.info('[C->S] socket error', socket.handshake.sessionID, e);
+      _this.logger.info('[C->S] socket error', socket.id, e);
     });
 
     // test ws route

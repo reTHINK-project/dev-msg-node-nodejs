@@ -4,7 +4,7 @@ cd $relPath
 
 if [ $# -ne 4 ]
 then
-    echo "\nUsage:\n$0 {image-name} {e.g. domain.tld} {e.g. 9090} {e.g. http://domain.tld}\n"
+    echo "\nUsage:\n$0 {image-name} {msg-node url e.g. domain.tld} {e.g. 9090} {domain registry url e.g. http://registry.domain.tld}\n"
     exit 1
 fi
 IMAGE=$1
