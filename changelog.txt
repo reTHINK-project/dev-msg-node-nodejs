@@ -1,0 +1,6 @@
+----------------------------------------------
+Version :	0.1.0
+Date 	:   19/04/2016
+----------------------------------------------
+[+] Message forwarding between different hyperties, domain registry and native session component
+[+] working interoperability with msg-node-vertx & msg-node-matrix
