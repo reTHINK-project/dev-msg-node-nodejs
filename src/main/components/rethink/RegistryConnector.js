@@ -58,14 +58,17 @@ class RegistryConnector {
       this.logger.debug('getUser', this.registryURL + endpoint);
       this.request.get(this.registryURL + endpoint, (err, response, statusCode) => {
         this.logger.debug('Get user:', statusCode);
+        let body = {
+          code: statusCode
+        };
         if (err) {
           this.logger.error('Domain registry error: ', err);
         }
 
-        let body = {
-          code: statusCode,
-          value: JSON.parse(response)
-        };
+        if (statusCode !== 500) {
+          body.value = JSON.parse(response);
+        }
+
         callback(body);
       });
     }
