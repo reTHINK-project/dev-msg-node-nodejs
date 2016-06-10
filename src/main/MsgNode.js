@@ -78,26 +78,20 @@ class MsgNode {
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(cookieParser());
 
-    // let sessionManager = expressSession({
-    //   key: this.config.sessionCookieName,
-    //   secret: this.config.sessionCookieSecret,
-    //   resave: true,
-    //   saveUninitialized: true,
-    //   store: new FileStore({ logFn: function() {} })
-    // });
-    // this.app.use(sessionManager);
-    // let fs = require('fs');
     this.app.get('/logs', (req, res) => {
       require('fs').createReadStream(this.config.logDir + '/server.log').pipe(res);
     });
 
+    this.app.get('/live', (req, res) => {
+      res.send({
+        status:'up',
+        domainRegistry: this.config.domainRegistryUrl,
+        time: (new Date()).toISOString()
+      });
+    });
+
     // start listening HTTP & WS server
     this.io = require('socket.io').listen(this.app.listen(this.config.port), this.config.ioConfig);
-
-    // share session with socket.io socket handshake
-    // this.io.use(function(socket, next) {
-    //   sessionManager(socket.handshake, {}, next);
-    // });
 
     // global registry
     this.registry = new Registry(this.config);
