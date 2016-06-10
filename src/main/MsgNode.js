@@ -74,6 +74,7 @@ class MsgNode {
     this.app.use(log4js.connectLogger(this.logger, {
       level: 'auto'
     }));
+
     this.app.set('trust proxy', 1);
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(cookieParser());
@@ -91,7 +92,16 @@ class MsgNode {
     });
 
     // start listening HTTP & WS server
-    this.io = require('socket.io').listen(this.app.listen(this.config.port), this.config.ioConfig);
+    if (this.config.useSSL) {
+      let fs = require('fs');
+      let https = require('https');
+      this.io = require('socket.io').listen(https.createServer({
+        cert: fs.readFileSync(this.config.sslCertificate).toString(),
+        key: fs.readFileSync(this.config.sslPKey).toString()
+      }, this.app).listen(this.config.port), this.config.ioConfig);
+    } else {
+      this.io = require('socket.io').listen(this.app.listen(this.config.port), this.config.ioConfig);
+    }
 
     // global registry
     this.registry = new Registry(this.config);
