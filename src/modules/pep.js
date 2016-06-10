@@ -1,5 +1,5 @@
 'use strict';
-let JSRequest = require('./../../../modules/JSRequest');
+let JSRequest = require('./JSRequest');
 
 class PEP {
   constructor() {

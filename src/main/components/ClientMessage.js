@@ -23,6 +23,7 @@
 
 'use strict';
 let Message = require('./Message');
+let PEP = require('./../../modules/pep');
 
 class ClientMessage {
 
@@ -31,6 +32,7 @@ class ClientMessage {
     this.client = client;
     this.msg = msg;
     this.logger = registry.getLogger();
+    this.pep = new PEP();
   }
 
   getMessage() {
@@ -51,7 +53,7 @@ class ClientMessage {
 
   dispatch() {
     // PEP.js interface
-    this.registry.pep.send(this.msg)
+    this.pep.send(this.msg)
       .then((pdpState, messageFromPDP) => {//success
         let comp = this.registry.getComponent(messageFromPDP.getTo());
         if (comp != null) {
@@ -62,19 +64,8 @@ class ClientMessage {
             this.replyError(comp.getName(), e);
           }
         } else {
-          //   if (this.msg.getType() === 'update' && this.msg.getTo() === this.msg.getFrom() + '/changes') {
-          //     this.logger.info('[ClientMessage] forward update message to room', this.msg.getTo());
-          //
-          //     // this.client.broadcast.to(this.msg.getTo()).emit('message', this.msg.getJson());
-          //
-          //     this.registry.getComponent('MessageBus').publish(this.msg.getTo(), this.msg.msg);
-
-          //   this.registry.socket.rooms
-          //   } else {
           this.logger.info('[ClientMessage] forward msg to', messageFromPDP.getTo());
           this.registry.getComponent('MessageBus').publish(messageFromPDP.getTo(), messageFromPDP.msg);
-
-          //   }
         }
       }).catch((reason) => { // rejected by pdp
         this.replyError(this.msg.getFrom(), reason);
