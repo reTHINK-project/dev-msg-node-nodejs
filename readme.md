@@ -17,17 +17,26 @@ You will find a general documentation and guideline Message nodes Development in
 #### Setup Environment
 
 This documentation does not provide an OS dependant instructions : this NodeJS message node can be used on any OS compatible with redis & nodejs tools.
-A dockerfile is provided, so it can be integrated in a docker instance as well.
+In case you don't have redis & nodejs tools installed on your local environement. A dockerfile is provided, so it can be integrated in a docker instance as well see ` Installation with Docker `.
 
 ##### Quick Start
 
-On the first time you are cloning this repository, you need to run the command from /dev-msg-node-nodejs folder:
+On the first time you are cloning this repository:
+```
+git clone https://github.com/reTHINK-project/dev-msg-node-nodejs.git
+cd dev-msg-node-nodejs
+```
+Then run the command :
 ```
 $ npm run init-setup
 ```
-Another alternative is to use docker to build it :
+##### Installation with Docker
+you may esape this part, in case you have redis & nodejs installed.
+
+In order to build dev-msg-node-nodejs you must have docker running. Otherwise docker can be installed from [docker installation](https://docs.docker.com/). 
+After having intsalled correctly docker, run the following command to build :
 ``` 
-$ docker build -t message-node .
+$ docker build -t msg-node-nodejs .
 
 ```
 
