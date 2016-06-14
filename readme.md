@@ -30,7 +30,7 @@ Then run the command :
 ```
 $ npm run init-setup
 ```
-##### Installation with Docker
+##### Installation and execution with Docker
 You can skip this part, in case you have redis & nodejs installed.
 
 In order to build dev-msg-node-nodejs you must have docker running. Otherwise docker can be installed from [docker installation](https://docs.docker.com/). 
@@ -39,7 +39,12 @@ After having intsalled correctly docker, run the following command to build :
 $ docker build -t msg-node-nodejs .
 
 ```
+Afterwards, run the following command :
 
+``` 
+$ docker build -t msg-node-nodejs .
+
+```
 After running successfully this command you will have 2 folders (node_modules and vendor), these folders are excluded from the commit process, and are only for development.
 
 Check the server configuration file for custom setting (url, port, ...) :  
