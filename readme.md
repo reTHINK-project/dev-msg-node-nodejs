@@ -17,7 +17,7 @@ You will find a general documentation and guideline Message nodes Development in
 #### Setup Environment
 
 This documentation does not provide an OS dependant instructions : this NodeJS message node can be used on any OS compatible with redis & nodejs tools.
-In case you don't have redis & nodejs tools installed on your local environement. A dockerfile is provided, so it can be integrated in a docker instance as well see ` Installation with Docker `.
+In case you don't have redis & nodejs tools installed on your local environement. A dockerfile is provided, so it can be integrated in a docker instance as well see ` Installation with Docker ` section.
 
 ##### Quick Start
 
