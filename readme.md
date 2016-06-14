@@ -31,7 +31,7 @@ Then run the command :
 $ npm run init-setup
 ```
 ##### Installation with Docker
-you may esape this part, in case you have redis & nodejs installed.
+You can skip this part, in case you have redis & nodejs installed.
 
 In order to build dev-msg-node-nodejs you must have docker running. Otherwise docker can be installed from [docker installation](https://docs.docker.com/). 
 After having intsalled correctly docker, run the following command to build :
