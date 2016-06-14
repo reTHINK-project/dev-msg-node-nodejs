@@ -26,32 +26,38 @@ First you need to clone this repository:
 git clone https://github.com/reTHINK-project/dev-msg-node-nodejs.git
 cd dev-msg-node-nodejs
 ```
-Then run the command :
-```
-$ npm run init-setup
-```
-##### Installation and execution with Docker
+
+###### Run using Docker
+
 You can skip this part, in case you have redis & nodejs installed.
 
-In order to build dev-msg-node-nodejs you must have docker running. Otherwise docker can be installed from [docker installation](https://docs.docker.com/). 
+In order to build dev-msg-node-nodejs you must have docker running. Otherwise docker can be installed from [docker installation](https://docs.docker.com/).
 After having intsalled correctly docker, run the command :
-``` 
+```
 $ docker build -t msg-node-nodejs .
 
 ```
 Afterwards, run the following :
 
-``` 
-$ docker build -t msg-node-nodejs .
+```
+$ docker run -e url=localhost -e PORT=9090 -e domainRegistryUrl=http://localhost:4567
 
 ```
+
+###### Run using local environement
+
+Then run the command :
+```
+$ npm run init-setup
+```
+
 After running successfully this command you will have 2 folders (node_modules and vendor), these folders are excluded from the commit process, and are only for development.
 
 Check the server configuration file for custom setting (url, port, ...) :  
 
 Now start server with the following command :  
 
-``` 
+```
 $ node src/main/server.js
 
 ```
