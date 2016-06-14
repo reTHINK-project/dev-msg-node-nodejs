@@ -16,8 +16,38 @@ You will find a general documentation and guideline Message nodes Development in
 
 #### Setup Environment
 
-This documentation does not provide a OS dependant instructions : NodeJS message node can be used on any OS compatible with redis & nodejs tools.
+This documentation does not provide an OS dependant instructions : this NodeJS message node can be used on any OS compatible with redis & nodejs tools.
 A dockerfile is provided, so it can be integrated in a docker instance as well.
+
+##### Quick Start
+
+On the first time you are cloning this repository, you need to run the command from /dev-msg-node-nodejs folder:
+```
+$ npm run init-setup
+```
+Another alternative is to use docker to build it :
+``` 
+$ docker build -t message-node .
+
+```
+
+After running successfully this command you will have 2 folders (node_modules and vendor), these folders are excluded from the commit process, and are only for development.
+
+Check the server configuration file for custom setting (url, port, ...) :  
+
+Now start server with the following command :  
+
+``` 
+$ node src/main/server.js
+
+```
+
+You should see a notice like that :  
+[Date] [INFO] server - [S] HTTP & WS server listening on 9090
+
+
+
+if you already have the project configured on your machine, you only need run the command ```npm install``` to update package & new dependencies.
 
 ##### Javascript Environment
 JavaScript code should be written in ES6.
@@ -31,24 +61,6 @@ This include the npm manager for node modules.
 * karma - A simple tool that allows you to execute JavaScript code in multiple real browsers. See more on [karma](http://karma-runner.github.io/0.13/index.html)
 * mocha - Unit test tool. See more on [http://mochajs.org](http://mochajs.org/)
 * gulp - Automate and enhance your workflow. See more about gulp on [gulp](http://gulpjs.com/)
-
-##### Quick start
-On the first time you are cloning this repository, you need to run the command  
-$ **npm run init-setup**;
-
-After running successfully this command you will have 2 folders (node_modules and vendor), these folders are excluded from the commit process, and are only for development.
-
-Check the server configuration file for custom setting (url, port, ...) :  
-
-Now start server with command :  
-$ **node src/main/server.js**;
-
-You should see a notice like that :  
-[Date] [INFO] server - [S] HTTP & WS server listening on 9090
-
-
-
-if you already have the project configured on your machine, you only need run the command ```npm install``` to update package & new dependencies.
 
 #### Service architecture
 
