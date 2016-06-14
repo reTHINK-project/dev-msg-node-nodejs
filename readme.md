@@ -40,7 +40,7 @@ $ docker build -t msg-node-nodejs .
 Afterwards, run the following :
 
 ```
-$ docker run -e url=localhost -e PORT=9090 -e domainRegistryUrl=http://localhost:4567
+$ docker run -e url=localhost -e PORT=9090 -e domainRegistryUrl=http://localhost:4567 msg-node-nodejs
 
 ```
 

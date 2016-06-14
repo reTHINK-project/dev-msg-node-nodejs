@@ -5,6 +5,8 @@ ADD package.json /usr/src/app/
 
 WORKDIR /usr/src/app
 
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
+
 RUN mkdir logs
 RUN npm install
 

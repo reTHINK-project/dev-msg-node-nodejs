@@ -25,9 +25,9 @@
 var path = require('path');
 
 module.exports = {
-  url: 'localhost',
-  domainRegistryUrl: 'http://localhost:4567',
-  port: '9090',
+  url: process.env.url || 'localhost',
+  domainRegistryUrl: process.env.domainRegistryUrl || 'http://localhost:4567',
+  port: process.env.PORT || '9090',
   ioConfig: {
     transports: [
       'polling',
@@ -37,10 +37,10 @@ module.exports = {
     forceNew: true //needed for test
   },
   log4jsConfig: __dirname + '/log-conf.json',
-  logDir: path.resolve(path.join(__dirname, '../../', '/logs')),
+  logDir: process.env.logDir || path.resolve(path.join(__dirname, '../../', '/logs')),
   sessionCookieName: 'rethink.express.sid',
   sessionCookieSecret: '88HpNxVxm5k94AY2',
-  useSSL: false,
-  sslCertificate: null, //sslCertificate: path.resolve(path.join(__dirname, '../../', '/') + '/server.crt')
-  sslPKey: null //sslPKey: path.resolve(path.join(__dirname, '../../', '/') + '/key.pem')
+  useSSL: process.env.useSSL || false,
+  sslCertificate: process.env.sslCertificate || path.resolve(path.join(__dirname, '../../', '/') + '/server.crt'),
+  sslPKey: process.env.sslPKey || path.resolve(path.join(__dirname, '../../', '/') + '/key.pem')
 };
