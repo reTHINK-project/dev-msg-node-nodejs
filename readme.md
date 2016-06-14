@@ -21,7 +21,7 @@ In case you don't have redis & nodejs tools installed on your local environement
 
 ##### Quick Start
 
-On the first time you are cloning this repository:
+First you need to clone this repository:
 ```
 git clone https://github.com/reTHINK-project/dev-msg-node-nodejs.git
 cd dev-msg-node-nodejs
