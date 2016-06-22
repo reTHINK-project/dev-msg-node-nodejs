@@ -53,7 +53,7 @@ class SubscriptionManager {
         this.logger.error('[', this.getName(), '] no subscribe resources available in msg.body', resources);
       }
 
-      clientMessage.replyOK(this.getName());
+      clientMessage.replyok(this.getName());
     } else if (msg.getType() === 'unsubscribe') {
 
       resources = body.unsubscribe;
@@ -67,7 +67,7 @@ class SubscriptionManager {
         this.logger.error('[', this.getName(), '] no unsubscribe resources available in msg.body', resources);
       }
 
-      clientMessage.replyOK(this.getName());
+      clientMessage.replyok(this.getName());
     } else {
       clientMessage.replyError(name, 'Unrecognized type "' + msg.getType() + '"');
     }

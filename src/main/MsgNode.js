@@ -61,12 +61,15 @@ class MsgNode {
 
     this.config = config;
 
+    this.config.domainRegistryUrl = this.config.domainRegistryUrl.replace(/\/$/, '') + '/';
+
     // define logger configuration
     log4js.configure(this.config.log4jsConfig, {
       reloadSecs: 60,
       cwd: this.config.logDir
     });
     this.logger = log4js.getLogger('server');
+    this.logger.setLevel(this.config.logLevel);
 
     this.app = express();
 
@@ -87,7 +90,8 @@ class MsgNode {
       res.send({
         status:'up',
         domainRegistry: this.config.domainRegistryUrl,
-        time: (new Date()).toISOString()
+        time: (new Date()).toISOString(),
+        connected: Object.keys(this.io.sockets.sockets).length
       });
     });
 
@@ -117,7 +121,7 @@ class MsgNode {
     this.registry.registerComponent(olm);
     let syncm = new SubscriptionManager('domain://msg-node.' + this.registry.getDomain()  + '/sm', this.registry);
     this.registry.registerComponent(syncm);
-    let rm = new RegistryManager('domain://registry.' + this.registry.getDomain() + '/', this.registry);
+    let rm = new RegistryManager('domain://registry.' + this.registry.getDomain(), this.registry);
     this.registry.registerComponent(rm);
 
     this.io.on('connection', this.onConnection.bind(this));
@@ -137,7 +141,11 @@ class MsgNode {
 
     socket.on('message', function(data) {
       _this.logger.info('[C->S] new event', data);
-      client.processMessage(new Message(data));
+      try {
+        client.processMessage(new Message(data));
+      } catch (e) {
+        _this.logger.error(e);
+      }
     });
 
     socket.on('disconnect', function() {

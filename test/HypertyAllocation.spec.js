@@ -5,14 +5,14 @@ import serverConfig from '../src/configs/server-settings.js';
 var chai = require('chai');
 var should = chai.should();
 
-describe('HypertyAllocation', function () {
+describe('HypertyAllocation', function() {
 
   let config = {
     url: serverConfig.url + ':' + serverConfig.port,
-    runtimeURL: 'runtime:/alice',
+    runtimeURL: 'runtime:/alice'
   };
 
-  it('hyperty registration', function (done) {
+  it('hyperty registration', function(done) {
     let protoURL = 'hyperty-runtime://sp1/protostub/123';
     let send;
     let proto;
@@ -26,7 +26,7 @@ describe('HypertyAllocation', function () {
         if (seq === 0) {
           expect(msg).to.eql({
             type: 'update', from: protoURL, to: 'hyperty-runtime://sp1/protostub/123/status',
-            body: { value: 'connected' },
+            body: { value: 'connected' }
           });
         }
 
@@ -45,7 +45,7 @@ describe('HypertyAllocation', function () {
         if (seq === 2) {
           expect(msg).to.eql({
             id: 1, type: 'ping', from: firstURL, to: secondURL,
-            body: { via: protoURL },
+            body: { via: protoURL }
           });
 
           proto.disconnect();
@@ -57,18 +57,18 @@ describe('HypertyAllocation', function () {
 
       addListener: (url, callback) => {
         send = callback;
-      },
+      }
     };
 
     proto = activate(protoURL, bus, config).instance;
 
     send({
       id: 1, type: 'create', from: 'runtime:/alice/registry/allocation', to: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation',
-      body: { value: { number: 2 } },
+      body: { value: { number: 2 } }
     });
   });
 
-  it('hyperty hello', function (done) {
+  it('hyperty hello', function(done) {
     let aliceSend;
     let bobSend;
 
@@ -89,7 +89,7 @@ describe('HypertyAllocation', function () {
             type: 'update',
             from: 'hyperty-runtime://sp1/protostub/123',
             to: 'hyperty-runtime://sp1/protostub/123/status',
-            body: { value: 'connected' },
+            body: { value: 'connected' }
           });
 
           bob = activate('hyperty-runtime://sp1/protostub/123', bobBus, bobConfig).instance;
@@ -97,7 +97,7 @@ describe('HypertyAllocation', function () {
 
           aliceSend({
             id: 1, type: 'create', from: 'runtime:/alice/registry/allocation', to: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation',
-            body: { value: { number: nbUrl } },
+            body: { value: { number: nbUrl } }
           });
         }
 
@@ -113,7 +113,7 @@ describe('HypertyAllocation', function () {
             id: 1,
             from: aliceUrl,
             to: bobUrl,
-            body: { message: 'world' },
+            body: { message: 'world' }
           });
         }
 
@@ -122,7 +122,7 @@ describe('HypertyAllocation', function () {
 
       addListener: (url, callback) => {
         aliceSend = callback;
-      },
+      }
     };
 
     let bobBus = {
@@ -133,7 +133,7 @@ describe('HypertyAllocation', function () {
             type: 'update',
             from: 'hyperty-runtime://sp1/protostub/123',
             to: 'hyperty-runtime://sp1/protostub/123/status',
-            body: { value: 'connected' },
+            body: { value: 'connected' }
           });
 
           bobSend({
@@ -141,7 +141,7 @@ describe('HypertyAllocation', function () {
             type: 'create',
             from: 'hyperty-runtime:/bob/registry/allocation',
             to: 'domain://msg-node.' + serverConfig.url  + '/hyperty-address-allocation',
-            body: { value: { number: nbUrl } },
+            body: { value: { number: nbUrl } }
           });
         }
 
@@ -153,7 +153,7 @@ describe('HypertyAllocation', function () {
             id: 1,
             from: bobUrl,
             to: aliceUrl,
-            body: { message: 'hello' },
+            body: { message: 'hello' }
           });
         }
 
@@ -169,17 +169,17 @@ describe('HypertyAllocation', function () {
 
       addListener: (url, callback) => {
         bobSend = callback;
-      },
+      }
     };
 
     let aliceConfig = {
       url: serverConfig.url + ':' + serverConfig.port,
-      runtimeURL: 'runtime:/alice',
+      runtimeURL: 'runtime:/alice'
     };
 
     let bobConfig = {
       url: serverConfig.url + ':' + serverConfig.port,
-      runtimeURL: 'runtime:/bob',
+      runtimeURL: 'runtime:/bob'
     };
 
     try {

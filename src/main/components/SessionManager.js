@@ -41,7 +41,7 @@ class SessionManager {
 
       this.logger.info('[', this.getName(), '] handle open msg');
       clientMessage.getResource().setRuntimeUrl(msg.getFrom());
-      clientMessage.replyOK(this.getName());
+      clientMessage.replyok(this.getName());
 
       //FIX: this hack should not be here! Maybe there should be a separated message flow to register the runtime SM?
       //slack #dev-msg-node 10/03/2016 5:50PM
@@ -50,7 +50,7 @@ class SessionManager {
     } else if (msg.getType() === 're-open') {
 
       this.logger.info('[', this.getName(), '] handle re-open msg');
-      clientMessage.replyOK(this.getName());
+      clientMessage.replyok(this.getName());
 
     } else if (msg.getType() === 'close') {
 

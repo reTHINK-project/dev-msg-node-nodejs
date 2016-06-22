@@ -51,27 +51,16 @@ class ClientMessage {
 
   dispatch() {
     let comp = this.registry.getComponent(this.msg.getTo());
-    if (comp != null) {
-      this.logger.info('[ClientMessage] dispatch msg to', comp.getName());
+    if (comp) {
+      this.logger.info('[ClientMessage] dispatch msg to internal', comp.getName());
       try {
         comp.handle(this);
       } catch (e) {
         this.replyError(comp.getName(), e);
       }
     } else {
-      //   if (this.msg.getType() === 'update' && this.msg.getTo() === this.msg.getFrom() + '/changes') {
-      //     this.logger.info('[ClientMessage] forward update message to room', this.msg.getTo());
-      //
-      //     // this.client.broadcast.to(this.msg.getTo()).emit('message', this.msg.getJson());
-      //
-      //     this.registry.getComponent('MessageBus').publish(this.msg.getTo(), this.msg.msg);
-
-      //   this.registry.socket.rooms
-      //   } else {
       this.logger.info('[ClientMessage] forward msg to', this.msg.getTo());
       this.registry.getComponent('MessageBus').publish(this.msg.getTo(), this.msg.msg);
-
-      //   }
     }
   }
 
@@ -80,7 +69,7 @@ class ClientMessage {
     this.client.reply(msg);
   }
 
-  replyOK(from) {
+  replyok(from) {
     let reply = new Message();
     reply.setId(this.msg.getId());
     reply.setFrom(from);

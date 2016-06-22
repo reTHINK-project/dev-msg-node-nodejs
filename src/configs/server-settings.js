@@ -37,6 +37,7 @@ module.exports = {
     forceNew: true //needed for test
   },
   log4jsConfig: __dirname + '/log-conf.json',
+  logLevel: process.env.logLevel || 'ERROR',
   logDir: process.env.logDir || path.resolve(path.join(__dirname, '../../', '/logs')),
   sessionCookieName: 'rethink.express.sid',
   sessionCookieSecret: '88HpNxVxm5k94AY2',

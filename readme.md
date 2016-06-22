@@ -17,7 +17,7 @@ You will find a general documentation and guideline Message nodes Development in
 #### Setup Environment
 
 This documentation does not provide an OS dependant instructions : this NodeJS message node can be used on any OS compatible with redis & nodejs tools.
-In case you don't have redis & nodejs tools installed on your local environement. A dockerfile is provided, so it can be integrated in a docker instance as well, see ` Installation with Docker ` section.
+In case you don't have redis & nodejs tools installed on your local environement. A dockerfile is provided, so it can be integrated in a docker instance as well, see ` Run using Docker ` section.
 
 ##### Quick Start
 
@@ -26,6 +26,10 @@ First you need to clone this repository:
 git clone https://github.com/reTHINK-project/dev-msg-node-nodejs.git
 cd dev-msg-node-nodejs
 ```
+
+**Performance consideration**  
+You can find [some results](./docs/test-performance.md) executed with testbeds unit test.  
+To obtain better performance on production it strongly recommanded to use a high log level (e.g. "ERROR") in logLevel setting.
 
 ###### Run using Docker
 
@@ -40,7 +44,20 @@ $ docker build -t msg-node-nodejs .
 Afterwards, run the following :
 
 ```
-$ docker run -e url=localhost -e PORT=9090 -e domainRegistryUrl=http://localhost:4567 msg-node-nodejs
+$ docker run -e url=domain.tld -e PORT=9090 -e domainRegistryUrl=http://domain.tld:4567 msg-node-nodejs
+
+```
+
+
+To be more convenient, a docker-compose.yml config file is provide with start & stop script, this file also give some example for environnement configuration.  
+It can be use to run both domain-registry & msg-node at once :
+```
+$ ./start.sh
+
+```
+... then to stop :  
+```
+$ ./stop.sh
 
 ```
 
@@ -89,7 +106,7 @@ The figure below illustrates the service architecture of the NodeJS Messaging No
 Combine with node redis sentinel client, each node share session datas with each others through redis storage.  
 Redis-Sentinel monitor & notify redis cluster of data change between nodejs instance.
 
-![NodeJS & Redis clustering using Redis-Sentinel](nodejs-redis-cluster.png)
+![NodeJS & Redis clustering using Redis-Sentinel](./docs/nodejs-redis-cluster.png)
 
 
 For security consideration, it's advized to use a proxy (as describe in the following scheme) in front of node instance to not give direct access to nodejs instance.
@@ -97,7 +114,7 @@ It's recommanded to use NGinx server for that ([from NGiNX](https://www.nginx.co
 By the way it also provide a good load balancer solution (HAProxy is another good one).  
 
 
-![Web proxy in front of node instances](web-proxy-node.png)
+![Web proxy in front of node instances](./docs/web-proxy-node.png)
 
 
 #### Hyperty development
@@ -174,7 +191,7 @@ Redis has built-in replication, and provides high availability via Redis Sentine
 This section describe the functional blocks of the Messaging Node architecture.
 
 The graphic below describe message event processing with components.
-![MsgNode event message](event-mgmt.png)
+![MsgNode event message](./docs/event-mgmt.png)
 
 
 ##### Entry point
