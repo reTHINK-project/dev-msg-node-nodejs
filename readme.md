@@ -49,8 +49,8 @@ $ docker run -e url=domain.tld -e PORT=9090 -e domainRegistryUrl=http://domain.t
 ```
 
 
-To be more convenient, a docker-compose.yml config file is provide with start & stop script, this file also give some example for environnement configuration.  
-It can be use to run both domain-registry & msg-node at once :
+To be more convenient, a docker-compose.yml config file is provide with start & stop script, this file also gives some example for environment configuration.  
+It can be used to run both domain-registry & msg-node at once :
 ```
 $ ./start.sh
 
