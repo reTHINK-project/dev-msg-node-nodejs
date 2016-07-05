@@ -38,13 +38,13 @@ You can skip this part, in case you have redis & nodejs installed.
 In order to build dev-msg-node-nodejs you must have docker running. Otherwise docker can be installed from [docker installation](https://docs.docker.com/).
 After having intsalled correctly docker, run the command :
 ```
-$ docker build -t msg-node-nodejs .
+$ docker build -t msg-node-rethink .
 
 ```
 Afterwards, run the following :
 
 ```
-$ docker run -e url=domain.tld -e PORT=9090 -e domainRegistryUrl=http://domain.tld:4567 msg-node-nodejs
+$ docker run -e url=domain.tld -e PORT=9090 -e domainRegistryUrl=http://domain.tld:4567 msg-node-rethink
 
 ```
 
