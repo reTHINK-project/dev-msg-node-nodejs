@@ -65,7 +65,7 @@ class MsgNode {
 
     // define logger configuration
     log4js.configure(this.config.log4jsConfig, {
-      reloadSecs: 60,
+      reloadSecs: 10,
       cwd: this.config.logDir
     });
     this.logger = log4js.getLogger('server');

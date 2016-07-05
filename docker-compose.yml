@@ -1,7 +1,7 @@
 msg-node-nodejs:
     image: msg-node-rethink:latest
-    volumes:
-        - /home/nico/Dev/rethink/dev-msg-node-nodejs:/usr/src/app
+    # volumes:
+    #     - /path/to/msg-node/repository:/usr/src/app
     ports:
         - "9090:9090"
     environment:
@@ -21,16 +21,3 @@ registry-domain:
     environment:
         - STORAGE_TYPE=RAM
         - EXPIRES=3600
-
-# proxy:
-#     image: nginx-rethink:latest
-#     volumes:
-#         - /home/nico/Dev/rethink/dev-runtime-core:/var/www/html/runtime-core
-#         - /home/nico/Dev/rethink/dev-service-framework:/var/www/html/service-framework
-#         - /home/nico/Dev/rethink/dev-runtime-browser:/var/www/html/runtime-browser
-#         - /home/nico/Dev/rethink/dev-hyperty-toolkit:/var/www/html/hyperty-toolkit
-#         - /home/nico/Dev/rethink/logs:/var/log/nginx
-#         - /home/nico/Dev/rethink/app-smart-business:/var/www/html/smart-business
-#     ports:
-#         - "8080:80"
-#         - "8443:443"
