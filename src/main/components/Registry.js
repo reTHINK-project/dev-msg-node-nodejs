@@ -65,6 +65,15 @@ class Registry {
     if (name in this.components) {
       return this.components[name];
     }
+
+    let comp = false;
+    Object.keys(this.components).forEach((key) => {
+      if (key.indexOf(name) !== -1) {
+        comp = this.components[key];
+        return -1;
+      }
+    });
+    return comp;
   }
 
   allocate(url, runtimeURL) {

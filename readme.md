@@ -16,8 +16,76 @@ You will find a general documentation and guideline Message nodes Development in
 
 #### Setup Environment
 
-This documentation does not provide a OS dependant instructions : NodeJS message node can be used on any OS compatible with redis & nodejs tools.
-A dockerfile is provided, so it can be integrated in a docker instance as well.
+This documentation does not provide an OS dependant instructions : this NodeJS message node can be used on any OS compatible with redis & nodejs tools.
+In case you don't have redis & nodejs tools installed on your local environement. A dockerfile is provided, so it can be integrated in a docker instance as well, see ` Run using Docker ` section.
+
+##### Quick Start
+
+First you need to clone this repository:
+```
+git clone https://github.com/reTHINK-project/dev-msg-node-nodejs.git
+cd dev-msg-node-nodejs
+```
+
+**Performance consideration**  
+You can find [some results](./docs/test-performance.md) executed with testbeds unit test.  
+To obtain better performance on production it strongly recommanded to use a high log level (e.g. "ERROR") in logLevel setting.
+
+###### Run using Docker
+
+You can skip this part, in case you have redis & nodejs installed.
+
+In order to build dev-msg-node-nodejs you must have docker running. Otherwise docker can be installed from [docker installation](https://docs.docker.com/).
+After having intsalled correctly docker, run the command :
+```
+$ docker build -t msg-node-rethink .
+
+```
+Afterwards, run the following :
+
+```
+$ docker run -e url=domain.tld -e PORT=9090 -e domainRegistryUrl=http://domain.tld:4567 msg-node-rethink
+
+```
+
+Run with [docker compose](https://docs.docker.com/compose/) :  
+This tools allow to start multiple docker container at once.  
+To be more convenient, a docker-compose.yml example config file is provide with start & stop script, this file also gives some example for environment configuration.  
+**Once you set the correct image name** (for msg-node & domain-registry), you can start with :
+```
+$ ./start.sh
+
+```
+... then to stop :  
+```
+$ ./stop.sh
+
+```
+
+###### Run using local environement
+
+Then run the command :
+```
+$ npm run init-setup
+```
+
+After running successfully this command you will have 2 folders (node_modules and vendor), these folders are excluded from the commit process, and are only for development.
+
+Check the server configuration file for custom setting (url, port, ...) :  
+
+Now start server with the following command :  
+
+```
+$ node src/main/server.js
+
+```
+
+You should see a notice like that :  
+[Date] [INFO] server - [S] HTTP & WS server listening on 9090
+
+
+
+if you already have the project configured on your machine, you only need run the command ```npm install``` to update package & new dependencies.
 
 ##### Javascript Environment
 JavaScript code should be written in ES6.
@@ -32,24 +100,6 @@ This include the npm manager for node modules.
 * mocha - Unit test tool. See more on [http://mochajs.org](http://mochajs.org/)
 * gulp - Automate and enhance your workflow. See more about gulp on [gulp](http://gulpjs.com/)
 
-##### Quick start
-On the first time you are cloning this repository, you need to run the command  
-$ **npm run init-setup**;
-
-After running successfully this command you will have 2 folders (node_modules and vendor), these folders are excluded from the commit process, and are only for development.
-
-Check the server configuration file for custom setting (url, port, ...) :  
-
-Now start server with command :  
-$ **node src/main/server.js**;
-
-You should see a notice like that :  
-[Date] [INFO] server - [S] HTTP & WS server listening on 9090
-
-
-
-if you already have the project configured on your machine, you only need run the command ```npm install``` to update package & new dependencies.
-
 #### Service architecture
 
 The figure below illustrates the service architecture of the NodeJS Messaging Node.  
@@ -57,7 +107,7 @@ The figure below illustrates the service architecture of the NodeJS Messaging No
 Combine with node redis sentinel client, each node share session datas with each others through redis storage.  
 Redis-Sentinel monitor & notify redis cluster of data change between nodejs instance.
 
-![NodeJS & Redis clustering using Redis-Sentinel](nodejs-redis-cluster.png)
+![NodeJS & Redis clustering using Redis-Sentinel](./docs/nodejs-redis-cluster.png)
 
 
 For security consideration, it's advized to use a proxy (as describe in the following scheme) in front of node instance to not give direct access to nodejs instance.
@@ -65,7 +115,7 @@ It's recommanded to use NGinx server for that ([from NGiNX](https://www.nginx.co
 By the way it also provide a good load balancer solution (HAProxy is another good one).  
 
 
-![Web proxy in front of node instances](web-proxy-node.png)
+![Web proxy in front of node instances](./docs/web-proxy-node.png)
 
 
 #### Hyperty development
@@ -142,7 +192,7 @@ Redis has built-in replication, and provides high availability via Redis Sentine
 This section describe the functional blocks of the Messaging Node architecture.
 
 The graphic below describe message event processing with components.
-![MsgNode event message](event-mgmt.png)
+![MsgNode event message](./docs/event-mgmt.png)
 
 
 ##### Entry point

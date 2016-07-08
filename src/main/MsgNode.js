@@ -61,12 +61,15 @@ class MsgNode {
 
     this.config = config;
 
+    this.config.domainRegistryUrl = this.config.domainRegistryUrl.replace(/\/$/, '') + '/';
+
     // define logger configuration
     log4js.configure(this.config.log4jsConfig, {
-      reloadSecs: 60,
+      reloadSecs: 10,
       cwd: this.config.logDir
     });
     this.logger = log4js.getLogger('server');
+    this.logger.setLevel(this.config.logLevel);
 
     this.app = express();
 
@@ -74,30 +77,35 @@ class MsgNode {
     this.app.use(log4js.connectLogger(this.logger, {
       level: 'auto'
     }));
+
     this.app.set('trust proxy', 1);
     this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(cookieParser());
 
-    // let sessionManager = expressSession({
-    //   key: this.config.sessionCookieName,
-    //   secret: this.config.sessionCookieSecret,
-    //   resave: true,
-    //   saveUninitialized: true,
-    //   store: new FileStore({ logFn: function() {} })
-    // });
-    // this.app.use(sessionManager);
-    // let fs = require('fs');
     this.app.get('/logs', (req, res) => {
       require('fs').createReadStream(this.config.logDir + '/server.log').pipe(res);
     });
 
-    // start listening HTTP & WS server
-    this.io = require('socket.io').listen(this.app.listen(this.config.port), this.config.ioConfig);
+    this.app.get('/live', (req, res) => {
+      res.send({
+        status:'up',
+        domainRegistry: this.config.domainRegistryUrl,
+        time: (new Date()).toISOString(),
+        connected: Object.keys(this.io.sockets.sockets).length
+      });
+    });
 
-    // share session with socket.io socket handshake
-    // this.io.use(function(socket, next) {
-    //   sessionManager(socket.handshake, {}, next);
-    // });
+    // start listening HTTP & WS server
+    if (this.config.useSSL) {
+      let fs = require('fs');
+      let https = require('https');
+      this.io = require('socket.io').listen(https.createServer({
+        cert: fs.readFileSync(this.config.sslCertificate).toString(),
+        key: fs.readFileSync(this.config.sslPKey).toString()
+      }, this.app).listen(this.config.port), this.config.ioConfig);
+    } else {
+      this.io = require('socket.io').listen(this.app.listen(this.config.port), this.config.ioConfig);
+    }
 
     // global registry
     this.registry = new Registry(this.config);
@@ -113,7 +121,7 @@ class MsgNode {
     this.registry.registerComponent(olm);
     let syncm = new SubscriptionManager('domain://msg-node.' + this.registry.getDomain()  + '/sm', this.registry);
     this.registry.registerComponent(syncm);
-    let rm = new RegistryManager('domain://registry.' + this.registry.getDomain() + '/', this.registry);
+    let rm = new RegistryManager('domain://registry.' + this.registry.getDomain(), this.registry);
     this.registry.registerComponent(rm);
 
     this.io.on('connection', this.onConnection.bind(this));
@@ -133,7 +141,11 @@ class MsgNode {
 
     socket.on('message', function(data) {
       _this.logger.info('[C->S] new event', data);
-      client.processMessage(new Message(data));
+      try {
+        client.processMessage(new Message(data));
+      } catch (e) {
+        _this.logger.error(e);
+      }
     });
 
     socket.on('disconnect', function() {

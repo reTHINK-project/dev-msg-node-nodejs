@@ -31,6 +31,7 @@ class ObjectAllocationManager {
     this.name = name;
     this.baseURL = '://' + this.registry.getDomain() + '/';
     this.logger = this.registry.getLogger();
+    this.allocationKeyList = [];
   }
 
   getName() {
@@ -40,15 +41,35 @@ class ObjectAllocationManager {
   handle(clientMessage) {
     let msg = clientMessage.getMessage();
     let body = msg.getBody();
+    let scheme = body.scheme;
+    let number = 0;
+    let allocationKey = null;
+    let childrenResources = null;
+
+    if (typeof body.value != 'undefined') {
+      if (typeof body.value.number !== 'undefined') {
+        number = body.value.number;
+      }
+
+      if (typeof body.value.allocationKey !== 'undefined') {
+        allocationKey = body.value.allocationKey;
+      }
+
+      if (typeof body.value.childrenResources !== 'undefined') {
+        childrenResources = body.value.childrenResources;
+      }
+    }
 
     if (msg.getType() === 'create') {
+
       this.logger.info('[', this.getName(), '] handle create msg');
 
-      let scheme = body.scheme;
-      let children = body.childrenResources;
-      let number = body.value.number;
-
       let allocated = this.allocate(clientMessage, scheme, number);
+
+      if (allocationKey !== null) {
+        this.logger.info('[', this.getName(), '] associate', number, 'URLs for allocation key', allocationKey);
+        this.allocationKeyList[allocationKey] = allocated;
+      }
 
       let reply = new Message();
       reply.setId(msg.getId());
@@ -59,10 +80,30 @@ class ObjectAllocationManager {
       reply.getBody().value.allocated = allocated;
 
       clientMessage.reply(reply);
+
     } else if (msg.getType() === 'delete') {
+
       this.logger.info('[', this.getName(), '] handle delete msg');
-      clientMessage.replyOk();
+
+      // delete Block by allocation key
+      if (allocationKey !== null && allocationKey in this.allocationKeyList) {
+        this.logger.info('[', this.getName(), '] deallocate', this.allocationKeyList[key].length, 'from body allocation key', allocationKey);
+        this.allocationKeyList[key].forEach((val) => {
+          this.deallocate(clientMessage, val);
+        });
+      }
+
+      // delete dedicated address(es)
+      if (childrenResources !== null) {
+        this.logger.info('[', this.getName(), '] deallocate', childrenResources.length, 'from body childrenResources');
+        childrenResources.forEach((val) => {
+          this.deallocate(clientMessage, val);
+        });
+      }
+
+      clientMessage.replyok(this.name);
     }
+
   }
 
   allocate(clientMessage, scheme, number) {

@@ -1,4 +1,14 @@
 ----------------------------------------------
+Version :	0.2.0
+Date 	:   22/06/2016
+----------------------------------------------
+[+] manage SSL/WSS endpoint by config
+[+] add /live route
+[*] configuration can use ENV parameter from OS or docker run option
+[*] fix missing message handler from spec (like delete address by allocation key)
+[*] documentation update
+
+----------------------------------------------
 Version :	0.1.0
 Date 	:   19/04/2016
 ----------------------------------------------

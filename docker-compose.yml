@@ -1,0 +1,23 @@
+msg-node-nodejs:
+    image: msg-node-rethink:latest
+    # volumes:
+    #     - /path/to/msg-node/repository:/usr/src/app
+    ports:
+        - "9090:9090"
+    environment:
+        - url=localhost
+        - port=9090
+        - domainRegistryUrl=http://localhost:4567
+        - logLevel=INFO
+        # - logDir=/usr/src/app/logs
+        # - useSSL=1
+        # - sslCertificate=/usr/src/app/ssl/myCert.crt
+        # - sslPKey=/usr/src/app/ssl/myCert.key
+
+registry-domain:
+    image: registry-domain-rethink:latest
+    ports:
+        - "4567:4567"
+    environment:
+        - STORAGE_TYPE=RAM
+        - EXPIRES=3600

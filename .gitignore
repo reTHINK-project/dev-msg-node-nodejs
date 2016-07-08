@@ -13,5 +13,7 @@ npm-debug.log
 dist
 vendor
 node_modules
-*.log
+*.log.*
 .brackets.json
+
+logs/

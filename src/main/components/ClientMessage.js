@@ -71,7 +71,7 @@ class ClientMessage {
     this.client.reply(msg);
   }
 
-  replyOK(from) {
+  replyok(from) {
     let reply = new Message();
     reply.setId(this.msg.getId());
     reply.setFrom(from);

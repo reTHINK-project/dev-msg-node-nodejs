@@ -11,6 +11,6 @@
   ],
 
   "levels": {
-      "server":  "DEBUG"
+      "server":  "ERROR"
   }
 }
