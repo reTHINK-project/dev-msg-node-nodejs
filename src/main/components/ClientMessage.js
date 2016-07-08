@@ -52,24 +52,18 @@ class ClientMessage {
   }
 
   dispatch() {
-    // PEP.js interface
-    this.pep.send(this.msg)
-      .then((pdpState, messageFromPDP) => {//success
-        let comp = this.registry.getComponent(messageFromPDP.getTo());
-        if (comp != null) {
-          this.logger.info('[ClientMessage] dispatch msg to', comp.getName());
-          try {
-            comp.handle(this);
-          } catch (e) {
-            this.replyError(comp.getName(), e);
-          }
-        } else {
-          this.logger.info('[ClientMessage] forward msg to', messageFromPDP.getTo());
-          this.registry.getComponent('MessageBus').publish(messageFromPDP.getTo(), messageFromPDP.msg);
-        }
-      }).catch((reason) => { // rejected by pdp
-        this.replyError(this.msg.getFrom(), reason);
-      });
+    let comp = this.registry.getComponent(this.msg.getTo());
+    if (comp) {
+      this.logger.info('[ClientMessage] dispatch msg to internal', comp.getName());
+      try {
+        comp.handle(this);
+      } catch (e) {
+        this.replyError(comp.getName(), e);
+      }
+    } else {
+      this.logger.info('[ClientMessage] forward msg to', this.msg.getTo());
+      this.registry.getComponent('MessageBus').publish(this.msg.getTo(), this.msg.msg);
+    }
   }
 
   reply(msg) {
