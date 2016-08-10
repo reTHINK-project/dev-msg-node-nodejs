@@ -62,7 +62,9 @@ class Registry {
   }
 
   getComponent(name) {
+    this.logger.info('getComponent(name):', name);
     if (name in this.components) {
+        this.logger.info('this.components', this.components);
       return this.components[name];
     }
 

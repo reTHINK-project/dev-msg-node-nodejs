@@ -35,6 +35,29 @@ gulp.task('doc', function (done) {
 //  rebundle();
 //});
 
+
+gulp.task('build', function () {
+
+  return browserify('./src/js/NodejsProtoStub.js', {
+      standalone: 'activate',
+      bare: true,
+      browserField: false,
+      builtins: false
+    })
+    .transform(babel)
+    .bundle()
+    .on('error', function (err) {
+      console.error(err);
+      this.emit('end');
+    })
+    .pipe(source('NodejsProtoStub.js'))
+    .pipe(buffer())
+    .pipe(uglify())
+    .pipe(insert.prepend('// Node JS ProtoStub \n\n// version: {{version}}\n\n'))
+    .pipe(replace('{{version}}', pkg.version))
+    .pipe(gulp.dest('./target'));
+});
+
 // Task and dependencies to convert ES6 to ES5 with babel distribute for all environments;
 var babel = require('babelify');
 var browserify = require('browserify');

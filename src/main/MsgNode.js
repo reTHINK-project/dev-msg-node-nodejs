@@ -89,6 +89,7 @@ class MsgNode {
     this.app.get('/live', (req, res) => {
       res.send({
         status:'up',
+        domain : this.config.url,
         domainRegistry: this.config.domainRegistryUrl,
         time: (new Date()).toISOString(),
         connected: Object.keys(this.io.sockets.sockets).length

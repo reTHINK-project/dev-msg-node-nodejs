@@ -15,7 +15,7 @@ msg-node-nodejs:
         # - sslPKey=/usr/src/app/ssl/myCert.key
 
 registry-domain:
-    image: registry-domain-rethink:latest
+    image: rethink/registry-domain-server:latest
     ports:
         - "4567:4567"
     environment:
