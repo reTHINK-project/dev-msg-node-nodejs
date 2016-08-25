@@ -10,5 +10,7 @@ ENV PATH /usr/src/app/node_modules/.bin:$PATH
 RUN mkdir logs
 RUN npm install
 
+VOLUME ["/usr/src/app/node_modules/","/usr/src/app/src"]
+
 EXPOSE  9090
 CMD ["forever", "src/main/server.js"]

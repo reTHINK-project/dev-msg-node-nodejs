@@ -1,7 +1,13 @@
 msg-node-nodejs:
     image: msg-node-rethink:latest
+
     # volumes:
     #     - /path/to/msg-node/repository:/usr/src/app
+    ## configuration with your current working repository
+    volumes:
+    - /Users/TBtuo/PolicyEngine/dev-msg-node-nodejs/node_modules:/usr/src/app/node_modules
+    - /Users/TBtuo/PolicyEngine/dev-msg-node-nodejs/src:/usr/src/app/src
+
     ports:
         - "9090:9090"
     environment:

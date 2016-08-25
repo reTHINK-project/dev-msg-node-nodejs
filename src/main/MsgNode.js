@@ -7,7 +7,8 @@
 * Copyright 2016 Deutsche Telekom AG
 * Copyright 2016 Apizee
 * Copyright 2016 TECHNISCHE UNIVERSITAT BERLIN
-*
+* Copyrignt 2016 IMT/Telecom Bretagne
+ *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -40,7 +41,7 @@ let FileStore = require('session-file-store')(expressSession);
 let Client = require('./components/Client');
 let Registry = require('./components/Registry');
 let Message = require('./components/Message');
-
+let PEP = require('./components/policyEngine/Pep');
 let MessageBus = require('./components/MessageBus');
 let SessionManager = require('./components/SessionManager');
 
@@ -88,7 +89,7 @@ class MsgNode {
 
     this.app.get('/live', (req, res) => {
       res.send({
-        status:'up',
+        status: 'up',
         domainRegistry: this.config.domainRegistryUrl,
         time: (new Date()).toISOString(),
         connected: Object.keys(this.io.sockets.sockets).length
@@ -113,13 +114,15 @@ class MsgNode {
     this.registry.setWSServer(this.io);
     let bus = new MessageBus('MessageBus', this.registry);
     this.registry.registerComponent(bus);
+    let pep = new PEP('PEP', this.registry);
+    this.registry.registerComponent(pep);
     let sm = new SessionManager('mn:/session', this.registry);
     this.registry.registerComponent(sm);
-    let alm = new AddressAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/hyperty-address-allocation', this.registry);
+    let alm = new AddressAllocationManager('domain://msg-node.' + this.registry.getDomain() + '/hyperty-address-allocation', this.registry);
     this.registry.registerComponent(alm);
-    let olm = new ObjectAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/object-address-allocation', this.registry);
+    let olm = new ObjectAllocationManager('domain://msg-node.' + this.registry.getDomain() + '/object-address-allocation', this.registry);
     this.registry.registerComponent(olm);
-    let syncm = new SubscriptionManager('domain://msg-node.' + this.registry.getDomain()  + '/sm', this.registry);
+    let syncm = new SubscriptionManager('domain://msg-node.' + this.registry.getDomain() + '/sm', this.registry);
     this.registry.registerComponent(syncm);
     let rm = new RegistryManager('domain://registry.' + this.registry.getDomain(), this.registry);
     this.registry.registerComponent(rm);
@@ -139,7 +142,7 @@ class MsgNode {
     //    socket.join(socket.id);
     let client = new Client(this.registry, socket);
 
-    socket.on('message', function(data) {
+    socket.on('message', function (data) {
       _this.logger.info('[C->S] new event', data);
       try {
         client.processMessage(new Message(data));
@@ -148,20 +151,20 @@ class MsgNode {
       }
     });
 
-    socket.on('disconnect', function() {
+    socket.on('disconnect', function () {
       _this.logger.info('[C->S] client disconnect', socket.id);
 
       client.disconnect();
     });
 
-    socket.on('error', function(e) {
+    socket.on('error', function (e) {
       _this.logger.info('[C->S] socket error', socket.id, e);
     });
 
     // test ws route
-    socket.on('echo', function(msg, callback) {
+    socket.on('echo', function (msg, callback) {
       _this.logger.info('[C->S] receive echo');
-      callback = callback || function() {};
+      callback = callback || function () { };
 
       _this.logger.info('[S->C] test ping back');
       socket.emit('echo', msg);

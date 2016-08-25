@@ -7,7 +7,8 @@
 * Copyright 2016 Deutsche Telekom AG
 * Copyright 2016 Apizee
 * Copyright 2016 TECHNISCHE UNIVERSITAT BERLIN
-*
+* Copyright 2016 IMT/Telecom Bretagne
+ *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -23,7 +24,6 @@
 
 'use strict';
 let Message = require('./Message');
-let PEP = require('./../../modules/pep');
 
 class ClientMessage {
 
@@ -32,7 +32,6 @@ class ClientMessage {
     this.client = client;
     this.msg = msg;
     this.logger = registry.getLogger();
-    this.pep = new PEP();
   }
 
   getMessage() {
@@ -52,6 +51,14 @@ class ClientMessage {
   }
 
   dispatch() {
+    // get policyEngine
+    const pep = this.registry.getComponent('PEP');
+    // validate request with policy
+    pep.analyse(this.msg.msg).then(function (result) {
+      if (!result.validated) {
+        this.replyError(this.msg.getFrom(), result.error);
+        return;
+      }
     let comp = this.registry.getComponent(this.msg.getTo());
     if (comp) {
       this.logger.info('[ClientMessage] dispatch msg to internal', comp.getName());
@@ -64,6 +71,7 @@ class ClientMessage {
       this.logger.info('[ClientMessage] forward msg to', this.msg.getTo());
       this.registry.getComponent('MessageBus').publish(this.msg.getTo(), this.msg.msg);
     }
+    });
   }
 
   reply(msg) {

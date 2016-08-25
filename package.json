@@ -20,7 +20,8 @@
   "contributors": [
     "Frédéric Luart <frederic.luart@apizee.com>",
     "Nicolas Daviaud <nicolas.daviaud@apizee.com>",
-    "Arnaud Vallee <arnaud.vallee@apizee.com>"
+    "Arnaud Vallee <arnaud.vallee@apizee.com>",
+    "Tuo ZHANG <tuo.zhang@telecom-bretagne-eu>"
   ],
   "license": "ISC",
   "bugs": {
@@ -65,6 +66,7 @@
     }
   },
   "directories": {
+    "doc": "docs",
     "test": "test"
   },
   "dependencies": {
@@ -93,6 +95,7 @@
     "karma-mocha": "^0.2.1",
     "karma-mocha-reporter": "^1.1.1",
     "log4js": "^0.6.27",
+    "moment": "^2.14.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "passport.socketio": "^3.6.1",
