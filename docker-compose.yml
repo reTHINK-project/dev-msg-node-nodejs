@@ -5,9 +5,9 @@ msg-node-nodejs:
     ports:
         - "9090:9090"
     environment:
-        - url=localhost
+        - url=rethink.apizee.com
         - port=9090
-        - domainRegistryUrl=http://localhost:4567
+        - domainRegistryUrl=http://registry.rethink.apizee.com:4567/
         - logLevel=INFO
         # - logDir=/usr/src/app/logs
         # - useSSL=1

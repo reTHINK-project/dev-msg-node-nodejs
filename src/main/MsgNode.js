@@ -49,6 +49,8 @@ let RegistryManager = require('./components/rethink/RegistryManager');
 let SubscriptionManager = require('./components/rethink/SubscriptionManager');
 let ObjectAllocationManager = require('./components/rethink/ObjectAllocationManager');
 
+
+
 class MsgNode {
 
   /**

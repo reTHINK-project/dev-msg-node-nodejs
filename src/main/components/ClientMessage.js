@@ -34,7 +34,7 @@ class ClientMessage {
   }
 
   getMessage() {
-    return this.msg;
+    return this.msg.msg;
   }
 
   getRuntimeUrl() {
@@ -51,6 +51,7 @@ class ClientMessage {
 
   dispatch() {
     let comp = this.registry.getComponent(this.msg.getTo());
+    this.logger.info('comp :', comp);
     if (comp) {
       this.logger.info('[ClientMessage] dispatch msg to internal', comp.getName());
       try {
