@@ -59,7 +59,7 @@ class ClientMessage {
         this.replyError(comp.getName(), e);
       }
     } else {
-      this.logger.info('[ClientMessage] forward msg to----------------:', this.msg.getTo());
+      this.logger.info('[ClientMessage] forward msg to :', this.msg.getTo());
       this.registry.getComponent('MessageBus').publish(this.msg.getTo(), this.msg.msg);
     }
   }

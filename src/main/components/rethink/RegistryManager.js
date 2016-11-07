@@ -42,7 +42,7 @@ class RegistryManager {
 
   handle(clientMessage) {
     let msg = clientMessage.getMessage();
-    this.logger.info('[RegistryManager]: [', this.getName(), ']: handle registry message :', msg.msg);
+    this.logger.info('[RegistryManager]: [', this.getName(), ']: handle registry message :\n', msg.msg);
 
     switch (msg.msg.type.toLowerCase()) {
       case 'create':
@@ -51,7 +51,7 @@ class RegistryManager {
       case 'update':
         try {
           this.registryConnector.processMessage(msg.msg, (res) => {
-            this.logger.info('[', this.getName(), '] Reply from domain registry', res);
+            this.logger.info('[', this.getName(), '] Reply from domain registry :\n ', res);
             this.logger.debug('  this.registryConnector : ',   this.registryConnector);
             let reply = new Message();
             reply = {
@@ -64,12 +64,12 @@ class RegistryManager {
             clientMessage.replyDomain(reply);
           });
         } catch (e) {
-          console.error(' Error while executing RegistryConnector.processMessage:', e);
+          this.logger.error('[', this.getName(), ']: Error while processing message:\n', e);
         }
 
       break;
       default:
-        console.error('[RegistryManager]ERROR: message type unknown:', msg.msg.type.toLowerCase());
+        clientMessage.replyError(this.getName(), 'Unrecognized type :"' + msg.getType() + '"');
     }
   }
 }

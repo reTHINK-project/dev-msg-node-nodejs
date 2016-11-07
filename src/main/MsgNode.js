@@ -49,8 +49,6 @@ let RegistryManager = require('./components/rethink/RegistryManager');
 let SubscriptionManager = require('./components/rethink/SubscriptionManager');
 let ObjectAllocationManager = require('./components/rethink/ObjectAllocationManager');
 
-
-
 class MsgNode {
 
   /**
@@ -60,9 +58,7 @@ class MsgNode {
    */
   constructor(config) {
     let _this = this;
-
     this.config = config;
-
     this.config.domainRegistryUrl = this.config.domainRegistryUrl.replace(/\/$/, '') + '/';
 
     // define logger configuration
