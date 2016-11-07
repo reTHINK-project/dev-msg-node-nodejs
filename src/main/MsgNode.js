@@ -124,7 +124,7 @@ class MsgNode {
     this.registry.registerComponent(olm);
     let syncm = new SubscriptionManager('domain://msg-node.' + this.registry.getDomain()  + '/sm', this.registry);
     this.registry.registerComponent(syncm);
-    let rm = new RegistryManager('domain://registry.' + this.registry.getDomain(), this.registry);
+    let rm = new RegistryManager('domain://registry.' + this.registry.getDomain()+ '/' , this.registry);
     this.registry.registerComponent(rm);
 
     this.io.on('connection', this.onConnection.bind(this));
@@ -137,13 +137,13 @@ class MsgNode {
 
     //socket.id : socket.io id
     //socket.handshake.sessionID : express shared sessionId
-    this.logger.info('[C->S] new client connection', socket.id);
+    this.logger.info('[C->S] new client connection : ', socket.id);
 
     //    socket.join(socket.id);
     let client = new Client(this.registry, socket);
 
     socket.on('message', function(data) {
-      _this.logger.info('[C->S] new event', data);
+      _this.logger.info('[C->S] new event : ', data);
       try {
         client.processMessage(new Message(data));
       } catch (e) {
@@ -152,21 +152,21 @@ class MsgNode {
     });
 
     socket.on('disconnect', function() {
-      _this.logger.info('[C->S] client disconnect', socket.id);
+      _this.logger.info('[C->S] client disconnect: ', socket.id);
 
       client.disconnect();
     });
 
     socket.on('error', function(e) {
-      _this.logger.info('[C->S] socket error', socket.id, e);
+      _this.logger.info('[C->S] socket error :  ', socket.id, e);
     });
 
     // test ws route
     socket.on('echo', function(msg, callback) {
-      _this.logger.info('[C->S] receive echo');
+      _this.logger.info('[C->S] receive echo : ');
       callback = callback || function() {};
 
-      _this.logger.info('[S->C] test ping back');
+      _this.logger.info('[S->C] test ping back :');
       socket.emit('echo', msg);
       callback(null, 'Done.');
     });

@@ -1,5 +1,6 @@
 msg-node-nodejs:
     image: msg-node-rethink:latest
+    # For Easy Development of the msg-node load this volume
     # volumes:
     #     - /path/to/msg-node/repository:/usr/src/app
     ports:
@@ -7,7 +8,7 @@ msg-node-nodejs:
     environment:
         - url=rethink.apizee.com
         - port=9090
-        - domainRegistryUrl=http://registry.rethink.apizee.com:4567/
+        - domainRegistryUrl=http://localhost:4567/
         - logLevel=INFO
         # - logDir=/usr/src/app/logs
         # - useSSL=1

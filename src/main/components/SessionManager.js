@@ -36,28 +36,27 @@ class SessionManager {
 
   handle(clientMessage) {
     let msg = clientMessage.getMessage();
-    this.logger.info('handle open msg', msg);
 
-    if (msg.type === 'open') {
+    if (msg.getType() === 'open') {
 
-      this.logger.info('[', this.name, '] handle open msg');
-      clientMessage.getResource().setRuntimeUrl(msg.from);
-      clientMessage.replyok(this.name);
+      this.logger.info('[', this.getName(), '] handle open msg');
+      clientMessage.getResource().setRuntimeUrl(msg.getFrom());
+      clientMessage.replyok(this.getName());
 
       //FIX: this hack should not be here! Maybe there should be a separated message flow to register the runtime SM?
       //slack #dev-msg-node 10/03/2016 5:50PM
-      clientMessage.getResource().subscribe(msg.from + '/sm');
+      clientMessage.getResource().subscribe(msg.getFrom() + '/sm');
 
-    } else if (msg.type === 're-open') {
+    } else if (msg.getType() === 're-open') {
 
-      this.logger.info('[', this.name, '] handle re-open msg');
+      this.logger.info('[', this.getName(), '] handle re-open msg');
       clientMessage.replyok(this.getName());
 
-    } else if (msg.type === 'close') {
+    } else if (msg.getType() === 'close') {
 
       //TODO manage room suppression on ws close
       this.logger.info('[', this.getName(), '] handle close msg');
-      this.registry.unbind(msg.from);
+      this.registry.unbind(msg.getFrom());
       clientMessage.disconnect();
 
     }

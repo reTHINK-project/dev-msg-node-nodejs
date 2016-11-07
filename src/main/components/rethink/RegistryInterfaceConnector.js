@@ -33,26 +33,39 @@ class RegistryInterfaceConnector {
     // this.logger.info(registry);
     // this.registryURL = registryURL.replace(/\/$/, '');
     this.registry = registry;
-    this.regDomainConnector = new RegistryDomainConnector(this.registryURL);
+    this.regDomainConnector = new RegistryDomainConnector(registryURL);
     this.logger = this.registry.getLogger();
-    this.logger.info(this.registryURL);
+
   }
 
   processRegistryMessage(msg, callback) {
-    // let body = msg.getBody();
+    let body = msg.getBody();
+    this.logger.info('[Connectors] : Registry Connector Loaded with success.------------------------------------');
+        // response message for registry not implemented in the message factory
+      // wsHandler.sendWSMsg( this.createResponse(m, 200) );
+	     console.log("§§§§§§§§§ [RegistryInterface] CALLBACK: got body \n", body);
+      let msg2 = {
+        id  : msg.msg.id,
+        type: "response",
+        from: msg.msg.to,
+        to  : msg.msg.from,
+        body: body
+      };
+        let statusCode = msg2.body.code = 200;
+	     console.log("§§§§§§§§§ [RegistryInterface] CALLBACK: sending response back via WebSocket\n", msg2);
+       callback(this.getBody(msg2.response, statusCode));
+console.log('***********************************************************************************************');
+      //  this.logger.info('msg is --------------: \n', msg.msg);
 
-    this.logger.info('[Connectors] : Registry Connector Loaded with success.');
-    this.logger.info('msg is msg.type.toLowerCase():', msg.type.toLowerCase());
-
-    switch (msg.type.toLowerCase()) {
+    switch (msg.msg.type.toLowerCase()) {
       case 'create':
       case 'read':
       case 'update':
       case 'delete':
-        this.regDomainConnector.processMessage(msg, callback);
+        this.regDomainConnector.processMessage(msg.msg, callback);
       break;
       default:
-        this.logger.error('[RegistryInterfaceConnector]: ERROR Unknown message id', msg.type);
+        this.logger.error('[RegistryInterfaceConnector]: ERROR Unknown message id', msg.msg.type);
     }
   }
 
@@ -91,16 +104,18 @@ class RegistryInterfaceConnector {
         // break;
 
 
-  // getBody(response, statusCode) {
-  //   let body = {
-  //     code: statusCode
-  //   };
-  //   if (statusCode !== 500 && typeof response !== 'undefined') {
-  //     body.value = JSON.parse(response);
-  //   }
-  //
-  //   return body;
-  // }
+  getBody(response, statusCode) {
+    let body = {
+      code: statusCode
+    };
+    if (statusCode !== 500 && typeof response !== 'undefined') {
+      body.value = JSON.parse(response);
+    }
+    console.log('-------------------------', body);
+    return body;
+  }
+
+
   //
   // getUser(userid, callback) {
   //   let endpoint = '/hyperty/user/' + encodeURIComponent(userid);
