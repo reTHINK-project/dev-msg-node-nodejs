@@ -29,29 +29,34 @@ let JSRequest = require('./../../../modules/JSRequest');
 class GlobalRegistryManager {
 
   constructor(registryURL, registry) {
-    this.name = name;
     this.request = new JSRequest();
     this.registry = registry;
     this.registryURL = this.registry.getConfig().globalRegistryUrl;
     this.logger = this.registry.getLogger();
   }
 
+  getName() {
+    return this.name;
+  }
+
   processMessage(msg, callback) {
     // let msg = clientMessage.getMessage();
     let body = msg.getBody();
     this.logger.error(msg);
-    switch(msg.getType().toLowerCase()) {
-      try {
-            case 'create':
-            case 'update':
+    switch (msg.getType().toLowerCase()) {
+      case 'create':
+      case 'update':
+        try {
               if(typeof body.value !== 'undefined' && 'hypertyURL' in body.value) {
-                this.logger.info('[Gloabl-Registry-Manager] Add hyperty with :' body.value);
+                this.logger.info('[Gloabl-Registry-Manager] Add hyperty with :',  body.value);
                 this.addHyperty(body.value.user, body.value.hypertyURL, body.value.hypertyDescriptorURL, body.value.expires, callback);
               } else {
                 this.logger.info('[Global-Registry-Manager] Add data Object :' + body.value.name);
                 this.addDataObject(body.value.name, body.value.schema, body.value.expires, body.value.url, body.value.reporter, callback);
               }
-
+            } catch (e) {
+                this.logger.error('[global-Registry-Manager] [', this.getName(), ']: Error while processing message:\n', e);
+            }
             break;
 
             case 'delete':
@@ -75,13 +80,10 @@ class GlobalRegistryManager {
               }
 
             break;
-          } catch (e) {
-            this.logger.error('[global-Registry-Manager] [', this.getName(), ']: Error while processing message:\n', e);
-          }
 
-          break;
-          default:
-            clientMessage.replyError(this.getName(), 'Unrecognized type :"' + msg.getType() + '"');
+            break;
+            default:
+              clientMessage.replyError(this.getName(), 'Unrecognized type :"' + msg.getType() + '"');
     }
   }
 

@@ -88,8 +88,9 @@ class MsgNode {
     this.app.get('/live', (req, res) => {
       res.send({
         status:'up',
-        domain : this.config.url,
+        domain: this.config.url,
         domainRegistry: this.config.domainRegistryUrl,
+        globalRegistry: this.config.globalRegistryUrl,
         time: (new Date()).toISOString(),
         connected: Object.keys(this.io.sockets.sockets).length
       });
@@ -121,7 +122,7 @@ class MsgNode {
     this.registry.registerComponent(olm);
     let syncm = new SubscriptionManager('domain://msg-node.' + this.registry.getDomain()  + '/sm', this.registry);
     this.registry.registerComponent(syncm);
-    let rm = new RegistryManager('domain://registry.' + this.registry.getDomain() + '/', this.registry);
+    let rm = new DomainRegistryManager('domain://registry.' + this.registry.getDomain() + '/', this.registry);
     this.registry.registerComponent(rm);
     let glbm = new GlobalRegistryManager(this.registry.getDomain().globalRegistryUrl, this.registry);
     this.registry.registerComponent(glbm);
