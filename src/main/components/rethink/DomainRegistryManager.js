@@ -26,7 +26,7 @@ let Message = require('./../Message');
 
 const RegistryDomainConnector = require('dev-registry-domain/connector');
 
-class RegistryManager {
+class DomainRegistryManager {
 
   constructor(name, registry) {
     this.name = name;
@@ -73,4 +73,4 @@ class RegistryManager {
     }
   }
 }
-module.exports = RegistryManager;
+module.exports = DomainRegistryManager;

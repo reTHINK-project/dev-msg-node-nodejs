@@ -45,7 +45,8 @@ let MessageBus = require('./components/MessageBus');
 let SessionManager = require('./components/SessionManager');
 
 let AddressAllocationManager = require('./components/rethink/AddressAllocationManager');
-let RegistryManager = require('./components/rethink/RegistryManager');
+let DomainRegistryManager = require('./components/rethink/DomainRegistryManager');
+let GlobalRegistryManager = require('./components/rethink/GlobalRegistryManager');
 let SubscriptionManager = require('./components/rethink/SubscriptionManager');
 let ObjectAllocationManager = require('./components/rethink/ObjectAllocationManager');
 
@@ -120,8 +121,10 @@ class MsgNode {
     this.registry.registerComponent(olm);
     let syncm = new SubscriptionManager('domain://msg-node.' + this.registry.getDomain()  + '/sm', this.registry);
     this.registry.registerComponent(syncm);
-    let rm = new RegistryManager('domain://registry.' + this.registry.getDomain()+ '/' , this.registry);
+    let rm = new RegistryManager('domain://registry.' + this.registry.getDomain() + '/', this.registry);
     this.registry.registerComponent(rm);
+    let glbm = new GlobalRegistryManager(this.registry.getDomain().globalRegistryUrl, this.registry);
+    this.registry.registerComponent(glbm);
 
     this.io.on('connection', this.onConnection.bind(this));
 
