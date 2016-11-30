@@ -52,14 +52,14 @@ class ClientMessage {
   dispatch() {
     let comp = this.registry.getComponent(this.msg.getTo());
     if (comp) {
-      this.logger.info('[ClientMessage] dispatch msg to internal', comp.getName());
+      this.logger.info('[ClientMessage] dispatch msg to internal:', comp.getName());
       try {
         comp.handle(this);
       } catch (e) {
         this.replyError(comp.getName(), e);
       }
     } else {
-      this.logger.info('[ClientMessage] forward msg to', this.msg.getTo());
+      this.logger.info('[ClientMessage] forward msg to :', this.msg.getTo());
       this.registry.getComponent('MessageBus').publish(this.msg.getTo(), this.msg.msg);
     }
   }
@@ -67,6 +67,11 @@ class ClientMessage {
   reply(msg) {
     msg.setType('response');
     this.client.reply(msg);
+  }
+
+  replyDomain(msg) {
+    // msg.setType('response');
+    this.client.replyDomain(msg);
   }
 
   replyok(from) {
