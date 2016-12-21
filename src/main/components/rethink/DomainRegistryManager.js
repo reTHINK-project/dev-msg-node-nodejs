@@ -42,7 +42,7 @@ class DomainRegistryManager {
 
   handle(clientMessage) {
     let msg = clientMessage.getMessage();
-    this.logger.info('[RegistryManager]: [', this.getName(), ']: handle registry message :\n', msg.msg);
+    this.logger.info('[Domain-Registry-Manager]: [', this.getName(), ']: handle registry message :\n', msg.msg);
 
     switch (msg.msg.type.toLowerCase()) {
       case 'create':

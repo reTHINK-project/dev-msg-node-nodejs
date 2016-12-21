@@ -55,7 +55,7 @@ class GlobalRegistryManager {
                 this.addDataObject(body.value.name, body.value.schema, body.value.expires, body.value.url, body.value.reporter, callback);
               }
             } catch (e) {
-                this.logger.error('[global-Registry-Manager] [', this.getName(), ']: Error while processing message:\n', e);
+                this.logger.error('[Global-Registry-Manager] [', this.getName(), ']: Error while processing message:\n', e);
             }
             break;
 
@@ -72,10 +72,10 @@ class GlobalRegistryManager {
 
             case 'read':
               if(body.resource.startWith('dataObject://')) {
-                this.logger.info('[global-Registry-Manager] Get dat object with :' + body.resource);
+                this.logger.info('[Global-Registry-Manager] Get dat object with :' + body.resource);
                 thi.getDataObject(body.resource, callback);
               } else {
-                this.logger.info('[global-Registry-Manager] Get user with :', msg);
+                this.logger.info('[Global-Registry-Manager] Get user with :', msg);
                 thi.getUser(body.resource, callback);
               }
 
