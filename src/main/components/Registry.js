@@ -58,7 +58,7 @@ class Registry {
   }
 
   registerComponent(component) {
-    this.logger.info(this.components[component.getName()]);
+    // this.logger.info(this.components[component.getName()]);
     this.components[component.getName()] = component;
   }
 
