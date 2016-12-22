@@ -65,7 +65,9 @@ class AddressAllocationManager {
       this.logger.info('[', this.getName(), '] handle create msg');
       this.logger.info('--------------------------------------  this.mnPersist',   this.mnPersist);
 
+
       let allocated = this.allocate(clientMessage, number);
+
 
       if (allocationKey !== null) {
         this.logger.info('[', this.getName(), '] associate', number, 'URLs for allocation key', allocationKey);
@@ -116,7 +118,7 @@ class AddressAllocationManager {
       clientMessage.getResource().subscribe(url);
     }
 
-    this.logger.info('[' + this.getName() + '] allocate URLs', list);
+    this.logger.info('[' + this.getName() + '] allocate URLs: ', list);
     return list;
   }
 

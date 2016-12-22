@@ -63,7 +63,8 @@ class MsgNode {
     let _this = this;
     this.config = config;
     this.config.domainRegistryUrl = this.config.domainRegistryUrl.replace(/\/$/, '') + '/';
-    this.storage = redis.createClient(6379, '172.18.0.5');
+    // redis.createClient(port, host); e.g host=this.config.redisURL
+    this.storage = redis.createClient(6379, this.config.redisURL);
     this.domain = this.config.MNdomain;
 
     // define logger configuration
@@ -73,6 +74,7 @@ class MsgNode {
     });
     this.logger = log4js.getLogger('server');
     this.logger.setLevel(this.config.logLevel);
+      this.logger.info('----------------------------------------, this.config.redisURL', this.config.redisURL)
 
     this.app = express();
 
