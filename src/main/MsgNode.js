@@ -24,6 +24,7 @@
 'use strict';
 
 // @link https://github.com/nomiddlename/log4js-node
+let redis = require('redis');
 let log4js = require('log4js');
 let express = require('express');
 let bodyParser = require('body-parser');
@@ -49,6 +50,7 @@ let DomainRegistryManager = require('./components/rethink/DomainRegistryManager'
 let GlobalRegistryManager = require('./components/rethink/GlobalRegistryManager');
 let SubscriptionManager = require('./components/rethink/SubscriptionManager');
 let ObjectAllocationManager = require('./components/rethink/ObjectAllocationManager');
+let MNPersistManager = require('./MNPersistManager');
 
 class MsgNode {
 
@@ -61,6 +63,8 @@ class MsgNode {
     let _this = this;
     this.config = config;
     this.config.domainRegistryUrl = this.config.domainRegistryUrl.replace(/\/$/, '') + '/';
+    this.storage = redis.createClient(6379, '172.18.0.5');
+    this.domain = this.config.MNdomain;
 
     // define logger configuration
     log4js.configure(this.config.log4jsConfig, {
@@ -88,7 +92,7 @@ class MsgNode {
     this.app.get('/live', (req, res) => {
       res.send({
         status:'up',
-        domain: this.config.url,
+        domain: this.config.MNdomain,
         domainRegistry: this.config.domainRegistryUrl,
         globalRegistry: this.config.globalRegistryUrl,
         time: (new Date()).toISOString(),
@@ -112,6 +116,8 @@ class MsgNode {
     this.registry = new Registry(this.config);
     this.registry.setLogger(this.logger);
     this.registry.setWSServer(this.io);
+    let MNpersistm = new MNPersistManager('mn:/MNpersistManager', this.domain, this.registry, this.storage);
+    this.registry.registerComponent(MNpersistm);
     let bus = new MessageBus('MessageBus', this.registry);
     this.registry.registerComponent(bus);
     let sm = new SessionManager('mn:/session', this.registry);
@@ -126,6 +132,7 @@ class MsgNode {
     this.registry.registerComponent(rm);
     let glbm = new GlobalRegistryManager(this.registry.getDomain().globalRegistryUrl, this.registry);
     this.registry.registerComponent(glbm);
+
 
     this.io.on('connection', this.onConnection.bind(this));
 

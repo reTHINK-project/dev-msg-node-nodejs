@@ -26,7 +26,7 @@ class Registry {
 
   constructor(config) {
     this.config = config;
-    this.domain = config.url;
+    this.domain = config.MNdomain;
 
     this.urlSpace = [];
     this.components = [];

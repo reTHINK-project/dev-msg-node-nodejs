@@ -28,6 +28,7 @@ let uuid = require('uuid');
 class AddressAllocationManager {
   constructor(name, registry) {
     this.registry = registry;
+    this.mnPersist = this.registry.getComponent('mn:/MNpersistManager');
     this.name = name;
     this.baseURL = 'hyperty://' + this.registry.getDomain() + '/';
     this.logger = this.registry.getLogger();
@@ -62,6 +63,7 @@ class AddressAllocationManager {
     if (msg.getType() === 'create') {
 
       this.logger.info('[', this.getName(), '] handle create msg');
+      this.logger.info('--------------------------------------  this.mnPersist',   this.mnPersist);
 
       let allocated = this.allocate(clientMessage, number);
 
