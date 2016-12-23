@@ -59,14 +59,21 @@ class AddressAllocationManager {
         childrenResources = body.value.childrenResources;
       }
     }
-
+    this.logger.info('-------------------------------------------msg :', msg )
+      // this.logger.info('-------------------------------------------msg.getType() is :', msg.getType() )
     if (msg.getType() === 'create') {
 
-      this.logger.info('[', this.getName(), '] handle create msg');
-      this.logger.info('--------------------------------------  this.mnPersist',   this.mnPersist);
+      // this.logger.info('[', this.getName(), '] handle create msg');
+      this.logger.info('-------------------------------[AddressAllocationManager] handle create msg---------------------');
+
+      // this.logger.info('--------------------------------------  this.mnPersist',   this.mnPersist);
+      // this.logger.info('-------------------------------------------getRuntimeUrl() is :', msg.getRuntimeUrl() )
 
 
       let allocated = this.allocate(clientMessage, number);
+            this.logger.info('-------------------------------[AddressAllocationManager] --------------------', allocated);
+      // this.mnPersist.setData(number,allocationKey);
+
 
 
       if (allocationKey !== null) {
@@ -104,6 +111,8 @@ class AddressAllocationManager {
           this.deallocate(clientMessage, val);
         });
       }
+      this.logger.info('[--------------------------------------------------------------------------------------------------------------------------------------------' );
+      this.logger.info('[', this.getName(), '] associate', number, 'URLs for allocation key', allocationKey);
 
       clientMessage.replyok(this.name);
     }

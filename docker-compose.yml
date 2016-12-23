@@ -12,10 +12,10 @@ msg-node-nodejs:
         - globalRegistryUrl=http://130.149.22.133:5002/ # url:domain of CSP where the Global Registry would be deployed
         - redisUrl=localhost # redisUrl:address where redis server(Persistence) would be deployed localhost could be redisUrl=http://172.18.0.5:6379/
         - logLevel=INFO
-        # - logDir=/usr/src/app/logs
+        - logDir=/usr/src/app/logs
         # - useSSL=1
-        # - sslCertificate=/usr/src/app/ssl/myCert.crt
-        # - sslPKey=/usr/src/app/ssl/myCert.key
+        # - sslCertificate=/usr/src/app/src/ssl/myCert.crt // in order to run msg-node for https://msg-node.localhost:9090/
+        # - sslPKey=/usr/src/app/src/ssl/myCert.key
 
 registry-domain:
     image: rethink/registry-domain-server:latest

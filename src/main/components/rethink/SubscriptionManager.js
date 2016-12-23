@@ -39,6 +39,7 @@ class SubscriptionManager {
     let body = msg.getBody();
     let resources;
     let source;
+    // this.logger.info('----------------------SubscriptionManager---------------------msg :', msg )
 
     if (msg.getType() === 'subscribe') {
       resources = body.subscribe;
