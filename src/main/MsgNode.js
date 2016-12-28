@@ -74,10 +74,6 @@ class MsgNode {
     });
     this.logger = log4js.getLogger('server');
     this.logger.setLevel(this.config.logLevel);
-<<<<<<< HEAD
-
-=======
->>>>>>> ac447841912174b94fc5a0b2d7dcb60736081233
 
     this.app = express();
 
