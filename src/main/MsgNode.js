@@ -46,7 +46,8 @@ let MessageBus = require('./components/MessageBus');
 let SessionManager = require('./components/SessionManager');
 
 let AddressAllocationManager = require('./components/rethink/AddressAllocationManager');
-let RegistryManager = require('./components/rethink/RegistryManager');
+let DomainRegistryManager = require('./components/rethink/DomainRegistryManager');
+let GlobalRegistryManager = require('./components/rethink/GlobalRegistryManager');
 let SubscriptionManager = require('./components/rethink/SubscriptionManager');
 let ObjectAllocationManager = require('./components/rethink/ObjectAllocationManager');
 
@@ -59,9 +60,7 @@ class MsgNode {
    */
   constructor(config) {
     let _this = this;
-
     this.config = config;
-
     this.config.domainRegistryUrl = this.config.domainRegistryUrl.replace(/\/$/, '') + '/';
 
     // define logger configuration
@@ -89,8 +88,10 @@ class MsgNode {
 
     this.app.get('/live', (req, res) => {
       res.send({
-        status: 'up',
+        status:'up',
+        domain: this.config.url,
         domainRegistry: this.config.domainRegistryUrl,
+        globalRegistry: this.config.globalRegistryUrl,
         time: (new Date()).toISOString(),
         connected: Object.keys(this.io.sockets.sockets).length
       });
@@ -118,14 +119,16 @@ class MsgNode {
     this.registry.registerComponent(pep);
     let sm = new SessionManager('mn:/session', this.registry);
     this.registry.registerComponent(sm);
-    let alm = new AddressAllocationManager('domain://msg-node.' + this.registry.getDomain() + '/hyperty-address-allocation', this.registry);
+    let alm = new AddressAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/hyperty-address-allocation', this.registry);
     this.registry.registerComponent(alm);
-    let olm = new ObjectAllocationManager('domain://msg-node.' + this.registry.getDomain() + '/object-address-allocation', this.registry);
+    let olm = new ObjectAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/object-address-allocation', this.registry);
     this.registry.registerComponent(olm);
-    let syncm = new SubscriptionManager('domain://msg-node.' + this.registry.getDomain() + '/sm', this.registry);
+    let syncm = new SubscriptionManager('domain://msg-node.' + this.registry.getDomain()  + '/sm', this.registry);
     this.registry.registerComponent(syncm);
-    let rm = new RegistryManager('domain://registry.' + this.registry.getDomain(), this.registry);
+    let rm = new DomainRegistryManager('domain://registry.' + this.registry.getDomain() + '/', this.registry);
     this.registry.registerComponent(rm);
+    let glbm = new GlobalRegistryManager(this.registry.getDomain().globalRegistryUrl, this.registry);
+    this.registry.registerComponent(glbm);
 
     this.io.on('connection', this.onConnection.bind(this));
 
@@ -137,13 +140,13 @@ class MsgNode {
 
     //socket.id : socket.io id
     //socket.handshake.sessionID : express shared sessionId
-    this.logger.info('[C->S] new client connection', socket.id);
+    this.logger.info('[C->S] new client connection : ', socket.id);
 
     //    socket.join(socket.id);
     let client = new Client(this.registry, socket);
 
-    socket.on('message', function (data) {
-      _this.logger.info('[C->S] new event', data);
+    socket.on('message', function(data) {
+      _this.logger.info('[C->S] new event : ', data);
       try {
         client.processMessage(new Message(data));
       } catch (e) {
@@ -151,22 +154,22 @@ class MsgNode {
       }
     });
 
-    socket.on('disconnect', function () {
-      _this.logger.info('[C->S] client disconnect', socket.id);
+    socket.on('disconnect', function() {
+      _this.logger.info('[C->S] client disconnect: ', socket.id);
 
       client.disconnect();
     });
 
-    socket.on('error', function (e) {
-      _this.logger.info('[C->S] socket error', socket.id, e);
+    socket.on('error', function(e) {
+      _this.logger.info('[C->S] socket error :  ', socket.id, e);
     });
 
     // test ws route
-    socket.on('echo', function (msg, callback) {
-      _this.logger.info('[C->S] receive echo');
-      callback = callback || function () { };
+    socket.on('echo', function(msg, callback) {
+      _this.logger.info('[C->S] receive echo : ');
+      callback = callback || function() {};
 
-      _this.logger.info('[S->C] test ping back');
+      _this.logger.info('[S->C] test ping back :');
       socket.emit('echo', msg);
       callback(null, 'Done.');
     });

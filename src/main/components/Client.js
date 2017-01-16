@@ -57,8 +57,13 @@ class Client {
   }
 
   reply(msg) {
-    this.logger.info('[S->C] emit msg', msg.getJson(), 'to', this.getUid());
+    this.logger.info('[S->C] emit msg : \n ', msg.getJson(), '\t to', this.getUid());
     this.socket.emit('message', msg.getJson());
+  }
+
+  replyDomain(msg) {
+    this.logger.info('[S->C] Forward reply from domain registry emit msg : \n ', msg, '\n to : \n', msg.to);
+    this.socket.emit('message', msg);
   }
 
   disconnect() {

@@ -78,9 +78,18 @@ class NodejsProtoStub {
       }
 
       //   console.log('init socket.io');
-      this._sock = io(this._config.url, {
-        forceNew: true
-      });
+    if(typeof window === 'undefined'){
+          console.log('Node environment');
+          this._sock = io.connect('http://'+ this._config.url);
+        } else {
+          console.log('Browser environment');
+          this._sock = io(this._config.url, {
+            forceNew: true
+          });
+        }
+      // this._sock = io(this._config.url, {
+      //   forceNew: true
+      // });
       this._sock.on('connect', function() {
         // console.log('io connected');
         _this._sendOpen();
