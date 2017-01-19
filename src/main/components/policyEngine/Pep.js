@@ -22,6 +22,7 @@ class PEP {
         return this.name
     }
     analyse(msg) {
+        this.logger.info('[Policy Engine] Analysing Message', JSON.stringify(msg));
         return PDP.analyse(msg).then(function (result) {
             if (!result.validated) {
                 return this.response(result.error, false);
