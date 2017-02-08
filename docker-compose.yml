@@ -13,8 +13,8 @@ msg-node-nodejs:
         - logLevel=INFO
         # - logDir=/usr/src/app/logs
         # - useSSL=1
-        # - sslCertificate=/usr/src/app/ssl/myCert.crt
-        # - sslPKey=/usr/src/app/ssl/myCert.key
+        # - sslCertificate=/usr/src/app/src/ssl/myCert.crt
+        # - sslPKey=/usr/src/app/src/ssl/myCert.key
 
 registry-domain:
     image: rethink/registry-domain-server:latest
