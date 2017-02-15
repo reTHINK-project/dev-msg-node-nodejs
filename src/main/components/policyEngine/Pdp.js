@@ -53,13 +53,13 @@ class PDP {
             const denied = policy.rules.some(rule => {
                 if (!rule.condition) {
                     //final decision
-                    return rule.effect === 'deny';
+                    return rule.effect == 'deny';
                 }
                 const parts = rule.condition.split(" ");
                 const tag = parts.shift(); //time,  weekday, etc.
                 if (tag in comparator) {
                     const bingo = comparator[tag].apply(comparator, parts);
-                    return rule.effect === 'deny' ? bingo : !bingo;
+                    return rule.effect == 'deny' ? bingo : !bingo;
                 }
                 //no method found, deny
                 return true;

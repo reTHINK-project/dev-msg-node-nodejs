@@ -44,7 +44,7 @@ class FSStore extends IStore {
         return this.getSource(src).then(sources => {
             let result = null;
             sources.some(policy => {
-                if (policy.target["id"] === opt.id && policy.target["type"] === opt.type) {
+                if (policy.target["id"] == opt.id && policy.target["type"] == opt.type) {
                     result = policy;
                     return true;
                 }

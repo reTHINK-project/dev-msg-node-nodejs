@@ -18,5 +18,25 @@
         "effect": "permit"
       }
     ]
+  },
+  {
+    "target": {
+      "id": "1",
+      "type": "open"
+    },
+    "scope": "global",
+    "rules": [
+      {
+        "condition":"time 12:00 13:00",
+        "effect": "deny"
+      },
+      {
+        "condition": "weekday monday",
+        "effect": "deny"
+      },
+      {
+        "effect": "permit"
+      }
+    ]
   }
 ]
