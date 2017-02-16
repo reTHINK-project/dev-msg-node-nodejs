@@ -55,7 +55,7 @@ class ClientMessage {
     const pep = this.registry.getComponent('PEP');
     // validate request with policy
     pep.analyse(this.msg.msg).then(function (result) {
-      if (!result.validated) {
+      if (result.denied) {
         this.replyError(this.msg.getFrom(), result.error);
         return;
       }

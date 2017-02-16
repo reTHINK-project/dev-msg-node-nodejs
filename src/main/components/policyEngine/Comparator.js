@@ -16,7 +16,7 @@ class Comparator {
      * @returns boolean
      */
     weekday(weekday){
-        return moment().format('dddd').toLowerCase() === weekday.toLowerCase();
+        return moment().format('dddd').toLowerCase() == weekday.toLowerCase();
     }
 }
 module.exports = new Comparator();
