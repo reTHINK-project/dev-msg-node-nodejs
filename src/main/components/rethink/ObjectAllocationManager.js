@@ -112,7 +112,7 @@ class ObjectAllocationManager {
     for (i = 0; i < number; i++) {
       let url = scheme + this.baseURL + uuid.v4();
       list.push(url);
-      clientMessage.getResource().subscribe(url + '/subscription');
+      clientMessage.getResource().subscribe(url);
     }
 
     this.logger.info('[' + this.getName() + '] allocate scheme', list);
@@ -120,7 +120,7 @@ class ObjectAllocationManager {
   }
 
   deallocate(clientMessage, url) {
-    clientMessage.getResource().unsubscribe(url + '/subscription');
+    clientMessage.getResource().unsubscribe(url);
   }
 }
 module.exports = ObjectAllocationManager;

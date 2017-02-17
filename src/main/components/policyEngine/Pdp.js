@@ -8,10 +8,10 @@ const fsStore = require('./store/FS');
 const comparator = require('./Comparator');
 
 class PDP {
-    constructor() {
-
-    }
-    setStore(store) {
+    constructor(registry, store) {
+        this.name = 'PDP';
+        this.registry = registry;
+        this.logger = this.registry.getLogger();
         this.store = store;
     }
 
@@ -32,8 +32,9 @@ class PDP {
         return this.getPolicy(msg)
             .then(policy => {
                 if (!policy) {
+                    this.logger.info(`[${this.name}] No policy can be applied to the message.`);
                     return {
-                        validated: false,
+                        denied: true,
                         error: "NO_POLICY"
                     };
                 }
@@ -47,29 +48,29 @@ class PDP {
      * @returns Promise
      */
     compare(msg, policy) {
-        // console.log('compare here!!');
-        return new Promise((resolve, reject) => {
-            //for now, compare with rules
-            const denied = policy.rules.some(rule => {
+        const denied = policy.rules.some(rule => {
                 if (!rule.condition) {
                     //final decision
-                    return rule.effect === 'deny';
+                    this.logger.info(`[${this.name}] Applying default action: ${rule.effect}`);
+                    return rule.effect == 'deny';
                 }
                 const parts = rule.condition.split(" ");
                 const tag = parts.shift(); //time,  weekday, etc.
                 if (tag in comparator) {
-                    const bingo = comparator[tag].apply(comparator, parts);
-                    return rule.effect === 'deny' ? bingo : !bingo;
+                    let bingo = comparator[tag].apply(comparator,parts);
+                    this.logger.info(`[${this.name}] Checking if ${tag} fulfils condition ${parts}: ${bingo}`);
+                    return bingo ? rule.effect == 'deny' : false;
+                } else {
+                    this.logger.info(`[${this.name}] Comparator has no method to analyze ${tag} condition.`);
+                    return false;
                 }
-                //no method found, deny
-                return true;
             });
-            resolve(denied);
-        });
+        this.logger.info(`[${this.name}] Message passed: ${!denied}`);
+        return {denied: denied, error: 'Policing'};
     }
     otherAlgo() {
         // todo : other method which depend on the other compare algorithm to filter the message with the policy
         return true
     }
 }
-module.exports = new PDP();
+module.exports = PDP;

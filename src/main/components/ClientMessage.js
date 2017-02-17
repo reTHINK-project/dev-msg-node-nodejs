@@ -32,6 +32,7 @@ class ClientMessage {
     this.client = client;
     this.msg = msg;
     this.logger = registry.getLogger();
+    this.name = 'ClientMessage';
   }
 
   getMessage() {
@@ -54,29 +55,33 @@ class ClientMessage {
     // get policyEngine
     const pep = this.registry.getComponent('PEP');
     // validate request with policy
-    pep.analyse(this.msg.msg).then(function (result) {
-      if (!result.validated) {
-        this.replyError(this.msg.getFrom(), result.error);
-        return;
+    pep.analyse(this.msg.msg).then(() => {
+      let comp = this.registry.getComponent(this.msg.getTo());
+      if (comp) {
+        this.logger.info(`[${this.name}] dispatch msg to internal: ${comp.getName()}`);
+        try {
+          comp.handle(this);
+        } catch (e) {
+          this.replyError(comp.getName(), e);
+        }
+      } else {
+        this.logger.info(`[${this.name}] forward msg to : ${this.msg.getTo()}`);
+        this.registry.getComponent('MessageBus').publish(this.msg.getTo(), this.msg.msg);
       }
-    let comp = this.registry.getComponent(this.msg.getTo());
-    if (comp) {
-      this.logger.info('[ClientMessage] dispatch msg to internal', comp.getName());
-      try {
-        comp.handle(this);
-      } catch (e) {
-        this.replyError(comp.getName(), e);
-      }
-    } else {
-      this.logger.info('[ClientMessage] forward msg to', this.msg.getTo());
-      this.registry.getComponent('MessageBus').publish(this.msg.getTo(), this.msg.msg);
-    }
+    }).catch(e => {
+      this.replyError(this.msg.getFrom(), e);
+      this.logger.info(`[${this.name}] Message denied: ${e}`);
     });
   }
 
   reply(msg) {
     msg.setType('response');
     this.client.reply(msg);
+  }
+
+  replyDomain(msg) {
+    // msg.setType('response');
+    this.client.replyDomain(msg);
   }
 
   replyok(from) {

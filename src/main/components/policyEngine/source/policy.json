@@ -2,7 +2,7 @@
   {
     "target": {
       "id": "1",
-      "type": "SUBSCRIBE"
+      "type": "open"
     },
     "scope": "global",
     "rules": [
@@ -18,5 +18,133 @@
         "effect": "permit"
       }
     ]
+  },
+  {
+    "target": {
+      "id": "4",
+      "type": "create"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "5",
+      "type": "create"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "6",
+      "type": "create"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "7",
+      "type": "create"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "8",
+      "type": "subscribe"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "9",
+      "type": "create"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "6",
+      "type": "subscribe"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "9",
+      "type": "response"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "7",
+      "type": "subscribe"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "10",
+      "type": "handshake"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "8",
+      "type": "handshake"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "12",
+      "type": "handshake"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "13",
+      "type": "handshake"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "11",
+      "type": "handshake"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "7",
+      "type": "response"
+    },
+    "scope": "global",
+    "rules": []
+  },
+  {
+    "target": {
+      "id": "2",
+      "type": "update"
+    },
+    "scope": "global",
+    "rules": []
   }
 ]

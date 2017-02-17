@@ -6,9 +6,9 @@ class Comparator {
      * @returns boolean
      */
     time(startAt, endAt) {
-        const now = new Date();
-        startAt = moment(startAt, 'hh:mm').getDate();
-        endAt = moment(endAt, 'hh:mm').getDate();
+        const now = moment();
+        startAt = moment(startAt, 'HH:mm');
+        endAt = moment(endAt, 'HH:mm');
         return now >= startAt && now <= endAt;
     }
     /**
@@ -16,7 +16,7 @@ class Comparator {
      * @returns boolean
      */
     weekday(weekday){
-        return moment().format('dddd').toLowerCase() === weekday.toLowerCase();
+        return moment().format('dddd').toLowerCase() == weekday.toLowerCase();
     }
 }
 module.exports = new Comparator();

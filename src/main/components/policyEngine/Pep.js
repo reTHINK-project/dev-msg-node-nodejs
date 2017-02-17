@@ -1,12 +1,12 @@
 const PDP = require("./Pdp");
 class PEP {
     constructor(name, registry) {
+        const cfg = require('../../../../src/configs/policy');
+        const Store = require(`./store/${cfg.store}`);
         this.name = name;
         this.registry = registry;
         this.logger = this.registry.getLogger();
-      const cfg = require('../../../../src/configs/policy');
-      const Store = require(`./store/${cfg.store}`);
-        PDP.setStore(Store);
+        this.pdp = new PDP(this.registry,Store);
     }
     /**
      * @param {Object} msg
@@ -15,28 +15,19 @@ class PEP {
      * @param {String} msg.from
      * @param {String} msg.to
      * @param {Object} msg.body
-     * @returns {validated:Boolean,error:Object}
+     * @returns {denied:Boolean,error:Object}
      */
 
     getName(){
         return this.name
     }
     analyse(msg) {
-        return PDP.analyse(msg).then(function (result) {
-            if (!result.validated) {
-                return this.response(result.error, false);
-            }
-            return this.response("OK",true);
-        });
-    }
-    response(msg, validated) {
-        const res = {
-            validated: validated,
-        };
-        if (!validated) {
-            res.error = msg;
-        }
-        return res;
+        return this.pdp.analyse(msg)
+            .then(result=>{
+                if (result.denied) {
+                    throw new Error(result.error);
+                }
+            });
     }
 }
 module.exports = PEP;
