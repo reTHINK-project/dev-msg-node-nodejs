@@ -22,8 +22,12 @@ class PEP {
         return this.name
     }
     analyse(msg) {
-        this.logger.info(`[${this.name}] Analysing Message ${JSON.stringify(msg)}`);
-        return this.pdp.analyse(msg);
+        return this.pdp.analyse(msg)
+            .then(result=>{
+                if (result.denied) {
+                    throw new Error(result.error);
+                }
+            });
     }
 }
 module.exports = PEP;

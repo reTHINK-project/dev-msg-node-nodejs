@@ -48,9 +48,7 @@ class PDP {
      * @returns Promise
      */
     compare(msg, policy) {
-        return new Promise((resolve, reject) => {
-            //permit, unless one denies
-            const denied = policy.rules.some(rule => {
+        const denied = policy.rules.some(rule => {
                 if (!rule.condition) {
                     //final decision
                     this.logger.info(`[${this.name}] Applying default action: ${rule.effect}`);
@@ -67,9 +65,8 @@ class PDP {
                     return false;
                 }
             });
-            this.logger.info(`[${this.name}] Message passed: ${!denied}`);
-            resolve({denied: denied, error: 'Policing'});
-        });
+        this.logger.info(`[${this.name}] Message passed: ${!denied}`);
+        return {denied: denied, error: 'Policing'};
     }
     otherAlgo() {
         // todo : other method which depend on the other compare algorithm to filter the message with the policy
