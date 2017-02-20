@@ -1,5 +1,6 @@
 msg-node-nodejs:
-    image: msg-node-rethink:latest
+    image: msg-node-nodejs:latest
+    # to build msg-node-nodejs manually use command: sudo docker build -t msg-node-nodejs .
     # For Easy Development of the msg-node load this volume
     # volumes:
     #     - /path/to/msg-node/repository:/usr/src/app
