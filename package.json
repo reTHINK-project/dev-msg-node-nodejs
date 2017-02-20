@@ -55,7 +55,7 @@
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.4.0",
     "dev-registry-domain": "github:rethink-project/dev-registry-domain",
-    "runtime-core": "github:rethink-project/dev-runtime-core#develop"
+    "runtime-core": "github:rethink-project/dev-runtime-core#v0.7.0"
   },
   "jspm": {
     "directories": {

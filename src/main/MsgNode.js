@@ -74,10 +74,6 @@ class MsgNode {
     });
     this.logger = log4js.getLogger('server');
     this.logger.setLevel(this.config.logLevel);
-<<<<<<< HEAD
-
-=======
->>>>>>> ac447841912174b94fc5a0b2d7dcb60736081233
 
     this.app = express();
 
@@ -133,7 +129,7 @@ class MsgNode {
     this.registry.registerComponent(olm);
     let syncm = new SubscriptionManager('domain://msg-node.' + this.registry.getDomain()  + '/sm', this.registry);
     this.registry.registerComponent(syncm);
-    let rm = new DomainRegistryManager('domain://registry.' + this.registry.getDomain() + '/', this.registry);
+    let rm = new DomainRegistryManager('domain://registry.' + this.registry.getDomain().domainRegistryUrl+ '/', this.registry);
     this.registry.registerComponent(rm);
     let glbm = new GlobalRegistryManager(this.registry.getDomain().globalRegistryUrl, this.registry);
     this.registry.registerComponent(glbm);
