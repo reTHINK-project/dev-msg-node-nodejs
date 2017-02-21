@@ -80,7 +80,8 @@ $ node src/main/server.js
 You should see a log like the following :
 
 ```
-[Date] [INFO] server - [S] HTTP & WS server listening on 9090```
+[Date] [INFO] server - [S] HTTP & WS server listening on 9090
+```
 
 ##### Javascript Environment
 JavaScript code should be written in ES6.
