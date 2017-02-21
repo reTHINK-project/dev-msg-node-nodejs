@@ -90,7 +90,7 @@ Please follow instructions on [official nodejs installation documentation](https
 This include the npm manager for node modules.
 
 ##### dependencies:
-* nodejs
+* Node.js
 * npm
 * karma - A simple tool that allows you to execute JavaScript code in multiple real browsers. See more on [karma](http://karma-runner.github.io/0.13/index.html)
 * mocha - Unit test tool. See more on [http://mochajs.org](http://mochajs.org/)
