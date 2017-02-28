@@ -1,150 +1,52 @@
-[
-  {
-    "target": {
-      "id": "1",
-      "type": "open"
-    },
-    "scope": "global",
-    "rules": [
-      {
-        "condition":"time 12:00 13:00",
-        "effect": "deny"
+/*
+  [] is used to list entries with OR relationships
+  {} is used to store key-value entries with AND relationships
+*/
+{ "id": 0,
+  "rules": [
+    {
+      "target": {
+        "allOf": [
+          {
+            "condition": "domain",
+            "equals": "hjiang-rethink.com"
+          },
+          {
+            "condition": "type",
+            "in": ["create", "update"]
+          }
+      ],
+      "if": {
+        "anyOf": [
+          {
+            "allOf": [
+              {
+                "not": {}
+
+                  "condition": "weekday",
+                  "in": ["saturday", "sunday"]
+              },
+              {
+                "condition": "time",
+                "largerThan": "09:00"
+              }
+            ]
+          }
+        ]
       },
-      {
-        "condition": "weekday monday",
-        "effect": "deny"
-      },
-      {
-        "effect": "permit"
+      "then": "deny",
+      "actions": {
+        "copyto": "hao.jiang@imt-atlantic.fr"
       }
-    ]
-  },
-  {
-    "target": {
-      "id": "4",
-      "type": "create"
+    }
+  ],
+  "combiningAlgorithm": "blockOverrides",   // other options: allowOverrides, firstApplicable
+  "conditionalActions":{
+    "onDeny": {
+      "copyto": "hao.jiang@imt-atlantic.fr"
     },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "5",
-      "type": "create"
-    },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "6",
-      "type": "create"
-    },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "7",
-      "type": "create"
-    },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "8",
-      "type": "subscribe"
-    },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "9",
-      "type": "create"
-    },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "6",
-      "type": "subscribe"
-    },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "9",
-      "type": "response"
-    },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "7",
-      "type": "subscribe"
-    },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "10",
-      "type": "handshake"
-    },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "8",
-      "type": "handshake"
-    },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "12",
-      "type": "handshake"
-    },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "13",
-      "type": "handshake"
-    },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "11",
-      "type": "handshake"
-    },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "7",
-      "type": "response"
-    },
-    "scope": "global",
-    "rules": []
-  },
-  {
-    "target": {
-      "id": "2",
-      "type": "update"
-    },
-    "scope": "global",
-    "rules": []
+    "noRule": {
+      "copyto": "hao.jiang@imt-atlantic.fr"
+    }
   }
-]
+}
