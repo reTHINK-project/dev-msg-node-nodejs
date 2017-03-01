@@ -55,7 +55,7 @@ class ClientMessage {
     // get policyEngine
     const pep = this.registry.getComponent('PEP');
     // validate request with policy
-    pep.analyse(this.msg.msg).then(() => {
+    pep.analyse(this).then(() => {
       let comp = this.registry.getComponent(this.msg.getTo());
       if (comp) {
         this.logger.info(`[${this.name}] dispatch msg to internal: ${comp.getName()}`);

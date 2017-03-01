@@ -6,49 +6,48 @@
   "rules": [
     {
       "target": {
-        "domain": {
-          "equals": "hjiang-rethink.com"
-        },
-        "type": {
-          "equals": ["create", "update"]
-        }
+        "allOf": [
+          {
+            "field":"domain",
+            "equals": "hjiang-rethink.com"
+          },{
+            "field": "type",
+            "equals": ["create", "update"]
+          }
+        ]
       },
-      "if": [
-        {
-          "weekday": {
-            "equals": ["saturday", "sunday"]
-          },
-          "time": [
-            {
-              "largerThan": "09:00",
-              "lessThan": "12:30"
-            },
-            {
-              "largerThan": "14:00",
-              "lessThan": "18:00"
-            }
-          ]
-        },
-        {
-          "weekday": {
-            "not": ["saturday", "sunday"]
-          },
-          "time": [
-            {
-              "largerThan": "09:30",
-              "lessThan": "12:00"
-            },
-            {
-              "largerThan": "14:30",
-              "lessThan": "17:30"
-            }
-          ]
-        }
-      ],
-      "then": "deny",
+      "condition": {
+        "anyOf": [
+          {
+            "allOf": [
+              {
+                "not": {
+                  "field": "weekday",
+                  "equals": ["saturday", "sunday"]
+                }
+              },{
+                "field": "time",
+                "between": ["09:00 12:00", "14:00 18:00"]
+              }
+            ]
+          },{
+            "allOf": [
+              {
+                "field": "weekday",
+                "equals": ["saturday", "sunday"]
+              },{
+                "field": "time",
+                "between": ["09:30 11:30", "14:30 17:30"]
+              }
+            ]
+          }
+        ]
+      },
+      "effect": "deny",
       "actions": {
         "copyto": "hao.jiang@imt-atlantic.fr"
-      }
+      },
+      "priority": 0
     }
   ],
   "combiningAlgorithm": "blockOverrides",   // other options: allowOverrides, firstApplicable
