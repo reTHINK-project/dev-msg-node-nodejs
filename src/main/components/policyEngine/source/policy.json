@@ -2,61 +2,87 @@
   [] is used to list entries with OR relationships
   {} is used to store key-value entries with AND relationships
 */
-{ "id": 0,
-  "rules": [
+{
+  "policySet": [
     {
-      "target": {
-        "allOf": [
-          {
-            "field":"domain",
-            "equals": "hjiang-rethink.com"
-          },{
-            "field": "type",
-            "equals": ["create", "update"]
-          }
-        ]
-      },
-      "condition": {
-        "anyOf": [
-          {
+      "id": 0,
+      "target": {},
+      "rules": [
+        {
+          "target": {
             "allOf": [
               {
-                "not": {
-                  "field": "weekday",
-                  "equals": ["saturday", "sunday"]
-                }
-              },{
-                "field": "time",
-                "between": ["09:00 12:00", "14:00 18:00"]
-              }
-            ]
-          },{
-            "allOf": [
+                "field": "domain",
+                "equals": "hjiang-rethink.com"
+              },
               {
-                "field": "weekday",
-                "equals": ["saturday", "sunday"]
-              },{
-                "field": "time",
-                "between": ["09:30 11:30", "14:30 17:30"]
+                "field": "type",
+                "equals": [
+                  "create",
+                  "update"
+                ]
               }
             ]
-          }
-        ]
-      },
-      "effect": "deny",
-      "actions": {
-        "copyto": "hao.jiang@imt-atlantic.fr"
-      },
-      "priority": 0
+          },
+          "condition": {
+            "anyOf": [
+              {
+                "allOf": [
+                  {
+                    "not": {
+                      "field": "weekday",
+                      "equals": [
+                        "saturday",
+                        "sunday"
+                      ]
+                    }
+                  },
+                  {
+                    "field": "time",
+                    "between": [
+                      "09:00 12:00",
+                      "14:00 18:00"
+                    ]
+                  }
+                ]
+              },
+              {
+                "allOf": [
+                  {
+                    "field": "weekday",
+                    "equals": [
+                      "saturday",
+                      "sunday"
+                    ]
+                  },
+                  {
+                    "field": "time",
+                    "between": [
+                      "09:30 11:30",
+                      "14:30 17:30"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "effect": "deny",
+          "actions": {
+            "copyto": "hao.jiang@imt-atlantic.fr"
+          },
+          "priority": 0
+        }
+      ],
+      "combiningAlgorithm": "blockOverrides",
+      // other options: allowOverrides, firstApplicable
+      "conditionalActions": {
+        "onDeny": {
+          "copyto": "hao.jiang@imt-atlantic.fr"
+        },
+        "noRule": {
+          "copyto": "hao.jiang@imt-atlantic.fr"
+        }
+      }
     }
-  ],
-  "combiningAlgorithm": "blockOverrides",   // other options: allowOverrides, firstApplicable
-  "conditionalActions":{
-    "onDeny": {
-      "copyto": "hao.jiang@imt-atlantic.fr"
-    },
-    "noRule": {
-      "copyto": "hao.jiang@imt-atlantic.fr"
-    }
-  }
+  ]
 }
