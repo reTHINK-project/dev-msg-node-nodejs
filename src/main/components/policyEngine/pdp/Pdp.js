@@ -8,15 +8,14 @@
 
 'use strict';
 
-const fsStore = require('./store/FS');
-const comparator = require('./Comparator');
+import PRP from "../prp/Prp"
 
 class PDP {
-    constructor(registry, store) {
+    constructor(registry) {
         this.name = 'PDP';
         this.registry = registry;
         this.logger = this.registry.getLogger();
-        this.store = store;
+        this.prp = new PRP(registry);
     }
 
     /**
@@ -39,7 +38,7 @@ class PDP {
                     this.logger.info(`[${this.name}] No policy can be applied to the message.`);
                     return {
                         denied: true,
-                        error: "NO_POLICY"
+                        info: "NO_POLICY"
                     };
                 }
                 return this.compare(msg, policy);
@@ -70,7 +69,7 @@ class PDP {
                 }
             });
         this.logger.info(`[${this.name}] Message passed: ${!denied}`);
-        return {denied: denied, error: 'Policing'};
+        return {denied: denied, info: 'Policing'};
     }
     otherAlgo() {
         // todo : other method which depend on the other compare algorithm to filter the message with the policy

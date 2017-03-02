@@ -9,7 +9,7 @@ class FSStore extends IStore {
      * @returns {*} : the full path of the file
      */
     getSourcePath(jsonpolicy = 'policy.json') {
-        return path.resolve(__dirname, `../source/${jsonpolicy}`);
+        return path.resolve(__dirname, `../prp/policy/${jsonpolicy}`);
     }
 
     /**

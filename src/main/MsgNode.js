@@ -41,7 +41,7 @@ let FileStore = require('session-file-store')(expressSession);
 let Client = require('./components/Client');
 let Registry = require('./components/Registry');
 let Message = require('./components/Message');
-let PEP = require('./components/policyEngine/Pep');
+let PEP = require('./components/policyEngine/pep/Pep');
 let MessageBus = require('./components/MessageBus');
 let SessionManager = require('./components/SessionManager');
 
