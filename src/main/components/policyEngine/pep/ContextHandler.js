@@ -20,14 +20,14 @@ class ContextHandler {
         // PEPs can also send "instant" attributes - attributes that the PEP alone knows such as the IP of the requesting user,
         // the device type, HTTP headers... These are attributes that are most commonly (easily) sent by the PEP.
 
-        return JSON.stringify(msg);
+        return msg;
     }
 
     parseToAuthzResponse(decision) {
 
         // Todo: explore more capabilities and add more options. Translate into a set of actions for example.
 
-        return JSON.parse(decision);
+        return decision;
     }
 
 }

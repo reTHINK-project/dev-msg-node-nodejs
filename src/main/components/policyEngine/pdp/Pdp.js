@@ -18,6 +18,33 @@ class PDP {
         this.prp = new PRP(registry);
     }
 
+    // ========================= public =============================
+
+    authorize(authorizationRequest) {
+
+        let authorizationRequest = this._validate(authorizationRequest);
+
+        return this
+
+    }
+
+    // ========================= private ============================
+
+    _validate(authorizationRequest) {
+
+    // Todo: Identify fields to check for request validation.
+
+        return authorizationRequest;
+    }
+
+
+
+
+
+
+
+
+
     /**
      * @param {Object} opt
      * @returns Promise
