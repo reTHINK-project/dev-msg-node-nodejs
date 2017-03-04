@@ -2,8 +2,8 @@
  * Created by hjiang on 3/2/17.
  */
 
-import fs from 'fs';
-import path from 'path';
+import FS from "./store/FS"
+import Redis from "./store/Redis"
 
 class PRP {
 
@@ -11,19 +11,37 @@ class PRP {
         this.name = "PRP";
         this.registry = registry;
         this.logger = this.registry.getLogger();
-        this.policySrcs = [{"local": "./policy/policy.json"}]
+        this.fsStore = new FS();
+        this.redisStore = new Redis();
+        this.setPolicySrc();
     }
 
     // =================== public ====================
 
-    setPolicySrc(source="local"){
-
-        for (let i in [...Array(this.policySrcs.length).keys()] ){
-            if (this.policySrcs[i]){
-
-            }
+    setPolicySrc(source= "FSStore"){
+        switch (source) {
+            case "FSStore":
+            case "RedisStore":
+                this.policySrc = source;
+                break;
+            default:
+                throw new Error(`the policy source ${source} is not defined.`);
         }
+    }
 
+    getPolicySrc(source = this.policySrc){
+        switch (source) {
+            case "FSStore":
+                return this.fsStore;
+            case "RedisStore":
+                return this.redisStore;
+            default:
+                throw new Error(`the policy source ${source} is not defined.`);
+        }
+    }
+
+    getPolicy(request){
+        return this.getPolicySrc().getPolicy(request);
     }
 
 

@@ -6,10 +6,12 @@ import Rule from "./Rule";
 
 class Policy {
 
-    constructor(id, rules, combiningAlgorithm, conditionalActions) {
-        if (!id) throw new Error('key is not defined');
-        if (!conditionalActions) throw new Error('conditionalActions are not defined');
-
+    constructor(policyObj) {
+        if (!("id" in policySetObj)) throw new Error("id is not defined.");
+        if (!("target" in policySetObj)) throw new Error("target is not defined.");
+        if (!("rules" in policySetObj)) throw new Error("rules is not defined.");
+        if (!("combiningAlgorithm" in policySetObj)) throw new Error("combiningAlgorithm is not defined.");
+        if (!("conditionalActions" in policySetObj)) throw new Error("conditionalActions is not defined.");
         this.id = id;
         this._setRules(rules);
         this._setCombiningAlgorithm(combiningAlgorithm);

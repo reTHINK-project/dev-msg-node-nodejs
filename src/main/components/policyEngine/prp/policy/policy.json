@@ -3,9 +3,11 @@
   {} is used to store key-value entries with AND relationships
 */
 {
-  "policySet": [
+  "version": 1,
+  "update" : "Sat Mar 04 2017 17:18:31",
+  "policies": [
     {
-      "id": 0,
+      "id": 1,
       "target": {},
       "rules": [
         {
@@ -74,7 +76,6 @@
         }
       ],
       "combiningAlgorithm": "blockOverrides",
-      // other options: allowOverrides, firstApplicable
       "conditionalActions": {
         "onDeny": {
           "copyto": "hao.jiang@imt-atlantic.fr"

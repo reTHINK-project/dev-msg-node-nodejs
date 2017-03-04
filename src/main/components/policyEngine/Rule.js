@@ -1,6 +1,9 @@
 /**
  * Created by hjiang on 3/1/17.
  */
+import Target from "./Target";
+import Condition from "./Condition";
+
 
 class Rule {
 
@@ -14,14 +17,17 @@ class Rule {
 
     _setTarget(target) {
     //    Todo
+        this.target = new Target(target);
     }
 
     _setCondition(condition) {
     //    Todo
+        this.condition = new Condition(condition);
     }
 
     _setActions(actions) {
     //    Todo
+        this.actions = actions;
     }
 
 }

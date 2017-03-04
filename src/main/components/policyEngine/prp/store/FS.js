@@ -8,6 +8,11 @@ class FSStore extends IStore {
      * @param jsonpolicy : filename with extention
      * @returns {*} : the full path of the file
      */
+
+    constructor(){
+        this.name = "FSStore"
+    }
+
     getSourcePath(jsonpolicy = 'policy.json') {
         return path.resolve(__dirname, `../prp/policy/${jsonpolicy}`);
     }
@@ -54,4 +59,5 @@ class FSStore extends IStore {
         });
     }
 }
-module.exports = new FSStore();
+
+export default FSStore;
