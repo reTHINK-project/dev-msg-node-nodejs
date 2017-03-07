@@ -8,6 +8,11 @@ import Condition from "./Condition";
 class Rule {
 
     constructor(rule) {
+        if (!("target" in rule)) throw new Error("target is not defined.");
+        if (!("condition" in rule)) throw new Error("condition is not defined.");
+        if (!("actions" in rule)) throw new Error("actions is not defined.");
+        if (!("effect" in rule)) throw new Error("effect is not defined.");
+        if (!("priority" in rule)) throw new Error("priority is not defined.");
         this._setTarget(rule.target);
         this._setCondition(rule.condition);
         this._setActions(rule.actions);
