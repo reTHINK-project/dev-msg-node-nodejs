@@ -38,7 +38,12 @@ class ClientMessage {
   }
 
   getRuntimeUrl() {
-    return this.client.getRuntimeUrl();
+    if(this.getFrom().startsWith('runtime'))
+      return this.getFrom();
+  }
+
+  getFrom() {
+    return this.msg.msg.from;
   }
 
   getResource() {
@@ -52,7 +57,7 @@ class ClientMessage {
   dispatch() {
     let comp = this.registry.getComponent(this.msg.getTo());
     if (comp) {
-      this.logger.info('[ClientMessage] dispatch msg to internal:', comp.getName());
+      // this.logger.info('-------------------------------------------------------------------- [ClientMessage] dispatch msg to internal:', comp.getName());
       try {
         comp.handle(this);
       } catch (e) {
