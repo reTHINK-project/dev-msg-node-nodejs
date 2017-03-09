@@ -12,12 +12,14 @@ import ContextHandler from "./ContextHandler";
 import PDP from "../pdp/Pdp";
 
 class PEP {
-    constructor(name, registry) {
+    constructor(name, context) {
         this.name = name;
-        this.registry = registry;
+        context.pep = this;
+        this.pdp = new PDP(context);
+        this.context = context;
+        this.registry = this.context.registry;
         this.logger = this.registry.getLogger();
-        this.pdp = new PDP(this.registry);
-        this.contextHandler = new ContextHandler(registry);
+        this.contextHandler = new ContextHandler(this.registry);
     }
     /**
      * @param {Object} msg

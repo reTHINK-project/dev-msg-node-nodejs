@@ -11,11 +11,13 @@
 import PRP from "../prp/Prp"
 
 class PDP {
-    constructor(registry) {
+    constructor(context) {
         this.name = 'PDP';
-        this.registry = registry;
+        context.pdp = this;
+        this.context = context;
+        this.registry = this.context.registry;
         this.logger = this.registry.getLogger();
-        this.prp = new PRP(registry);
+        this.prp = new PRP(this.registry);
     }
 
     // ========================= public =============================

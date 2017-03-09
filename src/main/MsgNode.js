@@ -42,6 +42,7 @@ let Client = require('./components/Client');
 let Registry = require('./components/Registry');
 let Message = require('./components/Message');
 let PEP = require('./components/policyEngine/pep/Pep');
+let NodejsCtx = require('./components/policyEngine/context/NodejsCtx');
 let MessageBus = require('./components/MessageBus');
 let SessionManager = require('./components/SessionManager');
 
@@ -115,7 +116,7 @@ class MsgNode {
     this.registry.setWSServer(this.io);
     let bus = new MessageBus('MessageBus', this.registry);
     this.registry.registerComponent(bus);
-    let pep = new PEP('PEP', this.registry);
+    let pep = new PEP('PEP', new NodejsCtx(this.registry, this.config));
     this.registry.registerComponent(pep);
     let sm = new SessionManager('mn:/session', this.registry);
     this.registry.registerComponent(sm);

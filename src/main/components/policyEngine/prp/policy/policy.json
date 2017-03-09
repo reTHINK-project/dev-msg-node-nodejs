@@ -15,16 +15,20 @@
                 "srcDomain": {"equals": "hjiang-rethink.com"},
                 "type": {"equals": ["create","update"]}
               },
-          "condition": [
-            {
-              "weekday": {"not": {"equals": ["saturday", "sunday"]}},
-              "time": {"between": ["09:00:00 12:00:00", "14:00:00 18:00:00"]}
-            },
-            {
-              "weekday": {"equals": ["saturday", "sunday"]},
-              "time": {"between": ["09:30:00 11:30:00", "14:30:00 17:30:00"]}
-            }
-          ],
+          "condition": {
+            "anyOf": [
+              { "allOf": [
+                {"weekday": {"not": {"equals": ["saturday", "sunday"]}}},
+                {"time": {"between": ["09:00:00 12:00:00", "14:00:00 18:00:00"]}}
+                ]
+              },
+              { "allOf": [
+                {"weekday": {"equals": ["saturday", "sunday"]}},
+                {"time": {"between": ["09:30:00 11:30:00", "14:30:00 17:30:00"]}}
+                ]
+              }
+            ]
+          },
           "effect": "deny",
           "actions": {
             "copyto": "hao.jiang@imt-atlantic.fr"

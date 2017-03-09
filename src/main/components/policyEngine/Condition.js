@@ -13,7 +13,9 @@ class Condition {
     }
 
     _buildCondition(condition){
+        if (condition.constructor === Object) {
 
+        }
 
 
     }
