@@ -21,7 +21,8 @@ class AttributeCondition {
          * @param  {Object}    context   environment where the Policy Engine is being used
          * @param  {Object}    message
          */
-        let value = message[this.attribute];
+        context[this.attribute] = {message: message};
+        let value = context[this.attribute];
         let results = [];
         if (expression.constructor === Object) {
             for (let operator in expression) {
@@ -29,17 +30,20 @@ class AttributeCondition {
                 let params = expression(operator);
                 if (operator==="not"){
                     results.push(this.operators.not(this.isApplicable(context, message, params)));
+                    continue;
                 }
                 if (params.constructor === Array) {
-                    results.push(params.some(param=>{
+                    results.push(params.some(param => {
                         return this.operators[operator](value, param, this.attribute);
                     }));
+                    continue;
                 }
+                results.push(this.operators[operator](value, params, this.attribute));
             }
             return this.operators.allOf(results);
 
-        } else if (this.expression.constructor === Array) {
-            return this.expression.some(express=>{
+        } else if (expression.constructor === Array) {
+            return expression.some(express=>{
                 return this.isApplicable(context, message, express);
             });
         } else {

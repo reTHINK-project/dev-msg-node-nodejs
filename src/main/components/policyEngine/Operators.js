@@ -49,7 +49,7 @@ class Operators {
 
     // ==================================== comparative operations ====================================
 
-    between(value, param, attribute) {
+    between(value, param, attribute = null) {
         /**
         * @param [string] a string containg two parameters separated by a space.
         * @return boolean: true if the value is in section (start, end).
@@ -59,22 +59,28 @@ class Operators {
         switch (attribute) {
             case "time":
                 // in case only time is specified
+                value = moment(value, "HH:mm:ss");
                 start = moment(start, "HH:mm:ss");
                 end = moment(end, "HH:mm:ss");
                 if (end < start) end.add(1, "d");
                 break;
             case "date":
                 // in case date is specified
-                start = moment(start);
-                end = moment(end);
+                value = moment(value, "YYYY-MM-DD");
+                start = moment(start, "YYYY-MM-DD");
+                end = moment(end, "YYYY-MM-DD");
                 break;
             case "weekday":
                 // in case only weekday is specified
+                value = moment(value, "dddd");
                 start = moment(start, "dddd");
                 end = moment(start, "dddd");
                 break;
             default:
-                console.log(`${attribute} is not supported for between operation.`);
+                value = parseInt(value);
+                start = parseInt(start);
+                end = parseInt(end);
+                console.log(`${attribute} is not explicitly specified for between operation.`);
         }
         return (value > start && value < end);
     }

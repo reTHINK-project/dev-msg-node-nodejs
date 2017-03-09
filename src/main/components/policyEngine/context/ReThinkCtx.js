@@ -2,6 +2,7 @@
  * Created by hjiang on 3/9/17.
  */
 import {divideEmail, divideURL, isDataObjectURL} from './Utils';
+import moment from 'moment';
 
 class ReThinkCtx {
 
@@ -18,16 +19,16 @@ class ReThinkCtx {
         return this._date;
     }
 
-    get domain() {
-        return this._domain;
+    get srcDomain() {
+        return this._srcDomain;
     }
 
     get type() {
         return this._type;
     }
 
-    get source() {
-        return this._source;
+    get srcUser() {
+        return this._srcUser;
     }
 
     get time() {
@@ -48,21 +49,12 @@ class ReThinkCtx {
     }
 
     set date(now) {
-        let date = new Date();
-        let day = String(date.getDate());
-        if (day.length === 1) {
-            day = '0' + day;
-        }
-        let month = String(date.getMonth() + 1);
-        if (month.length === 1) {
-            month = '0' + month;
-        }
-        this._date = day + '/' + month + '/' + date.getFullYear();
+        this._date = moment().format("YYYY-MM-DD");
     }
 
-    set domain(params) {
+    set srcDomain(params) {
         if (params.message.body.identity !== undefined) {
-            this._domain = divideEmail(params.message.body.identity.userProfile.username).domain;
+            this._srcDomain = divideEmail(params.message.body.identity.userProfile.username).domain;
         }
     }
 
@@ -73,23 +65,18 @@ class ReThinkCtx {
         }
     }
 
-    set source(params) {
+    set srcUser(params) {
         if (params.message.body.identity !== undefined) {
-            this._source = params.message.body.identity.userProfile.username;
+            this._srcUser = params.message.body.identity.userProfile.username;
         }
     }
 
     set time(now) {
-        now = new Date();
-        let minutes = String(now.getMinutes());
-        if (minutes.length === 1) {
-            minutes = '0' + minutes;
-        }
-        this._time = parseInt(String(now.getHours()) + minutes);
+        this._time = moment().format("HH:mm:ss");
     }
 
     set weekday(now) {
-        this._weekday = String(new Date().getDay());
+        this._weekday = moment().format("dddd");
     }
 
 }

@@ -13,25 +13,28 @@ class NodejsCtx extends ReThinkCtx {
         super();
         this.registry = registry;
         this.config = config;
+        this.msg = null;
     }
 
-    getDomainUrl(){
+    get domainUrl(){
         return this.config.url;
     }
 
-    getDomainRegistryUrl(){
+    get domainRegistryUrl(){
         return this.config.domainRegistryUrl;
     }
 
-    getGlobalRegistryUrl(){
+    get globalRegistryUrl(){
         return this.config.globalRegistryUrl;
     }
 
-    getPort(){
+    get port(){
         return this.config.port;
     }
 
-    getUseSSL(){
+    get useSSL(){
         return this.config.useSSL;
     }
+
+
 }
