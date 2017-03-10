@@ -64,7 +64,7 @@ class MsgNode {
     this.config = config;
     this.config.domainRegistryUrl = this.config.domainRegistryUrl.replace(/\/$/, '') + '/';
     // redis.createClient(port, host); e.g host=this.config.redisURL
-    this.storage = redis.createClient(6379, '172.18.0.5');
+    this.storage = redis.createClient(6379, this.config.redisURL.slice(7));
     this.domain = this.config.MNdomain;
 
     // define logger configuration
@@ -129,7 +129,7 @@ class MsgNode {
     this.registry.registerComponent(olm);
     let syncm = new SubscriptionManager('domain://msg-node.' + this.registry.getDomain()  + '/sm', this.registry);
     this.registry.registerComponent(syncm);
-    let rm = new DomainRegistryManager('domain://registry.' + this.registry.getDomain().domainRegistryUrl+ '/', this.registry);
+    let rm = new DomainRegistryManager('domain://registry.' + this.registry.getDomain() + '/', this.registry);
     this.registry.registerComponent(rm);
     let glbm = new GlobalRegistryManager(this.registry.getDomain().globalRegistryUrl, this.registry);
     this.registry.registerComponent(glbm);
