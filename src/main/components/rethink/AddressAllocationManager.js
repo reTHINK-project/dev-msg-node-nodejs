@@ -28,6 +28,7 @@ let uuid = require('uuid');
 class AddressAllocationManager {
   constructor(name, registry) {
     this.registry = registry;
+    this.mnPersist = this.registry.getComponent('mn:/MNpersistManager');
     this.name = name;
     this.baseURL = 'hyperty://' + this.registry.getDomain() + '/';
     this.logger = this.registry.getLogger();
@@ -58,12 +59,22 @@ class AddressAllocationManager {
         childrenResources = body.value.childrenResources;
       }
     }
-
+    this.logger.info('-------------------------------------------msg :', msg )
+      // this.logger.info('-------------------------------------------msg.getType() is :', msg.getType() )
     if (msg.getType() === 'create') {
 
-      this.logger.info('[', this.getName(), '] handle create msg');
+      // this.logger.info('[', this.getName(), '] handle create msg');
+      this.logger.info('-------------------------------[AddressAllocationManager] handle create msg---------------------');
+
+      // this.logger.info('--------------------------------------  this.mnPersist',   this.mnPersist);
+      // this.logger.info('-------------------------------------------getRuntimeUrl() is :', msg.getRuntimeUrl() )
+
 
       let allocated = this.allocate(clientMessage, number);
+            this.logger.info('-------------------------------[AddressAllocationManager] --------------------', allocated);
+      // this.mnPersist.setData(number,allocationKey);
+
+
 
       if (allocationKey !== null) {
         this.logger.info('[', this.getName(), '] associate', number, 'URLs for allocation key', allocationKey);
@@ -100,6 +111,8 @@ class AddressAllocationManager {
           this.deallocate(clientMessage, val);
         });
       }
+      this.logger.info('[--------------------------------------------------------------------------------------------------------------------------------------------' );
+      this.logger.info('[', this.getName(), '] associate', number, 'URLs for allocation key', allocationKey);
 
       clientMessage.replyok(this.name);
     }
@@ -114,7 +127,7 @@ class AddressAllocationManager {
       clientMessage.getResource().subscribe(url);
     }
 
-    this.logger.info('[' + this.getName() + '] allocate URLs', list);
+    this.logger.info('[' + this.getName() + '] allocate URLs: ', list);
     return list;
   }
 

@@ -42,7 +42,7 @@ class DomainRegistryManager {
 
   handle(clientMessage) {
     let msg = clientMessage.getMessage();
-    this.logger.info('[Domain-Registry-Manager]: [', this.getName(), ']: handle registry message :\n', msg.msg);
+    this.logger.info('[Domain-Registry-Manager], [', this.getName(), ']: handle registry message :\n', msg.msg);
 
     switch (msg.msg.type.toLowerCase()) {
       case 'create':
@@ -50,6 +50,7 @@ class DomainRegistryManager {
       case 'delete':
       case 'update':
         try {
+          this.logger.info('msg.msg.type.toLowerCase() is:', msg.msg.type.toLowerCase());
           this.registryConnector.processMessage(msg.msg, (res) => {
             this.logger.info('[', this.getName(), '] Reply from domain registry :\n ', res);
             this.logger.debug('  this.registryConnector : ',   this.registryConnector);
@@ -61,6 +62,7 @@ class DomainRegistryManager {
                 to: msg.msg.from,
                 body: res
               };
+              // reply.body.code = 200;
             clientMessage.replyDomain(reply);
           });
         } catch (e) {
