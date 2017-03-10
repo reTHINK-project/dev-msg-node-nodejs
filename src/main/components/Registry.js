@@ -26,7 +26,7 @@ class Registry {
 
   constructor(config) {
     this.config = config;
-    this.domain = config.url;
+    this.domain = config.MNdomain;
 
     this.urlSpace = [];
     this.components = [];
@@ -63,7 +63,7 @@ class Registry {
   }
 
   getComponent(name) {
-    this.logger.info('getComponent(name):', name);
+    // this.logger.info('getComponent(name):', name);
     if (name in this.components) {
         // this.logger.info('this.components', this.components);
       return this.components[name];

@@ -40,7 +40,12 @@ class ClientMessage {
   }
 
   getRuntimeUrl() {
-    return this.client.getRuntimeUrl();
+    if(this.getFrom().startsWith('runtime'))
+      return this.getFrom();
+  }
+
+  getFrom() {
+    return this.msg.msg.from;
   }
 
   getResource() {
