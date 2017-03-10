@@ -1,5 +1,5 @@
 msg-node-nodejs:
-    image: msg-node-rethink:latest
+    image: msg-node-nodejs:latest
     # For Easy Development of the msg-node load this volume
     # volumes:
     #     - /path/to/msg-node/repository:/usr/src/app
