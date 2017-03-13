@@ -26,7 +26,9 @@ class PDP {
 
         let authorizationRequest = this._validate(authorizationRequest);
 
-        return this
+        let policy = this.prp.getPolicy(this.context, authorizationRequest);
+
+        return policy.evaluateRules(this.context, authorizationRequest);
 
     }
 

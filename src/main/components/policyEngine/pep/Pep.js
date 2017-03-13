@@ -42,10 +42,11 @@ class PEP {
 
         let authorizationRequest = this.contextHandler.parseToAuthzRequest(msg);
 
-        return this.pdp.authorize(authorizationRequest).then(decision => {
-            let authorizationResponse = this.contextHandler.parseToAuthzResponse(decision);
-            this._enforce(authorizationResponse);
-        });
+        let response = this.pdp.authorize(authorizationRequest);
+
+        let authorizationResponse = this.contextHandler.parseToAuthzResponse(decision);
+
+        return this._enforce(authorizationResponse);
     }
     // ======================== private =======================
 
@@ -66,9 +67,7 @@ class PEP {
 
         // Todo: take actions according to/specified in the decision from PDP
 
-        if (response.denied) {
-            throw new Error(decision.info)
-        }
+        return response.effect === "permit"
     }
 }
 
