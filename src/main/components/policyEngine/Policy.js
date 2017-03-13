@@ -3,21 +3,41 @@
  */
 
 import Rule from "./Rule";
+import BlockOverrides from './algorithm/BlockOverrides';
+import AllowOverrides from './algorithm/AllowOverrides';
+import FirstApplicable from './algorithm/FirstApplicable';
+import Response from './Response';
 
 class Policy {
 
     constructor(policyObj) {
-        if (!("id" in policySetObj)) throw new Error("id is not defined.");
-        if (!("target" in policySetObj)) throw new Error("target is not defined.");
-        if (!("rules" in policySetObj)) throw new Error("rules is not defined.");
-        if (!("combiningAlgorithm" in policySetObj)) throw new Error("combiningAlgorithm is not defined.");
-        if (!("conditionalActions" in policySetObj)) throw new Error("conditionalActions is not defined.");
-        this.id = id;
-        this._setRules(rules);
-        this._setCombiningAlgorithm(combiningAlgorithm);
-        this._setConditionalActions(conditionalActions);
+        if (!("id" in policyObj)) throw new Error("id is not defined.");
+        if (!("scope" in policyObj)) throw new Error("scope is not defined.");
+        if (!("rules" in policyObj)) throw new Error("rules is not defined.");
+        if (!("combiningAlgorithm" in policyObj)) throw new Error("combiningAlgorithm is not defined.");
+        if (!("conditionalActions" in policyObj)) throw new Error("conditionalActions is not defined.");
+        this.id = policyObj.id;
+        this.scope = new Scope(policyObj.scope);
+        this.conditionalActions = policyObj.conditionalActions;
+        this._setRules(policyObj.rules);
+        this._setCombiningAlgorithm(policyObj.combiningAlgorithm);
     }
 
+    isApplicable(context, message){
+        return this.scope.isApplicable(context, message);
+    }
+
+    evaluateRules(context, message){
+        let results = [];
+        for (let i in this.rules) {
+            if (!this.rules[i].isApplicable(context, message)) continue;
+            results.push(this.rules[i].evaluateCondition(context, message));
+        }
+        response = this.combiningAlgorithm.combine(results);
+        let actions = this.conditionalActions[response.effect];
+        response.addActions(actions);
+        return response;
+    }
 
     _setRules(rules) {
         this.rules = [];

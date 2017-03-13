@@ -14,14 +14,7 @@ class Operators {
         * @return boolean: true if all true, false if any false
         * */
         if (!(params instanceof Array)) throw new Error(`${params} is not an array.`);
-        if (!params.length) return false;
-        let result = true;
-        for (let i in params) {
-            if (!params.hasOwnProperty(i)) continue;
-            result = params[i] && result;
-            if (!result) return result;
-        }
-        return result;
+        return params.every(b=>{return b});
     }
 
     anyOf(params) {
@@ -30,21 +23,14 @@ class Operators {
         * @return boolean: true if any true, false if all false
         * */
         if (!(params instanceof Array)) throw new Error(`${params} is not an array.`);
-        if (!params.length) return true;
-        let result = false;
-        for (let i in params) {
-            if (!params.hasOwnProperty(i)) continue;
-            result = params[i] || result;
-            if (result) return result;
-        }
-        return result;
+        return params.some(b=>{return b});
     }
 
     not(param) {
         /**
          * @param a key to be negated
          * */
-        return !param;
+        return Array.isArray(param)? !param[0] : !param;
     }
 
     // ==================================== comparative operations ====================================

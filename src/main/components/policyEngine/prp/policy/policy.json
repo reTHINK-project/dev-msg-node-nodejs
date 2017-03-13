@@ -4,7 +4,7 @@
 */
 {
   "version": 1,
-  "update" : "Sat Mar 04 2017 17:18:31",
+  "update" : "sat mar 04 2017 17:18:31",
   "policies": [
     {
       "id": 1,
@@ -38,10 +38,10 @@
       ],
       "combiningAlgorithm": "blockOverrides",
       "conditionalActions": {
-        "onDeny": {
+        "deny": {
           "copyto": "hao.jiang@imt-atlantic.fr"
         },
-        "noRule": {
+        "notApplicable": {
           "copyto": "hao.jiang@imt-atlantic.fr"
         }
       }

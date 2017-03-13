@@ -26,23 +26,28 @@
  * @author Ana Caldeira <ana.caldeira@tecnico.ulisboa.pt>
  * @classdesc Class to combine the authorization decisions that result from rules evaluation.
  */
+import Response from "../Response";
+
 class BlockOverrides {
 
     /**
-     * Given an array of individual authorisation decisions, prioritises a negative one.
-     * @param    {boolean[]}   decisions
-     * @returns  {boolean}
+     * Given an array of individual authorization decisions, prioritizes a positive one.
+     * @param    {boolean[]}   responses
+     * @returns  {Response}
      */
-    combine(decisions) {
-        if (decisions.indexOf(false) !== -1) {
-            return false;
-        } else {
-            if (decisions.indexOf(true) !== -1) {
-                return true;
-            } else {
-                return 'Not Applicable';
-            }
+    combine(responses) {
+        let response = new Response();
+        for (let i in responses){
+            let res = responses[i];
+            response.addActions(res.actions);
         }
+        let decisions = responses.map(res=>{return res.effect});
+        if (decisions.indexOf("deny") !== -1) {
+            response.setEffect("deny");
+        } else if (decisions.indexOf("permit") !== -1) {
+            response.setEffect("permit");
+        }
+        return response;
     }
 
 }

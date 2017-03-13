@@ -1,14 +1,13 @@
 
 class IStore{
-    getPolicy(opt){
+    getPolicy(context, message){
         throw new Error("method must be implemented");
     }
 
     /**
-     * @param source
-     * @returns Promise
+     * @returns String
      */
-    getSource(source){
+    getSource(){
         throw new Error("method must be implemented");
     }
 
@@ -22,9 +21,9 @@ class IStore{
 
     /**
      *
-     * @param policy_file
+     * @param srcPath
      */
-    loadPolicy(policy_file){
+    loadPolicies(srcPath){
 
     }
 }

@@ -40,15 +40,9 @@ class PRP {
         }
     }
 
-    getPolicy(request){
-        return this.getPolicySrc().getPolicy(request);
+    getPolicy(context, request){
+        return this.getPolicySrc().getPolicy(context, request);
     }
-
-
-
-    // =================== private ===================
-
-
 
 }
 

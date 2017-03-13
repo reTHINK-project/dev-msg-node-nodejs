@@ -5,7 +5,7 @@ class RedisStore extends IStore{
         this.name = "RedisStore";
     }
 
-    getPolicy(opt){
+    getPolicy(message){
         //todo get policy from redis
     }
 }

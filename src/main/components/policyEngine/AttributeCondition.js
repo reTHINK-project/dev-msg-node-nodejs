@@ -6,9 +6,9 @@ import Operators from './Operators';
 
 class AttributeCondition {
 
-    constructor(attribute, expression) {
-        this.attribute = attribute;
-        this.expression = expression;
+    constructor(condition) {
+        this.attribute = Object.keys(condition)[0];
+        this.expression = Object.values(condition)[0];
         this.operators = new Operators();
     }
 

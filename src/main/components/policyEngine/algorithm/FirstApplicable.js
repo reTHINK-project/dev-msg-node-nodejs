@@ -26,20 +26,23 @@
  * @author Ana Caldeira <ana.caldeira@tecnico.ulisboa.pt>
  * @classdesc Class to combine the authorization decisions that result from rules evaluation.
  */
+import Response from "../Response";
+
 class FirstApplicable {
 
     /**
      * Given an array of individual authorisation decisions, returns the first one different from 'Not Applicable', either positive or negative.
-     * @param    {boolean[]}     decisions
-     * @returns  {boolean}
+     * @param    {boolean[]}     responses
+     * @returns  {Response}
      */
-    combine(decisions) {
-        for (let i in decisions) {
-            if (decisions[i] !== 'Not Applicable') {
+    combine(responses) {
+
+        for (let i in responses) {
+            if (responses[i].effect !== 'notApplicable') {
                 return decisions[i];
             }
         }
-        return 'Not Applicable';
+        return new Response();
     }
 
 }
