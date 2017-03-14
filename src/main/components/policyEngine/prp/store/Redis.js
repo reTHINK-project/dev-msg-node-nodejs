@@ -1,8 +1,12 @@
 const IStore = require("./IStore");
 class RedisStore extends IStore{
 
-    constructor (){
-        this.name = "RedisStore";
+    constructor (context){
+        super();
+        this.context = context;
+        this.logger = this.context.getLogger();
+        this.name = "PRP RedisStore";
+        this.logger.info(`[${this.name}] new instance`);
     }
 
     getPolicy(message){
@@ -10,4 +14,4 @@ class RedisStore extends IStore{
     }
 }
 
-export default RedisStore;
+module.exports = RedisStore;

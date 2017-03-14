@@ -2,7 +2,7 @@
  * Created by Hao on 2017/3/6.
  */
 
-import moment from "moment";
+let moment = require("moment");
 
 class Operators {
 
@@ -119,4 +119,4 @@ class Operators {
     }
 }
 
-export default Operators;
+module.exports = Operators;

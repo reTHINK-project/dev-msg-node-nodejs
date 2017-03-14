@@ -1,16 +1,13 @@
 /**
  * Created by hjiang on 3/9/17.
  */
-import ReThinkCtx from './ReThinkCtx';
-import {divideURL, getUserEmailFromURL, isDataObjectURL} from './Utils';
-import FirstApplicable from '../algorithm/FirstApplicable';
-import AllowOverrides from '../algorithm/AllowOverrides';
-import BlockOverrides from '../algorithm/BlockOverrides';
+let ReThinkCtx = require('./ReThinkCtx');
 
 class NodejsCtx extends ReThinkCtx {
 
     constructor(registry, config) {
         super();
+        this.name = 'PDP';
         this.registry = registry;
         this.config = config;
         this.msg = null;
@@ -36,5 +33,10 @@ class NodejsCtx extends ReThinkCtx {
         return this.config.useSSL;
     }
 
+    getLogger(){
+        return this.registry.getLogger();
+    }
+
 
 }
+module.exports = NodejsCtx;

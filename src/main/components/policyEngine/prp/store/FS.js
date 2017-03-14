@@ -5,17 +5,21 @@ const PolicySet = require('../../PolicySet');
 
 class FSStore extends IStore {
 
-    constructor(){
-        this.name = "FSStore";
+    constructor(context){
+        super();
+        this.name = "PRP FSStore";
+        this.context = context;
+        this.logger = this.context.getLogger();
         this.srcPath = "../policy/policy.json";
-        this.policySet = loadPolicies();
+        this.policySet = this.loadPolicies();
+        this.logger.info(`[${this.name}] new instance`);
     }
 
     loadPolicies(srcPath = this.srcPath){
         let policyFile = JSON.parse(
-            fs.readFileSync(srcPath)
+            fs.readFileSync(path.resolve(__dirname, srcPath))
         );
-        return new PolicySet(policyFile);
+        return new PolicySet(this.context, policyFile);
     }
 
     getSource() {
@@ -31,15 +35,15 @@ class FSStore extends IStore {
      * @param {Object} context
      * @returns Promise
      */
-    getPolicy(context, message) {
+    getPolicy(message) {
         let policies = this.policySet.getPolicies();
         for (let i in policies){
             if(!policies.hasOwnProperty(i)) continue;
-            if (policies[i].isApplicable(context, message)) {
+            if (policies[i].isApplicable(message)) {
                 return policies[i];
             }
         }
     }
 }
 
-export default FSStore;
+module.exports = FSStore;

@@ -1,20 +1,16 @@
-/*
-  [] is used to list entries with OR relationships
-  {} is used to store key-value entries with AND relationships
-*/
 {
   "version": 1,
-  "update" : "sat mar 04 2017 17:18:31",
+  "update" : "2017-03-14 17:18:31",
   "policies": [
     {
       "id": 1,
       "scope": {},
       "rules": [
-        {
-          "target":{
-                "srcDomain": {"equals": "hjiang-rethink.com"},
-                "type": {"equals": ["create","update"]}
-              },
+        { "id": 1,
+          "target":[
+            {"srcDomain": {"equals": "hjiang-rethink.com"}},
+            {"msgType": {"equals": ["create","update","open"]}}
+              ],
           "condition": {
             "anyOf": [
               { "allOf": [

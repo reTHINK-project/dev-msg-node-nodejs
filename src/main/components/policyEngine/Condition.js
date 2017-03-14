@@ -1,36 +1,40 @@
 /**
  * Created by hjiang on 3/4/17.
  */
-import AttributeCondition from "./AttributeCondition";
-import Operators from "./Operators";
+let AttributeCondition = require("./AttributeCondition");
+let Operators = require("./Operators");
 
 
 class Condition {
 
-    constructor(condition){
+    constructor(context, condition){
+        this.name = "PDP Rule Condition";
+        this.context = context;
+        this.logger = this.context.getLogger();
         this.operators = new Operators();
+        this.toString = JSON.stringify(condition);
         this.condition = this._buildCondition(condition);
     }
 
     _buildCondition(condition){
         if (Object.keys(condition)[0] in this.operators){
-            condition[Object.keys(condition)[0]] = Object.values(condition)[0].map(subCondition=>{
+            condition[Object.keys(condition)[0]] = condition[Object.keys(condition)[0]].map(subCondition=>{
                 return this._buildCondition(subCondition);
             });
         } else {
-            return new AttributeCondition(condition);
+            return new AttributeCondition(this.context, condition);
         }
         return condition;
     }
 
-    isApplicable(context, message, condition = this.condition){
+    isApplicable(message, condition = this.condition){
         if (condition instanceof AttributeCondition){
-            return condition.isApplicable(context, message);
+            return condition.isApplicable(message);
         } else {
             let operator = Object.keys(condition)[0];
             return this.operators[operator](
-                Object.values(condition)[0].map(subCondition=>{
-                    return this.isApplicable(context, message, subCondition);
+                condition[Object.keys(condition)[0]].map(subCondition=>{
+                    return this.isApplicable(message, subCondition);
                 })
             );
         }
@@ -38,4 +42,4 @@ class Condition {
 
 }
 
-export default Condition;
+module.exports = Condition;

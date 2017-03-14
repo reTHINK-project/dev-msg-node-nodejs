@@ -8,27 +8,27 @@
 
 'use strict';
 
-import PRP from "../prp/Prp"
+let PRP = require("../prp/Prp");
 
 class PDP {
     constructor(context) {
         this.name = 'PDP';
         context.pdp = this;
         this.context = context;
-        this.registry = this.context.registry;
-        this.logger = this.registry.getLogger();
-        this.prp = new PRP(this.registry);
+        this.logger = this.context.getLogger();
+        this.prp = new PRP(this.context);
+        this.logger.info(`[${this.name}] new instance`);
     }
 
     // ========================= public =============================
 
     authorize(authorizationRequest) {
 
-        let authorizationRequest = this._validate(authorizationRequest);
+        authorizationRequest = this._validate(authorizationRequest);
 
-        let policy = this.prp.getPolicy(this.context, authorizationRequest);
+        let policy = this.prp.getPolicy(authorizationRequest);
 
-        return policy.evaluateRules(this.context, authorizationRequest);
+        return policy.evaluateRules(authorizationRequest);
 
     }
 
@@ -42,4 +42,4 @@ class PDP {
     }
 }
 
-export default PDP;
+module.exports = PDP;

@@ -5,8 +5,10 @@
 class Response {
 
     constructor (effect = 'notApplicable'){
+        this.name = "PDP Response";
         this.effect = effect;
         this.actions = new Map();
+        this.rules = [];
     }
 
     addActions(actions) {
@@ -27,6 +29,10 @@ class Response {
         this.actions.clear();
     }
 
+    attachRule(rule){
+        this.rules.push(rule);
+    }
+
 }
 
-export default Response;
+module.exports = Response;

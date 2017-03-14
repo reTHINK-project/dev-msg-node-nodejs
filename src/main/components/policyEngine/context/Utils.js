@@ -43,9 +43,10 @@
  * @param  {URL.URL} url - url address
  * @return {divideURL} the result of divideURL
  */
-export function divideURL(url) {
+module.exports = {
+ divideURL: function(url) {
 
-    if (!url) throw Error('URL is needed to split');
+    if (!url) return;
 
     // let re = /([a-zA-Z-]*)?:\/\/(?:\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b)*(\/[\/\d\w\.-]*)*(?:[\?])*(.+)*/gi;
     let re = /([a-zA-Z-]*):\/\/(?:\.)?([-a-zA-Z0-9@:%._\+~#=]{2,256})([-a-zA-Z0-9@:%._\+~#=\/]*)/gi;
@@ -65,9 +66,10 @@ export function divideURL(url) {
     };
 
     return result;
-}
+},
 
-export function divideEmail(email) {
+divideEmail: function(email) {
+    if(!email) return;
     let indexOfAt = email.indexOf('@');
 
     let result = {
@@ -76,51 +78,52 @@ export function divideEmail(email) {
     };
 
     return result;
-}
+},
 
 /**
  * Check if an Object is empty
  * @param  {Object} object Object to be checked
  * @return {Boolean}       status of Object, empty or not (true|false);
  */
-export function emptyObject(object) {
+emptyObject: function (object) {
     return Object.keys(object).length > 0 ? false : true;
-}
+},
 
 /**
  * Make a COPY of the original data
  * @param  {Object}  obj - object to be cloned
  * @return {Object}
  */
-export function deepClone(obj) {
+deepClone: function (obj) {
     //TODO: simple but inefficient JSON deep clone...
     if (obj) return JSON.parse(JSON.stringify(obj));
-}
+},
 
-export function removePathFromURL(url) {
+removePathFromURL: function (url) {
     let splitURL = url.split('/');
     return splitURL[0] + '//' + splitURL[2] + '/' + splitURL[3];
-}
+},
 
 /**
  * Obtains the user URL that corresponds to a given email
  * @param  {string} userEmail The user email
  * @return {URL.URL} userURL The user URL
  */
-export function getUserURLFromEmail(userEmail) {
+getUserURLFromEmail: function (userEmail) {
     let indexOfAt = userEmail.indexOf('@');
     return 'user://' + userEmail.substring(indexOfAt + 1, userEmail.length) + '/' + userEmail.substring(0, indexOfAt);
-}
+},
 
 /**
  * Obtains the user email that corresponds to a given URL
  * @param  {URL.URL} userURL The user URL
  * @return {string} userEmail The user email
  */
-export function getUserEmailFromURL(userURL) {
+
+getUserEmailFromURL: function (userURL) {
     let url = divideURL(userURL);
     return url.identity.replace('/', '') + '@' + url.domain; // identity field has '/exampleID' instead of 'exampleID'
-}
+},
 
 
 /**
@@ -128,7 +131,7 @@ export function getUserEmailFromURL(userURL) {
  * @param  {string}   identifier  user identifier
  * @return {string}   userURL    the user URL
  */
-export function convertToUserURL(identifier) {
+convertToUserURL: function (identifier) {
 
     // check if the identifier is already in the url format
     if (identifier.substring(0, 7) === 'user://') {
@@ -145,15 +148,16 @@ export function convertToUserURL(identifier) {
     } else {
         return getUserURLFromEmail(identifier);
     }
-}
+},
 
-export function isDataObjectURL(url) {
+isDataObjectURL: function (url) {
+    if (!url) return;
     let schemasToIgnore = ['domain-idp', 'runtime', 'domain', 'hyperty'];
     let splitURL = (url).split('://');
     let urlSchema = splitURL[0];
 
     return schemasToIgnore.indexOf(urlSchema) === -1;
-}
+},
 
 /**
  * get information relative each component configured on runtime configuration;
@@ -162,12 +166,12 @@ export function isDataObjectURL(url) {
  * @param  {string} resource      type of resource to get, like, catalogue, runtimeUA, protocolstub, idpProxy
  * @return {object}               return an object with all configurations;
  */
-export function getConfigurationResources(configuration, component, resource) {
+getConfigurationResources: function (configuration, component, resource) {
     let objectResource = configuration[component];
     let resourceType = objectResource[resource];
 
     return resourceType;
-}
+},
 
 /**
  * Build a full url with the runtime configuration;
@@ -178,7 +182,7 @@ export function getConfigurationResources(configuration, component, resource) {
  * @param  {boolean} useFallback  if true the function will check if have a fallback url;
  * @return {string}               partial url to contact the resource;
  */
-export function buildURL(configuration, component, resource, type, useFallback = false) {
+buildURL: function (configuration, component, resource, type, useFallback = false) {
     let objectResource = configuration[component];
     let url;
 
@@ -205,3 +209,4 @@ export function buildURL(configuration, component, resource, type, useFallback =
 
     return url;
 }
+};

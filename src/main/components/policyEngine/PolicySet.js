@@ -2,15 +2,18 @@
  * Created by hjiang on 3/4/17.
  */
 
-import moment from "moment";
-import Policy from "./Policy";
+let moment = require("moment");
+let Policy = require("./Policy");
 
 class PolicySet {
 
-    constructor (policySetObj) {
+    constructor (context, policySetObj) {
+        this.name = "PDP Policy Set";
         if (!("version" in policySetObj)) throw new Error("version is not defined.");
         if (!("update" in policySetObj)) throw new Error("last update time is not defined.");
         if (!("policies" in policySetObj)) throw new Error("policies is not defined.");
+        this.context = context;
+        this.logger = this.context.getLogger();
         this.version = policySetObj.version;
         this.update = moment(policySetObj.update);
         this._setPolicies(policySetObj.policies);
@@ -35,11 +38,15 @@ class PolicySet {
             if (!policies.hasOwnProperty(i)) continue;
             let policy = policies[i];
             if (!(policy instanceof Policy)) {
-                policy = new Policy(policy);
+                policy = new Policy(this.context, policy);
             }
             this.policies.push(policy);
         }
     }
+
+    toString(){
+        return JSON.stringify(this.policies);
+    }
 }
 
-export default PolicySet;
+module.exports = PolicySet;

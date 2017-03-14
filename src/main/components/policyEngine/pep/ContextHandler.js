@@ -4,10 +4,10 @@
 
 class ContextHandler {
 
-    constructor(registry) {
+    constructor(context) {
         this.name = "PEP Context Handler";
-        this.registry = registry;
-        this.logger = this.registry.getLogger();
+        this.context = context;
+        this.logger = this.context.getLogger();
     }
 
     parseToAuthzRequest(msg) {
@@ -32,4 +32,4 @@ class ContextHandler {
 
 }
 
-export default ContextHandler;
+module.exports = ContextHandler;

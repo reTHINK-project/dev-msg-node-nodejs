@@ -1,8 +1,10 @@
 /**
  * Created by hjiang on 3/9/17.
  */
-import {divideEmail, divideURL, isDataObjectURL} from './Utils';
-import moment from 'moment';
+let divideEmail = require('./Utils').divideEmail();
+let divideURL = require('./Utils').divideURL();
+let isDataObjectURL = require('./Utils').isDataObjectURL();
+let moment = require('moment');
 
 class ReThinkCtx {
 
@@ -23,12 +25,28 @@ class ReThinkCtx {
         return this._srcDomain;
     }
 
-    get type() {
-        return this._type;
+    get rscType() {
+        return this._rscType;
+    }
+
+    get msgType() {
+        return this._msgType;
+    }
+
+    get msgId() {
+        return this._msgId;
     }
 
     get srcUser() {
         return this._srcUser;
+    }
+
+    get msgFrom() {
+        return this._msgFrom;
+    }
+
+    get msgTo() {
+        return this._msgTo;
     }
 
     get time() {
@@ -58,11 +76,26 @@ class ReThinkCtx {
         }
     }
 
-    set type(params) {
-        let message = params.message;
-        if (message.body.value !== undefined) {
-            this._type = message.body.value.resourceType;
+    set rscType(params) {
+        if (params.message.body.value !== undefined) {
+            this._rscType = params.message.body.value.resourceType;
         }
+    }
+
+    set msgType(params) {
+        this._msgType = params.message.type;
+    }
+
+    set msgId(params) {
+        this._msgId = params.message.id;
+    }
+
+    set msgFrom(params) {
+        this._msgFrom = params.message.from;
+    }
+
+    set msgTo(params) {
+        this._msgTo = params.message.to;
     }
 
     set srcUser(params) {
@@ -81,4 +114,4 @@ class ReThinkCtx {
 
 }
 
-export default ReThinkCtx
+module.exports = ReThinkCtx;

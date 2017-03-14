@@ -58,7 +58,8 @@ class ClientMessage {
 
   dispatch() {
       const pep = this.registry.getComponent('PEP');
-      if (!pep.analyse(this.msg.msg)) return;
+      this.msg.msg = pep.analyse(this.msg.msg);
+      if (!this.msg.msg.body.auth) return;
       let comp = this.registry.getComponent(this.msg.getTo());
       if (comp) {
           // this.logger.info('-------------------------------------------------------------------- [ClientMessage] dispatch msg to internal:', comp.getName());

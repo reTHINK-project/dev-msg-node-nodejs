@@ -2,18 +2,19 @@
  * Created by hjiang on 3/2/17.
  */
 
-import FS from "./store/FS"
-import Redis from "./store/Redis"
+let FS = require("./store/FS");
+let Redis = require("./store/Redis");
 
 class PRP {
 
-    constructor(registry) {
+    constructor(context) {
         this.name = "PRP";
-        this.registry = registry;
-        this.logger = this.registry.getLogger();
-        this.fsStore = new FS();
-        this.redisStore = new Redis();
+        this.context = context;
+        this.logger = this.context.getLogger();
+        this.fsStore = new FS(this.context);
+        this.redisStore = new Redis(this.context);
         this.setPolicySrc();
+        this.logger.info(`[${this.name}] new instance`);
     }
 
     // =================== public ====================
@@ -40,10 +41,10 @@ class PRP {
         }
     }
 
-    getPolicy(context, request){
-        return this.getPolicySrc().getPolicy(context, request);
+    getPolicy(request){
+        return this.getPolicySrc().getPolicy(request);
     }
 
 }
 
-export default PRP;
+module.exports = PRP;

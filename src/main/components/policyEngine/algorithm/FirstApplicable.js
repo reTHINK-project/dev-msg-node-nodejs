@@ -26,17 +26,22 @@
  * @author Ana Caldeira <ana.caldeira@tecnico.ulisboa.pt>
  * @classdesc Class to combine the authorization decisions that result from rules evaluation.
  */
-import Response from "../Response";
+let Response = require("../Response");
 
 class FirstApplicable {
 
+    constructor (context){
+        this.name = 'PDP';
+        this.context = context;
+        this.logger = this.context.getLogger();
+    }
     /**
      * Given an array of individual authorisation decisions, returns the first one different from 'Not Applicable', either positive or negative.
      * @param    {boolean[]}     responses
      * @returns  {Response}
      */
     combine(responses) {
-
+        this.logger.info(`[${this.name}] applying first-applicable combining algorithm`);
         for (let i in responses) {
             if (responses[i].effect !== 'notApplicable') {
                 return decisions[i];
@@ -47,4 +52,4 @@ class FirstApplicable {
 
 }
 
-export default FirstApplicable;
+module.exports = FirstApplicable;

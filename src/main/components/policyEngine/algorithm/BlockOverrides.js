@@ -26,20 +26,28 @@
  * @author Ana Caldeira <ana.caldeira@tecnico.ulisboa.pt>
  * @classdesc Class to combine the authorization decisions that result from rules evaluation.
  */
-import Response from "../Response";
+let Response = require("../Response");
 
 class BlockOverrides {
 
+
+    constructor (context){
+        this.name = 'PDP';
+        this.context = context;
+        this.logger = this.context.getLogger();
+    }
     /**
      * Given an array of individual authorization decisions, prioritizes a positive one.
      * @param    {boolean[]}   responses
      * @returns  {Response}
      */
     combine(responses) {
+        this.logger.info(`[${this.name}] applying block-overrides combining algorithm`);
         let response = new Response();
         for (let i in responses){
             let res = responses[i];
             response.addActions(res.actions);
+            response.attachRule(res.rules[0]);
         }
         let decisions = responses.map(res=>{return res.effect});
         if (decisions.indexOf("deny") !== -1) {
@@ -52,4 +60,4 @@ class BlockOverrides {
 
 }
 
-export default BlockOverrides;
+module.exports = BlockOverrides;

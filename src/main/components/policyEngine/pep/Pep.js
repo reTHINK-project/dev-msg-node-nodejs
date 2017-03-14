@@ -8,18 +8,18 @@
 * A user makes an access request to a resource. The request is received by a policy enforcement point. The policy enforcement point
 * might check the user’s credentials to see if the user has been authenticated.
 * */
-import ContextHandler from "./ContextHandler";
-import PDP from "../pdp/Pdp";
+let ContextHandler = require("./ContextHandler");
+let PDP = require("../pdp/Pdp");
 
 class PEP {
     constructor(name, context) {
         this.name = name;
         context.pep = this;
-        this.pdp = new PDP(context);
         this.context = context;
-        this.registry = this.context.registry;
-        this.logger = this.registry.getLogger();
-        this.contextHandler = new ContextHandler(this.registry);
+        this.logger = this.context.getLogger();
+        this.pdp = new PDP(this.context);
+        this.contextHandler = new ContextHandler(this.context);
+        this.logger.info(`[${this.name}] new instance`);
     }
     /**
      * @param {Object} msg
@@ -44,9 +44,9 @@ class PEP {
 
         let response = this.pdp.authorize(authorizationRequest);
 
-        let authorizationResponse = this.contextHandler.parseToAuthzResponse(decision);
+        let authorizationResponse = this.contextHandler.parseToAuthzResponse(response);
 
-        return this._enforce(authorizationResponse);
+        return this._enforce(authorizationResponse, msg);
     }
     // ======================== private =======================
 
@@ -63,12 +63,14 @@ class PEP {
         return msg;
     }
 
-    _enforce(response) {
+    _enforce(response, msg) {
 
         // Todo: take actions according to/specified in the decision from PDP
-
-        return response.effect === "permit"
+        let permitted = response.effect === "permit";
+        this.logger.info(`[${this.name}] message authorized: ${permitted}`);
+        msg.body.auth = permitted;
+        return msg;
     }
 }
 
-export default PEP;
+module.exports = PEP;
