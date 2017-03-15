@@ -1,122 +1,69 @@
-# Msg-node-nodejs-PolicyEngine
-## Overview
+# Policy Engine Overview
+We present below the general architecture a policy engine, which normally consists of the following components as specified in the XACML stand:
 
-We present below a NodeJs-based prototype of the PEP and PDP initially dedicated to the NodeJS version of the [Messaging Node developed by Apizee](https://github.com/reTHINK-project/dev-msg-node-nodejs). 
+-  **Policy Enforcement Point**
 
-![global_view](../../../../docs/global-view.png)
+   In the XACML architecture, the PEP is the component in charge of intercepting business messages and protecting targeted resources by requesting an access control decision from a policy decision point and enforcing that decision. PEPs can embrace many different form factors depending on the type of resource being protected.
 
-By modifying the PEP hook, it is possible to apply our approach to other versions of the Messaging Node or to other components of the reTHINK architecture requiring an authorization control framework. 
+- **Policy Decision Point**
 
-## Setting up Environment
+   The PDP sits at the very core of the XACML architecture. It implements the XACML standard and evaluation logic. Its purpose is to evaluate access control requests coming in from the PEP against the XACML policies read from the PRP. The PDP then returns a decision – either of Permit, Deny, Not Applicable, or Indeterminate.
 
-You should follow the Setup Environment of [dev-msg-node-nodejs](https://github.com/reTHINK-project/dev-msg-node-nodejs).
+- **Policy Retrieval Point**
 
-## Overview of the development
+   The PRP is one of the components that support the PDP in its evaluation process. Its only purpose is to act as a persistence layer for XACML policies. It can therefore take many forms such as a database, a file, or a web service call to a remote repository.
 
-This section describes the integration & deployment of the PolicyEngine into the Messaging Node architecture.
+- **Policy Information Point**
 
-### Integration the PolicyEngine in MsgNode/Nodejs
+   XACML is a policy-based language which uses attributes to express rules & conditions. Attributes are bits of information about a subject, resource, action, or context describing an access control situation.  Examples of attributes are a user id, a role, a resource URI, a document classification, the time of the day, etc… In its evaluation process, the PDP may need to retrieve additional attributes. It turns to PIPs where attributes are stored. Examples of PIPs include corporate user directories (LDAP…), databases, UDDIs… The PDP may for instance ask the PIP to look up the role of a given user.
 
-[Here](../../../../docs/event-mgmt.png) we have a presentation of the functional blocks of the Messaging Node architecture.
+- **Policy Administration Point**
 
-The graphic below shows where to hook the PolicyEngine Component to the core component of MsgNode.
+   The PAP’s purpose is to provide a management interface that administrators can use to author policies and control their lifecycle.
 
-![Intergration_PolicyEngine](../../../../docs/Intergration_PE.png)
+![global_view](../../../../docs/images/general_policy_engine.png)
 
 
-### Global design of the prototype
 
-The graphic below describes the relations between the Classes in the PolicyEngine and the key methods within them.
+# Policy Engine Implementation
 
-![Relation between Entities](../../../../docs/Relation_Entities.png)
-### Sequence diagram
+We present below a policy engine developed by Institute Mines-Telecom/Telecom Bretagne. The policy engine follows PEP/PDP architecture, and is currently implemented in the [Node.js-based messaging node](https://github.com/reTHINK-project/dev-msg-node-nodejs) of [reThink project](https://github.com/reTHINK-project). However, By simply invoking the interface of PEP, it is possible to migrate the policy engine to other components of the reTHINK architecture. 
 
-The graphic below describes an abstract sequence diagram of the execution process among the entities.
-![Sequence diagram](../../../../docs/Sequence_diagram.png)
 
-## Policy description
-### Policy
 
-A Policy is composed by the key-value pairs of target, combinatory algorithm and a set of rules which is defined in the MsgNode/Nodejs is a JSON object that has 3 fields. It contains:
-- target: a combination of certain key-value pairs (which is a resource attribute[terms-3]) of the message (for example the ‘type’ in the message header), all of these are used to decide if a Policy apply to the coming message’s case.
-- apply: The combinatory algorithm[Terms-1] for the rules, there are two possibilities at the moment: permit-overrides and deny-overrides
-- rules: An array of rules. A rule specifies if a matched target should have or not access to a certain route. A rule defines a decision to allow or deny access. It contains two fields:
- - condition: represents which is the restriction (which concerns the environment attribute[terms-4])
- - effect: the decision of the restriction is satisfied or not. Can be permit or deny. [terms-2]
+![](../../../../docs/images/policy_engine_architecture.png)
 
-### Syntax
 
-```
-[
-    {
-        "target": {
-            "resource attribute": "resource value",
-        },
-        "apply": "algorithm-name",
-        "rules": [
-            {
-                "condition":"<environment attribute1> <parameters>",
-                "effect": "permit/deny"
-            },
-            {
-                "condition": "<environment attribute2> <parameters>",
-                "effect": "permit/deny"
-            },
-            {
-                "condition": "<environment attributeN> <parameters>",
-                "effect": "permit/deny"
-            },
-            {
-                "effect": "permit/deny"
-            }
-        ]
-    }
-]
-```
 
-### Terms
+The figure below below gives the sequence diagram illustrating interaction patterns between different components.
 
-1. combinatory algorithms: When there is more than one rule inside a policy, the combinatory algorithm will decide the final result from the multiple results. There are two possibilities:
- - permit-overrides --- If at least one rule permits, the final decision for that policy should be permit (deny, unless one permit)
- - deny-overrides --- if at least one rule denies, then the final decision for that policy should be deny (permit, unless one denies)
-2. rule effect: if a rule applies (target match), the effect is the access decision for that rule. It can be:
- - permit --- If rule apply, decision is to allow access.
- - deny --- If rule apply, decision is to deny access.
-When the rule(s) do not apply (the target don’t match), then the decision is deny, since it is not clear if the certain message can access or not the route.
-3. The resource attribute: The resource attributes (the resource for which access is required) are stored in repositories and are retrieved through the Policy Information Point (PIP) (which is represented by "IStore" in the current IMT-TB version of the PolicyEngine) at the time of an access request and prior to or during the computation of the decision. We introduce several this kind of attributes such as ‘id’, ‘type’, ‘from’, ‘to’ present in the message.
-4. The environment attribute: which depends on the availability of the environment setup that can detect and report values are somewhat different from the resource attributes which can be administratively created/modified by the users/operators/DB administrators, that means the rules such as time, weekdays, temperature which is aware of the environment context.
 
-### Example
 
-```
-[
-    {
-        "target": {
-            "id": 1,
-            "type": "subscribe",
-        },
-        "apply": "deny-overrides",
-        "rules": [
-            {
-                "condition":"time 12:00 13:00",
-                "effect": "deny"
-            },
-            {
-                "condition": "weekday monday",
-                "effect": "deny"
-            },
-            {
-                "effect": "permit"
-            }
-        ]
-    }
-]
-```
+![](../../../../docs/images/PE_sequence_diagram.png)
 
-## References
 
-- [the XACML policies](https://en.wikipedia.org/wiki/XACML)
 
-- [ABAC](https://en.wikipedia.org/wiki/Attribute-Based_Access_Control)
+Please note that reTHINK project defines a remote repository to globally maintain and store policies within a CSP domain, as shown in the upper left of the picture below, which is currently not implemented. The PEP/PDP as shown in the lower right is the policy engine hooked to the messaging node.
 
-- [A Rule Based Access Control module for hapi](https://github.com/franciscogouveia/hapi-rbac)  
+
+
+![](../../../../docs/images/policy_deployment.jpg)
+
+
+
+Please refer to [here](https://github.com/Heriam/dev-msg-node-nodejs/blob/master/readme.md) for information about the Node.js-based messaging node. The figure below gives the position of the invocation of the policy engine in the message event processing among components in the messaging node. As shown in the figure, each new message would be intercepted by the policy engine, and then be passed or blocked according to the decision made by PDP.
+
+![](../../../../docs/images/Intergration_PE.png)
+
+
+
+# Policy Description Language
+
+- [Policy Description Language](./prp/policy)
+
+# References
+
+- [reThink Project Homepage](https://rethink-project.eu/)
+- [reThink Project Github](https://github.com/reTHINK-project)
+- [IMT-TB reThink Testbed](https://github.com/Heriam/reThink-testbed)
+- [A Rule Based Access Control module for hapi](https://github.com/franciscogouveia/hapi-rbac)
