@@ -3,7 +3,7 @@
 
 We present below a NodeJs-based prototype of the PEP and PDP initially dedicated to the NodeJS version of the [Messaging Node developed by Apizee](https://github.com/reTHINK-project/dev-msg-node-nodejs). 
 
-![global_view](./docs/global-view.png)
+![global_view](../../../../docs/global-view.png)
 
 By modifying the PEP hook, it is possible to apply our approach to other versions of the Messaging Node or to other components of the reTHINK architecture requiring an authorization control framework. 
 
@@ -17,22 +17,22 @@ This section describes the integration & deployment of the PolicyEngine into the
 
 ### Integration the PolicyEngine in MsgNode/Nodejs
 
-[Here](./docs/event-mgmt.png) we have a presentation of the functional blocks of the Messaging Node architecture.
+[Here](../../../../docs/event-mgmt.png) we have a presentation of the functional blocks of the Messaging Node architecture.
 
 The graphic below shows where to hook the PolicyEngine Component to the core component of MsgNode.
 
-![Intergration_PolicyEngine](./docs/Intergration_PE.png)
+![Intergration_PolicyEngine](../../../../docs/Intergration_PE.png)
 
 
 ### Global design of the prototype
 
 The graphic below describes the relations between the Classes in the PolicyEngine and the key methods within them.
 
-![Relation between Entities](./docs/Relation_Entities.png)
+![Relation between Entities](../../../../docs/Relation_Entities.png)
 ### Sequence diagram
 
 The graphic below describes an abstract sequence diagram of the execution process among the entities.
-![Sequence diagram](./docs/Sequence_diagram.png)
+![Sequence diagram](../../../../docs/Sequence_diagram.png)
 
 ## Policy description
 ### Policy

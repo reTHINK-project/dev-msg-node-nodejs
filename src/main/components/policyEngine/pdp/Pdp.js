@@ -28,7 +28,9 @@ class PDP {
 
         let policy = this.prp.getPolicy(authorizationRequest);
 
-        return policy.evaluateRules(authorizationRequest);
+        let response = policy.evaluateRules(authorizationRequest);
+
+        return this._respond(response);
 
     }
 
@@ -39,6 +41,11 @@ class PDP {
     // Todo: Identify fields to check for request validation.
 
         return authorizationRequest;
+    }
+
+    _respond(response) {
+    // Todo
+        return response;
     }
 }
 
