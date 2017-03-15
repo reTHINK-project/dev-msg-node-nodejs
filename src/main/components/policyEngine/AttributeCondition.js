@@ -7,12 +7,12 @@ let Operators = require('./Operators');
 class AttributeCondition {
 
     constructor(context, condition) {
-        this.name = "PDP Attribute Condition";
         this.context = context;
         this.logger = this.context.getLogger();
         this.attribute = Object.keys(condition)[0];
         this.expression = condition[Object.keys(condition)[0]];
         this.operators = new Operators();
+        this.name = "PDP AttrCond";
     }
 
     isApplicable(message, expression = this.expression) {
@@ -25,32 +25,36 @@ class AttributeCondition {
          */
         this.context[this.attribute] = {message: message};
         let value = this.context[this.attribute];
-        let results = [];
+        let final = false;
         if (expression.constructor === Object) {
+            let results = [];
             for (let operator in expression) {
+                let result = false;
                 if (!(expression.hasOwnProperty(operator))) continue;
                 let params = expression[operator];
                 if (operator==="not"){
-                    results.push(this.operators.not(this.isApplicable(message, params)));
-                    continue;
-                }
-                if (params.constructor === Array) {
-                    results.push(params.some(param => {
+                    result = this.operators.not(this.isApplicable(message, params));
+                } else if (params.constructor === Array) {
+                    result = params.some(param => {
                         return this.operators[operator](value, param, this.attribute);
-                    }));
-                    continue;
+                    });
+                } else {
+                    result = this.operators[operator](value, params, this.attribute);
                 }
-                results.push(this.operators[operator](value, params, this.attribute));
+                results.push(result);
             }
-            return this.operators.allOf(results);
-
+            final = this.operators.allOf(results);
         } else if (expression.constructor === Array) {
-            return expression.some(express=>{
+            final = expression.some(express=>{
                 return this.isApplicable(message, express);
             });
         } else {
             throw new Error(`Unsupported condition format`);
         }
+        if (expression === this.expression) {
+            this.logger.info(`[${this.name}] ${this.attribute} ${value} fulfils ${JSON.stringify(expression)}: ${final}`);
+        }
+        return final;
     }
 }
 

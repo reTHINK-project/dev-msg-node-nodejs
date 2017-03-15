@@ -11,7 +11,6 @@ let FirstApplicable = require('./algorithm/FirstApplicable');
 class Policy {
 
     constructor(context, policyObj) {
-        this.name = "PDP Policy";
         if (!("id" in policyObj)) throw new Error("id is not defined.");
         if (!("scope" in policyObj)) throw new Error("scope is not defined.");
         if (!("rules" in policyObj)) throw new Error("rules is not defined.");
@@ -24,16 +23,18 @@ class Policy {
         this.conditionalActions = policyObj.conditionalActions;
         this._setRules(policyObj.rules);
         this._setCombiningAlgorithm(policyObj.combiningAlgorithm);
+        this.name = `PDP Policy ${this.id}`;
     }
 
     isApplicable(message){
+        this.logger.info(`[${this.name}] checking applicability`);
         let isApplicable = this.scope.isApplicable(message);
-        this.logger.info(`[${this.name}] checking policy: ${this.id}, scope: ${JSON.stringify(this.scope.scope)}, applicability: ${isApplicable}`);
+        this.logger.info(`[${this.name}] policy is applicable: ${isApplicable}`);
         return isApplicable;
     }
 
     evaluateRules(message){
-        this.logger.info(`[${this.name}] examining against policy ${this.id}`);
+        this.logger.info(`[${this.name}] evaluating rules`);
         let results = [];
         for (let i in this.rules) {
             if (!this.rules[i].isApplicable(message)) continue;
@@ -41,7 +42,7 @@ class Policy {
         }
         let response = this.combiningAlgorithm.combine(results);
         let actions = this.conditionalActions[response.effect];
-        response.addActions(actions);
+        if (actions) response.addActions(actions);
         return response;
     }
 

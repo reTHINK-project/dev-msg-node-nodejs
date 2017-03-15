@@ -8,7 +8,7 @@ let Operators = require("./Operators");
 class Condition {
 
     constructor(context, condition){
-        this.name = "PDP Rule Condition";
+        this.name = "PDP";
         this.context = context;
         this.logger = this.context.getLogger();
         this.operators = new Operators();

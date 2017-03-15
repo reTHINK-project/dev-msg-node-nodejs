@@ -1,9 +1,9 @@
 /**
  * Created by hjiang on 3/9/17.
  */
-let divideEmail = require('./Utils').divideEmail();
-let divideURL = require('./Utils').divideURL();
-let isDataObjectURL = require('./Utils').isDataObjectURL();
+let divideEmail = require('./Utils').divideEmail;
+let divideURL = require('./Utils').divideURL;
+let isDataObjectURL = require('./Utils').isDataObjectURL;
 let moment = require('moment');
 
 class ReThinkCtx {

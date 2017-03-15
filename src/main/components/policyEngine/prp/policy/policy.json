@@ -8,24 +8,24 @@
       "rules": [
         { "id": 1,
           "target":[
-            {"srcDomain": {"equals": "hjiang-rethink.com"}},
-            {"msgType": {"equals": ["create","update","open"]}}
+            {"srcDomain": {"equals": "gmail.com"}},
+            {"msgType": {"equals": ["create","update","open","subscribe","response", "handshake"]}}
               ],
           "condition": {
             "anyOf": [
               { "allOf": [
                 {"weekday": {"not": {"equals": ["saturday", "sunday"]}}},
-                {"time": {"between": ["09:00:00 12:00:00", "14:00:00 18:00:00"]}}
+                {"time": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}}
                 ]
               },
               { "allOf": [
                 {"weekday": {"equals": ["saturday", "sunday"]}},
-                {"time": {"between": ["09:30:00 11:30:00", "14:30:00 17:30:00"]}}
+                {"time": {"between": ["07:00:00 12:00:00", "13:30:00 22:30:00"]}}
                 ]
               }
             ]
           },
-          "effect": "deny",
+          "effect": "permit",
           "actions": {
             "copyto": "hao.jiang@imt-atlantic.fr"
           },

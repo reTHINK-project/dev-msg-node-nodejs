@@ -12,7 +12,6 @@ class FSStore extends IStore {
         this.logger = this.context.getLogger();
         this.srcPath = "../policy/policy.json";
         this.policySet = this.loadPolicies();
-        this.logger.info(`[${this.name}] new instance`);
     }
 
     loadPolicies(srcPath = this.srcPath){

@@ -67,7 +67,7 @@ class PEP {
 
         // Todo: take actions according to/specified in the decision from PDP
         let permitted = response.effect === "permit";
-        this.logger.info(`[${this.name}] message authorized: ${permitted}`);
+        this.logger.info(`[${this.name}] message authorized: ${permitted}, policing decision: ${response.effect}`);
         msg.body.auth = permitted;
         return msg;
     }

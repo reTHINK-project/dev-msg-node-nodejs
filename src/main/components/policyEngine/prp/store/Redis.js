@@ -6,7 +6,6 @@ class RedisStore extends IStore{
         this.context = context;
         this.logger = this.context.getLogger();
         this.name = "PRP RedisStore";
-        this.logger.info(`[${this.name}] new instance`);
     }
 
     getPolicy(message){

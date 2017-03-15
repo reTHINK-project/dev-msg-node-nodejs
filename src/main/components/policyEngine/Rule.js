@@ -14,7 +14,6 @@ class Rule {
         if (!("effect" in rule)) throw new Error("effect is not defined.");
         if (!("priority" in rule)) throw new Error("priority is not defined.");
         this.context = context;
-        this.name = "PDP Policy Rule";
         this.logger = this.context.getLogger();
         this.target = new Target(this.context, rule.target);
         this.condition = new Condition(this.context, rule.condition);
@@ -22,18 +21,21 @@ class Rule {
         this.actions = rule.actions;
         this.effect = rule.effect;
         this.priority = rule.priority;
+        this.name = `PDP Rule ${this.id}`;
     }
 
     isApplicable(message){
+        this.logger.info(`[${this.name}] checking applicability`);
         let isApplicable = this.target.isApplicable(message);
-        this.logger.info(`[${this.name}] checking rule: ${this.id}, target: ${JSON.stringify(this.target.target)}, applicability: ${isApplicable}`);
+        this.logger.info(`[${this.name}] rule is applicable: ${isApplicable}`);
         return isApplicable;
     }
 
     evaluateCondition(message) {
         let res = new Response();
+        this.logger.info(`[${this.name}] evaluating condition`);
         let isApplicable = this.condition.isApplicable(message);
-        this.logger.info(`[${this.name}] evaluating against rule: ${this.id}, condition: ${this.condition.toString}, applicability: ${isApplicable}, effect: ${this.effect}`);
+        this.logger.info(`[${this.name}] condition is fulfilled: ${isApplicable}, effect: ${this.effect}`);
         if (isApplicable) {
             res.setEffect(this.effect);
             res.addActions(this.actions);
