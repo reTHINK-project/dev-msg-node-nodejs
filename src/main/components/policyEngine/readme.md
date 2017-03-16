@@ -23,7 +23,7 @@ We present in this section the general architecture of a policy engine, which no
 
    ​
 
-   ![](../../../../docs/images/general_policy_engine.png)
+   ![](../../../../docs/images/general_policy_engine.PNG)
 
    ​
 
