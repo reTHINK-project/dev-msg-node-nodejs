@@ -61,6 +61,16 @@ Please refer to [here](https://github.com/Heriam/dev-msg-node-nodejs/blob/master
 
 - [Policy Description Language](./prp/policy)
 
+  ​
+
+# Developer Guide
+
+- [reThink Testbed Setup](https://github.com/Heriam/reThink-testbed/tree/dev-tb)
+
+- [Node.js Messaging Node Setup](https://github.com/reTHINK-project/dev-msg-node-nodejs)
+
+  ​
+
 # References
 
 - [reThink Project Homepage](https://rethink-project.eu/)
