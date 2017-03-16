@@ -1,29 +1,31 @@
 # Policy Engine Overview
-We present below the general architecture a policy engine, which normally consists of the following components as specified in the XACML stand:
+We present in this section the general architecture of a policy engine, which normally consists of the following components:
 
 -  **Policy Enforcement Point**
 
-   In the XACML architecture, the PEP is the component in charge of intercepting business messages and protecting targeted resources by requesting an access control decision from a policy decision point and enforcing that decision. PEPs can embrace many different form factors depending on the type of resource being protected.
+   In the reThink framework, the PEP is the component in charge of intercepting communication messages and protecting targeted resources by requesting an authorization decision from a Policy Decision Point (PDP) and enforcing that decision. 
 
 - **Policy Decision Point**
 
-   The PDP sits at the very core of the XACML architecture. It implements the XACML standard and evaluation logic. Its purpose is to evaluate access control requests coming in from the PEP against the XACML policies read from the PRP. The PDP then returns a decision – either of Permit, Deny, Not Applicable, or Indeterminate.
+   The PDP sits at the very core of the policy engine architecture. It implements the policy description language and evaluation logic. Its purpose is to evaluate authorization requests coming from the PEP against the policies loaded from the Policy Retrieval Point (PRP). The PDP then returns a decision – either of Permit, Deny, Not Applicable, or Indeterminate.
 
 - **Policy Retrieval Point**
 
-   The PRP is one of the components that support the PDP in its evaluation process. Its only purpose is to act as a persistence layer for XACML policies. It can therefore take many forms such as a database, a file, or a web service call to a remote repository.
+   The PRP is one of the components that support the PDP in its evaluation process. Its only purpose is to serve as a persistence layer for reThink policies. It can therefore take many forms such as a database, a file, or a web service call to a remote repository.
 
 - **Policy Information Point**
 
-   XACML is a policy-based language which uses attributes to express rules & conditions. Attributes are bits of information about a subject, resource, action, or context describing an access control situation.  Examples of attributes are a user id, a role, a resource URI, a document classification, the time of the day, etc… In its evaluation process, the PDP may need to retrieve additional attributes. It turns to PIPs where attributes are stored. Examples of PIPs include corporate user directories (LDAP…), databases, UDDIs… The PDP may for instance ask the PIP to look up the role of a given user.
+   The [Policy Description Language (PDL)](./prp/policy/readme.md) of reThink uses attributes to express rules & conditions. Attributes are bits of information about a subject, resource, action, or context describing an access control situation.  Examples of attributes are a user id, a role, a resource URI, a document classification, the time of the day, etc… In its evaluation process, the PDP may need to retrieve additional attributes. It turns to PIPs where attributes are stored. Examples of PIPs include corporate user directories (LDAP…), databases, UDDIs… The PDP may for instance ask the PIP to look up the role of a given user.
 
 - **Policy Administration Point**
 
    The PAP’s purpose is to provide a management interface that administrators can use to author policies and control their lifecycle.
 
-![](../../../../docs/images/general_policy_engine.PNG)
+   ​
 
+   ![](../../../../docs/images/general_policy_engine.png)
 
+   ​
 
 # Policy Engine Implementation
 
