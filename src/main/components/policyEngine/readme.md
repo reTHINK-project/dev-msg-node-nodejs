@@ -21,7 +21,7 @@ We present below the general architecture a policy engine, which normally consis
 
    The PAP’s purpose is to provide a management interface that administrators can use to author policies and control their lifecycle.
 
-![global_view](../../../../docs/images/general_policy_engine.png)
+![](../../../../docs/images/general_policy_engine.PNG)
 
 
 
