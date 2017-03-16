@@ -1,20 +1,23 @@
 msg-node-nodejs:
-    image: msg-node-rethink:latest
+    image: msg-node-nodejs:latest
     # For Easy Development of the msg-node load this volume
     # volumes:
     #     - /path/to/msg-node/repository:/usr/src/app
     ports:
         - "9090:9090"
     environment:
-        - url=localhost  # url:domain of CSP where the Messaging Node would be deployed
+        - MNdomain=localhost  # url:domain of CSP where the Messaging Node would be deployed
         - port=9090     # port:port of Messaging Node would be deployed
-        - domainRegistryUrl=http://localhost:4567/ # url:domain of CSP where the registry-domain would be deployed or domainRegistryUrl=http://172.18.0.4:4567/
+        - domainRegistryUrl=http://citysdk.tecnico.ulisboa.pt:4568/ # url:domain of CSP where the registry-domain would be deployed or domainRegistryUrl=http://172.18.0.4:4567/
         - globalRegistryUrl=http://130.149.22.133:5002/ # url:domain of CSP where the Global Registry would be deployed
+        - redisURL=http://172.18.0.5 # redisUrl:address where redis server(Persistence) would be deployed localhost could be redisUrl=http://172.18.0.5:6379/
         - logLevel=INFO
-        # - logDir=/usr/src/app/logs
+        - logDir=/usr/src/app/logs
         # - useSSL=1
-        # - sslCertificate=/usr/src/app/src/ssl/myCert.crt
+        # - sslCertificate=/usr/src/app/src/ssl/myCert.crt // in order to run msg-node for https://msg-node.localhost:9090/
         # - sslPKey=/usr/src/app/src/ssl/myCert.key
+    links:
+        - 'redis'
 
 registry-domain:
     image: rethink/registry-domain-server:latest
@@ -23,3 +26,11 @@ registry-domain:
     environment:
         - STORAGE_TYPE=RAM
         - EXPIRES=3600
+
+'redis':
+    image: 'redis:3.2.6'
+    networks:
+      rethink:
+        ipv4_address: 172.18.0.5
+    ports:
+      - "6379:6379"

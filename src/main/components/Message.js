@@ -46,6 +46,11 @@ class Message {
     return this.msg;
   }
 
+  getRuntimeUrl() {
+    if(getFrom().startWith('runtime'))
+      return this.getFrom();
+  }
+
   getBody() {
     return this.msg.body;
   }

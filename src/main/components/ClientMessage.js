@@ -40,7 +40,12 @@ class ClientMessage {
   }
 
   getRuntimeUrl() {
-    return this.client.getRuntimeUrl();
+    if(this.getFrom().startsWith('runtime'))
+      return this.getFrom();
+  }
+
+  getFrom() {
+    return this.msg.msg.from;
   }
 
   getResource() {
@@ -52,26 +57,21 @@ class ClientMessage {
   }
 
   dispatch() {
-    // get policyEngine
-    const pep = this.registry.getComponent('PEP');
-    // validate request with policy
-    pep.analyse(this.msg.msg).then(() => {
+      const pep = this.registry.getComponent('PEP');
+      this.msg.msg = pep.analyse(this.msg.msg);
+      if (!this.msg.msg.body.auth) return;
       let comp = this.registry.getComponent(this.msg.getTo());
       if (comp) {
-        this.logger.info(`[${this.name}] dispatch msg to internal: ${comp.getName()}`);
-        try {
-          comp.handle(this);
-        } catch (e) {
-          this.replyError(comp.getName(), e);
-        }
+          // this.logger.info('-------------------------------------------------------------------- [ClientMessage] dispatch msg to internal:', comp.getName());
+          try {
+              comp.handle(this);
+          } catch (e) {
+              this.replyError(comp.getName(), e);
+          }
       } else {
-        this.logger.info(`[${this.name}] forward msg to : ${this.msg.getTo()}`);
-        this.registry.getComponent('MessageBus').publish(this.msg.getTo(), this.msg.msg);
+          this.logger.info('[ClientMessage] forward msg to :', this.msg.getTo());
+          this.registry.getComponent('MessageBus').publish(this.msg.getTo(), this.msg.msg);
       }
-    }).catch(e => {
-      this.replyError(this.msg.getFrom(), e);
-      this.logger.info(`[${this.name}] Message denied: ${e}`);
-    });
   }
 
   reply(msg) {

@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "update" : "2017-03-14 17:18:31",
+  "policies": [
+    {
+      "id": 1,
+      "scope": {},
+      "rules": [
+        { "id": 1,
+          "target":[
+            {"srcDomain": {"equals": "gmail.com"}},
+            {"msgType": {"equals": ["create","update","open","subscribe","response", "handshake"]}}
+              ],
+          "condition": {
+            "anyOf": [
+              { "allOf": [
+                {"weekday": {"not": {"equals": ["saturday", "sunday"]}}},
+                {"time": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}}
+                ]
+              },
+              { "allOf": [
+                {"weekday": {"equals": ["saturday", "sunday"]}},
+                {"time": {"between": ["07:00:00 12:00:00", "13:30:00 22:30:00"]}}
+                ]
+              }
+            ]
+          },
+          "effect": "permit",
+          "actions": {
+            "copyto": "hao.jiang@imt-atlantic.fr"
+          },
+          "priority": 0
+        }
+      ],
+      "combiningAlgorithm": "blockOverrides",
+      "conditionalActions": {
+        "deny": {
+          "copyto": "hao.jiang@imt-atlantic.fr"
+        },
+        "notApplicable": {
+          "copyto": "hao.jiang@imt-atlantic.fr"
+        }
+      }
+    }
+  ]
+}
