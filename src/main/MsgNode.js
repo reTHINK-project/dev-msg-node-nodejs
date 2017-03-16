@@ -7,7 +7,8 @@
 * Copyright 2016 Deutsche Telekom AG
 * Copyright 2016 Apizee
 * Copyright 2016 TECHNISCHE UNIVERSITAT BERLIN
-*
+* Copyrignt 2016 IMT/Telecom Bretagne
+ *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
@@ -41,7 +42,8 @@ let FileStore = require('session-file-store')(expressSession);
 let Client = require('./components/Client');
 let Registry = require('./components/Registry');
 let Message = require('./components/Message');
-
+let PEP = require('./components/policyEngine/pep/Pep');
+let NodejsCtx = require('./components/policyEngine/context/NodejsCtx');
 let MessageBus = require('./components/MessageBus');
 let SessionManager = require('./components/SessionManager');
 
@@ -64,7 +66,7 @@ class MsgNode {
     this.config = config;
     this.config.domainRegistryUrl = this.config.domainRegistryUrl.replace(/\/$/, '') + '/';
     // redis.createClient(port, host); e.g host=this.config.redisURL
-    this.storage = redis.createClient(6379, '172.18.0.5');
+    this.storage = redis.createClient(6379, this.config.redisURL.slice(7));
     this.domain = this.config.MNdomain;
 
     // define logger configuration
@@ -121,6 +123,8 @@ class MsgNode {
     this.registry.registerComponent(MNpersistm);
     let bus = new MessageBus('MessageBus', this.registry);
     this.registry.registerComponent(bus);
+    let pep = new PEP('PEP', new NodejsCtx(this.registry, this.config));
+    this.registry.registerComponent(pep);
     let sm = new SessionManager('mn:/session', this.registry);
     this.registry.registerComponent(sm);
     let alm = new AddressAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/hyperty-address-allocation', this.registry);
@@ -129,7 +133,7 @@ class MsgNode {
     this.registry.registerComponent(olm);
     let syncm = new SubscriptionManager('domain://msg-node.' + this.registry.getDomain()  + '/sm', this.registry);
     this.registry.registerComponent(syncm);
-    let rm = new DomainRegistryManager('domain://registry.' + this.registry.getDomain().domainRegistryUrl+ '/', this.registry);
+    let rm = new DomainRegistryManager('domain://registry.' + this.registry.getDomain() + '/', this.registry);
     this.registry.registerComponent(rm);
     let glbm = new GlobalRegistryManager(this.registry.getDomain().globalRegistryUrl, this.registry);
     this.registry.registerComponent(glbm);

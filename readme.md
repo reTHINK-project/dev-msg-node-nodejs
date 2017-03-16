@@ -35,13 +35,13 @@ You can skip this part, in case you have redis & Node.js installed.
 In order to build dev-msg-node-nodejs you must have docker running. Otherwise, docker can be installed from [docker installation](https://docs.docker.com/).
 After having installed correctly docker, run the following command :
 ```
-$ docker build -t msg-node-rethink .
+$ docker build -t msg-node-nodejs .
 
 ```
 Afterwards, run the following :
 
 ```
-$ docker run -e url=domain.tld -e PORT=9090 -e domainRegistryUrl=http://domain.tld:4567 msg-node-rethink
+$ docker run -e url=domain.tld -e PORT=9090 -e domainRegistryUrl=http://domain.tld:4567 msg-node-nodejs
 
 ```
 
@@ -104,7 +104,7 @@ Combine with node redis sentinel client, each node shares data sessions with eac
 
 Redis-Sentinel monitor & notify redis cluster of data changes between Node.js instances.
 
-![NodeJS & Redis clustering using Redis-Sentinel](./docs/nodejs-redis-cluster.png)
+![NodeJS & Redis clustering using Redis-Sentinel](./docs/images/nodejs-redis-cluster.png)
 
 ### Developer View
 
@@ -176,7 +176,7 @@ Redis has built-in replication, and provides high availability via Redis Sentine
 This section describes the functional blocks of the Messaging Node architecture.
 
 The graph below describes message event processing with components.
-![MsgNode event message](./docs/event-mgmt.png)
+![MsgNode event message](./docs/images/event-mgmt.png)
 
 
 ##### Entry point
