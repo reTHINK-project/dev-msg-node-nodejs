@@ -118,7 +118,7 @@ The type of operation to do to verify an attribute value against a given paramet
 
 ### Targets and Conditions
 
-//Todo
+reThink PDL defines a notion of Attribute Condition, which is a simple Boolean condition consists of exactly an attribute, at least an operator and one or more parameters. Attribute Condition is the basic element, and the smallest unit to form a complex condition.
 
 ### Example
 
