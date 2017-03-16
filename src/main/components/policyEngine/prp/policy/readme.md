@@ -35,14 +35,14 @@ As shown in Figure 3, for a specific PolicySet, an **id** is given in order to u
 
 ```json
 {
-  "id": <id>,
-  "version": <version>,
-  "update": <update timestamp>,
-  "target": <boolean condition>,
-  "policies": [<policy1>, <policy2>, ...],
-  "policyCombiningAlgorithm": <algorithm>,
-  "obligations": [<task1>, <task2>, ...],
-  "priority": <priority>
+  "id": (id),
+  "version": (version),
+  "update": (update timestamp),
+  "target": (boolean condition),
+  "policies": [(policy1), (policy2), ...],
+  "policyCombiningAlgorithm": (algorithm),
+  "obligations": [(task1), (task2), ...],
+  "priority": (priority)
 }
 ```
 
@@ -52,12 +52,12 @@ Each policy, as show in Figure 4, contains id, target, priority, and obligations
 
 ```json
 {
-  "id": <id>,
-  "target": <boolean condition>,
-  "rules": [<rule1>, <rule2>, ...],
-  "ruleCombiningAlgorithm": <algorithm>,
-  "obligations": [<task1>, <task2>, ...],
-  "priority": <priority>
+  "id": (id),
+  "target": (boolean condition),
+  "rules": [(rule1), (rule2), ...],
+  "ruleCombiningAlgorithm": (algorithm),
+  "obligations": [(task1), (task2), ...],
+  "priority": (priority)
 }
 ```
 
@@ -67,12 +67,12 @@ As show in Figure 5, in addition to a target, a rule includes one or a combinati
 
 ```json
 {
-  "id": <id>,
-  "target": <boolean condition>,
-  "condition": <condition>,
-  "effect": <effect>,
-  "obligations": [<task1>, <task2>, ...],
-  "priority": <priority>
+  "id": (id),
+  "target": (boolean condition),
+  "condition": (condition),
+  "effect": (effect),
+  "obligations": [(task1), (task2), ...],
+  "priority": (priority)
 }
 ```
 
