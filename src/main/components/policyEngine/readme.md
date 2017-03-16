@@ -65,5 +65,5 @@ Please refer to [here](https://github.com/Heriam/dev-msg-node-nodejs/blob/master
 
 - [reThink Project Homepage](https://rethink-project.eu/)
 - [reThink Project Github](https://github.com/reTHINK-project)
-- [IMT-TB reThink Testbed](https://github.com/Heriam/reThink-testbed)
+- [IMT-TB reThink Testbed](https://github.com/Heriam/reThink-testbed/tree/dev-tb)
 - [A Rule Based Access Control module for hapi](https://github.com/franciscogouveia/hapi-rbac)
