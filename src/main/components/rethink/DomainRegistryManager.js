@@ -31,7 +31,7 @@ class DomainRegistryManager {
   constructor(name, registry) {
     this.name = name;
     this.registry = registry;
-    this.registryConnector = new RegistryDomainConnector(this.registry.getConfig().domainRegistryUrl);
+    this.registryConnector = new RegistryDomainConnector(this.registry.getConfig().domainRegistryConfig);
     this.logger = this.registry.getLogger();
 
   }

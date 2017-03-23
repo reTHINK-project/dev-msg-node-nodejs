@@ -64,7 +64,7 @@ class MsgNode {
   constructor(config) {
     let _this = this;
     this.config = config;
-    this.config.domainRegistryUrl = this.config.domainRegistryUrl.replace(/\/$/, '') + '/';
+    this.config.domainRegistryUrl = this.config.domainRegistryConfig.url.replace(/\/$/, '') + '/';
     // redis.createClient(port, host); e.g host=this.config.redisURL
     this.storage = redis.createClient(6379, this.config.redisURL.slice(7));
     this.domain = this.config.MNdomain;
@@ -96,7 +96,7 @@ class MsgNode {
       res.send({
         status:'up',
         domain: this.config.MNdomain,
-        domainRegistry: this.config.domainRegistryUrl,
+        domainRegistry: this.config.domainRegistryConfig.url,
         globalRegistry: this.config.globalRegistryUrl,
         time: (new Date()).toISOString(),
         connected: Object.keys(this.io.sockets.sockets).length
