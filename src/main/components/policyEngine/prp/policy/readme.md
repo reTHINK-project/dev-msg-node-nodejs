@@ -134,44 +134,169 @@ The *condition expression* is an expression consists of operators and parameters
 {"<operator>": "<parameter>"}
 ```
 
-However, there are also cases that we may need multiple constrains (operator-parameter pairs)  for the same attribute, with logical relationships such as *and, or, not*, etc... To achieve this, we define that operator-parameter pairs in the same map are of *and* relationship, while the ones in the same array are of *or* relationship.
+However, there are also cases that we may need multiple constrains (operator-parameter pairs)  for the same attribute, with logical relationships such as *and, or, not*. Respectively, we use keywords such as *allOf, anyOf* and *not* to indicate these relations. To simplify this, we also define that by default operator-parameter pairs in the same map are of *and* relationship, while the ones in the same array are of *or* relationship, so that in most cases that the keywords can be omitted.
 
-e.g., expression1 *and* expression2:
+- *OR Logic*:
+
+  e.g., expression1 *or* expression2:
+
+  ```json
+   {
+     "anyOf": [
+       {"<operator1>": "<parameter1>"},
+       {"<operator2>": "<parameter2>"}
+     ]
+   }
+  ```
+
+  Simplification:
+
+  ```json
+   [
+     {"<operator1>": "<parameter1>"},
+     {"<operator2>": "<parameter2>"}
+   ]
+  ```
+
+  Specifically, if a complex expression contains multiple operator-parameter pairs with *or* relationship having the same operator:
+
+  ```json
+   [
+     {"<operator1>": "<parameter1>"},
+     {"<operator1>": "<parameter2>"},
+     {"<operator1>": "<parameter3>"}
+   ]
+  ```
+
+   then it can be further simplified as:
+
+  ```json
+   {"<operator1>": ["<parameter1>", "<parameter2>", "<parameter3>"]}
+  ```
+
+- *AND Logic*:
+
+  e.g., expression1 *and* expression2:
+
+  ```json
+  {
+    "allOf": [
+      {"<operator1>": "<parameter1>"},
+      {"<operator2>": "<parameter2>"}
+    ]
+  }
+  ```
+
+  Simplification:
+
+  ```json
+  {
+    "<operator1>": "<parameter1>",
+    "<operator2>": "<parameter2>"
+  }
+  ```
+
+  Please note that we do not provide any further simplification for a complex expression that contains multiple operator-parameter pairs with *and* relationship having the same operator, i.e., there is no further simplified syntax for expression:
+
+  ```json
+  {
+    "<operator1>": "<parameter1>",
+    "<operator1>": "<parameter2>",
+    "<operator1>": "<parameter3>"
+  }
+  ```
+
+- *NOT Logic*:
+
+  e.g., *not* expression1:
+
+  ```json
+  {
+    "not": {"<operator1>": "<parameter1>"}
+  }
+  ```
+
+Therefore, an *Attribute Condition* could be simple but flexible and expressive as below for example:
 
 ```json
-{
-  "<operator1>": "<parameter1>",
-  "<operator2>": "<parameter2>"
-}
+{"time": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}}
 ```
 
-e.g., expression1 *or* expression2:
+***Complex Condition***
 
-```json
-[
-  {"<operator1>": "<parameter1>"},
-  {"<operator2>": "<parameter2>"}
-]
-```
+A *Complex Condition* contains constrains in multiple attributes. Similar in *Attribution Condition*, we use keywords *not*, *anyOf*, and *allOf* to indicate logical relations and also support simplifications.
 
-We can also use the keyword "not" to indicate a negation.
+- *OR Logic*:
 
-e.g., *not* expression1 
+  e.g., attributeCondition1 *or* attributionCondition2:
 
-```json
-{
-  "not": 
-  {"<operator1>": "<parameter1>"}
-}
-```
+  ```json
+  {
+    "anyOf": [
+      {"<attribute1>": "<expression1>"}, {"<attribute2>": "<expression2>"}
+    ]
+  }
+  ```
+
+  Simplification:
+
+  ```json
+  [{"<attribute1>": "<expression1>"}, {"<attribute2>": "<expression2>"}]
+  ```
+
+- *AND Logic*:
+
+  e.g., attributeCondition1 *and* attributeCondition2:
+
+  ```json
+  {
+    "allOf": [
+      {"<attribute1>": "<expression1>"}, {"<attribute2>": "<expression2>"}
+    ]
+  }
+  ```
+
+  Simplification:
+
+  ```json
+  {
+    "<attribute1>": "<expression1>",
+    "<attribute2>": "<expression2>"
+  }
+  ```
+
+- *NOT Logic*:
+
+  e.g., *not* attributeCondition1:
+
+  ```json
+  {
+    "not": {"<attribute1>": "<expression1>"}
+  }
+  ```
+
+Both *Target* and *Condition* fields can be actually expressed following the syntax described above. Normally, *Target* field uses a simple *Attribute Condition* to specify the scope of the policy rules, while *Condition* field is typically more complex and may use *Complex Conditions*.
+
+### Combining Algorithms
+
+Because a policy may contain multiple rules, and a policy set may contain multiple policies or policy sets, each rule, policy, or policy set may evaluate to different decisions (permit, deny, not applicable, or indeterminate). reThink PDL provides a way of reconciling the decisions each makes. This reconciliation is achieved through a collection of combining algorithms. Each algorithm represents a different way of combining multiple local decisions into a single global decision. There are several combining algorithms, to include the following:
+
+- Deny-overrides: if any decision evaluates to Deny, or no decision evaluates to Permit, then the result is Deny. If all decisions evaluate to Permit, the result is Permit.
+- Permit-overrides: if any decision evaluates to Permit, then the result is Permit, otherwise the result is Deny.
+- First-applicable: the rules are evaluated following the order given by the priority field, and the decision of the first that applies (either deny or allow), is the final result of the policy evaluation.
+
+Combining algorithms are applied to rules in a Policy and Policies within a policy set in arriving at an ultimate decision of the PDP. Combining algorithms can be used to build up increasingly complex policies. For example, given that a subject request is Permitted (by the PDP) only if the aggregate (ultimate) decision is Permit, the effect of the Permit-overrides combining algorithm is an “OR” operation on Permit (any decision can evaluate to Permit), and the effect of a Deny-overrides is an “AND” operation on Permit (all decisions must evaluate to Permit).
+
+### Obligations and Advice
+
+The reThink PDL includes the concepts of obligation and advice expressions. An obligation optionally specified in a Rule, Policy, or PolicySet is a directive from the PDP to the Policy Enforcement Point (PEP) on what must be carried out before or after an access request is approved or denied. Advice is similar to an obligation, except that advice may be ignored by the PEP. A few examples include:
+
+- If Alice is denied access to document X: email her manager that Alice tried to access document X.
+- If a user is denied access to a file: inform the user why the access was denied.
+- If a user is approved to view document X: watermark the document “DRAFT” before delivery.
 
 
-
-
-
-### Example
-
-//Todo
+## PDL Example
 
 For a better understanding, Figure 6 gives an example of a policy in JSON.
 
@@ -215,31 +340,6 @@ For a better understanding, Figure 6 gives an example of a policy in JSON.
 ```
 
 **Figure 6:** Policy example
-
-
-
-### Combining Algorithms
-
-Because a policy may contain multiple rules, and a policy set may contain multiple policies or policy sets, each rule, policy, or policy set may evaluate to different decisions (permit, deny, not applicable, or indeterminate). reThink PDL provides a way of reconciling the decisions each makes. This reconciliation is achieved through a collection of combining algorithms. Each algorithm represents a different way of combining multiple local decisions into a single global decision. There are several combining algorithms, to include the following:
-
-- Deny-overrides: if any decision evaluates to Deny, or no decision evaluates to Permit, then the result is Deny. If all decisions evaluate to Permit, the result is Permit.
-- Permit-overrides: if any decision evaluates to Permit, then the result is Permit, otherwise the result is Deny.
-- First-applicable: the rules are evaluated following the order given by the priority field, and the decision of the first that applies (either deny or allow), is the final result of the policy evaluation.
-
-Combining algorithms are applied to rules in a Policy and Policies within a policy set in arriving at an ultimate decision of the PDP. Combining algorithms can be used to build up increasingly complex policies. For example, given that a subject request is Permitted (by the PDP) only if the aggregate (ultimate) decision is Permit, the effect of the Permit-overrides combining algorithm is an “OR” operation on Permit (any decision can evaluate to Permit), and the effect of a Deny-overrides is an “AND” operation on Permit (all decisions must evaluate to Permit).
-
-### Obligations and Advice
-
-The reThink PDL includes the concepts of obligation and advice expressions. An obligation optionally specified in a Rule, Policy, or PolicySet is a directive from the PDP to the Policy Enforcement Point (PEP) on what must be carried out before or after an access request is approved or denied. Advice is similar to an obligation, except that advice may be ignored by the PEP. A few examples include:
-
-- If Alice is denied access to document X: email her manager that Alice tried to access document X.
-- If a user is denied access to a file: inform the user why the access was denied.
-- If a user is approved to view document X: watermark the document “DRAFT” before delivery.
-
-
-## PDL Implementation
-
-//Todo
 
 ## References
 
