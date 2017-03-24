@@ -224,7 +224,7 @@ Therefore, an *Attribute Condition* could be simple but flexible and expressive 
 
 ***Complex Condition***
 
-A *Complex Condition* contains constrains in multiple attributes. Similar in *Attribution Condition*, we use keywords *not*, *anyOf*, and *allOf* to indicate logical relations and also support simplifications.
+A *Complex Condition* contains constrains in multiple attributes. Similar to *Attribution Condition*, we use keywords *not*, *anyOf*, and *allOf* to indicate logical relations and also support simplifications.
 
 - *OR Logic*:
 
