@@ -82,23 +82,23 @@ As show in Figure 5, in addition to a target, a rule includes one or a combinati
 
 In a rule entry of a policy, the condition field represents the restriction under which the rule could be applied. When the policy engine examines a message, it firstly looks for the predefined policy for the message, and then compares the message against the policy rule by rule using the condition field. As depicted in the previous section, the conditions can be expressed using as many kinds of attributes as possible in order to achieve strong flexibility, expressiveness and functionality such as time, weekday, source of the message, domain, and so on. The Table 1 below lists all the supported condition attributes. 
 
-| Attribute      | Description                              |
-| -------------- | ---------------------------------------- |
-| srcUser        | username of the source of the message    |
-| srcDomain      | domain of the source of the message      |
-| srcHyperty     | hyperty of the source of the message     |
-| idp            | identity provider of the source of the message |
-| dstUser        | username of the recipient of the message |
-| dstDomain      | domain of the recipient of the message   |
-| dstHyperty     | hyperty of the recipient of the message  |
-| msgType        | type of message, e.g., open, create, update, etc. |
-| rscType        | resource type                            |
-| schema         | data object schema                       |
-| authorization  | authorization status                     |
-| authentication | authentication status                    |
-| time           | time of the day, HH:mm:ss                |
-| date           | date of the year, YYYY-MM-DD             |
-| weekday        | day of the week                          |
+| Attribute      | Description                              | Expected Parameter                       |
+| -------------- | ---------------------------------------- | ---------------------------------------- |
+| srcUser        | username of the source of the message    | String, a valid email. e.g., alice@gmail.com |
+| srcDomain      | domain of the source of the message      | String, a valid domain. e.g., gmail.com  |
+| srcHyperty     | hyperty of the source of the message     | String, a valid hyperty url              |
+| idp            | identity provider of the source of the message | String, a valid idp                      |
+| dstUser        | username of the recipient of the message | String, a valid email. e.g., alice@gmail.com |
+| dstDomain      | domain of the recipient of the message   | String, a valid domain. e.g., gmail.com  |
+| dstHyperty     | hyperty of the recipient of the message  | String, a valid hyperty url              |
+| msgType        | type of message                          | String. e.g., open, create, update, etc. |
+| rscType        | resource type                            | String, a valid resource type. e.g., audio |
+| schema         | data object schema                       | String, a valid data object scheme. e.g., comm |
+| authorization  | authorization status                     | Boolean, true or false                   |
+| authentication | authentication status                    | Boolean, true or false                   |
+| time           | time of the day, HH:mm:ss                | String, a valid time. e.g., 12:30:00     |
+| date           | date of the year, YYYY-MM-DD             | String, a valid date. e.g., 1992-10-23   |
+| weekday        | day of the week                          | String, a valid weekday. e.g., Sunday    |
 
 **Table 1:** Attributes
 
@@ -118,7 +118,56 @@ The type of operation to do to verify an attribute value against a given paramet
 
 ### Targets and Conditions
 
-reThink PDL defines a notion of Attribute Condition, which is a simple Boolean condition consists of exactly an attribute, at least an operator and one or more parameters. Attribute Condition is the basic element, and the smallest unit to form a complex condition.
+reThink PDL defines a notion of *Attribute Condition*, which is a simple Boolean condition consists of exactly an attribute, at least an operator and one or more parameters. It defines the condition that the message has to fulfil with respect to a specific attribute. Multiple *Attribute Conditions* can be integrated into a more complex condition with logical operations such as *not, anyOf, allOf*. The notion of *Attribution Condition* is used in both *Target* and *Condition* fields in the reThink PDL.
+
+***Attribute Condition***
+
+Attribute Condition follows the syntax as below:
+
+```json
+{"<attribute>": "<condition expression>"}
+```
+
+The *condition expression* is an expression consists of operators and parameters which defines specifically the requirements that the attribute value of the message has to meet. The simplest format of the expression could be:
+
+```json
+{"<operator>": "<parameter>"}
+```
+
+However, there are also cases that we may need multiple constrains (operator-parameter pairs)  for the same attribute, with logical relationships such as *and, or, not*, etc... To achieve this, we define that operator-parameter pairs in the same map are of *and* relationship, while the ones in the same array are of *or* relationship.
+
+e.g., expression1 *and* expression2:
+
+```json
+{
+  "<operator1>": "<parameter1>",
+  "<operator2>": "<parameter2>"
+}
+```
+
+e.g., expression1 *or* expression2:
+
+```json
+[
+  {"<operator1>": "<parameter1>"},
+  {"<operator2>": "<parameter2>"}
+]
+```
+
+We can also use the keyword "not" to indicate a negation.
+
+e.g., *not* expression1 
+
+```json
+{
+  "not": 
+  {"<operator1>": "<parameter1>"}
+}
+```
+
+
+
+
 
 ### Example
 
