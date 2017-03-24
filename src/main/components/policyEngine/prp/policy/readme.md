@@ -343,7 +343,9 @@ For a better understanding, Figure 6 gives an example of a policy in JSON.
 
 ## References
 
+- [Policy Engine in the Node.js Messaging Node of reThink](../../readme.md)
 - [Policy Description Language in the Runtime of reThink](https://github.com/reTHINK-project/specs/blob/master/policy-management/policy-specification-language.md)
+
 
 
 
