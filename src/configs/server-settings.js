@@ -26,7 +26,13 @@ var path = require('path');
 
 module.exports = {
   MNdomain: process.env.MNdomain || 'localhost',
-  domainRegistryUrl: process.env.domainRegistryUrl || 'http://localhost:4567',
+  domainRegistryConfig: {
+      url: process.env.domainRegistryUrl || 'http://localhost:4567',
+      retries: 2,
+      ssl: {
+          enabled: false
+      }
+  },
   redisURL:process.env.redisURL || 'localhost',
   port: process.env.PORT || '9090',
   ioConfig: {
