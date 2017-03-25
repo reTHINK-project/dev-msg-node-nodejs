@@ -33,7 +33,7 @@ class FirstApplicable {
     constructor (context){
         this.name = 'PDP';
         this.context = context;
-        this.logger = this.context.getLogger();
+        this.logger = this.context.registry.getLogger();
     }
     /**
      * Given an array of individual authorisation decisions, returns the first one different from 'Not Applicable', either positive or negative.
@@ -44,7 +44,7 @@ class FirstApplicable {
         this.logger.info(`[${this.name}] applying first-applicable combining algorithm`);
         for (let i in responses) {
             if (responses[i].effect !== 'notApplicable') {
-                return decisions[i];
+                return responses[i];
             }
         }
         return new Response();

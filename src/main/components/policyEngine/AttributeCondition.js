@@ -8,7 +8,7 @@ class AttributeCondition {
 
     constructor(context, condition) {
         this.context = context;
-        this.logger = this.context.getLogger();
+        this.logger = this.context.registry.getLogger();
         this.attribute = Object.keys(condition)[0];
         this.expression = condition[Object.keys(condition)[0]];
         this.operators = new Operators();
@@ -32,13 +32,20 @@ class AttributeCondition {
                 let result = false;
                 if (!(expression.hasOwnProperty(operator))) continue;
                 let params = expression[operator];
-                if (operator==="not"){
-                    result = this.operators.not(this.isApplicable(message, params));
-                } else if (params.constructor === Array) {
+                // if logical operator
+                if (operator==="not" || operator==="allOf" || operator === "anyOf"){
+                    value = Array.isArray(value)?value:[value];
+                    result = this.operators[operator](params.map(param=>{return this.isApplicable(message, param)}));
+                }
+                // otherwise it is comparative operator
+                // if params is an array
+                else if (params.constructor === Array) {
                     result = params.some(param => {
                         return this.operators[operator](value, param, this.attribute);
                     });
-                } else {
+                }
+                // otherwise it is a value
+                else {
                     result = this.operators[operator](value, params, this.attribute);
                 }
                 results.push(result);

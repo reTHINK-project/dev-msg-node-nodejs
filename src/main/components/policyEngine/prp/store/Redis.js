@@ -4,7 +4,7 @@ class RedisStore extends IStore{
     constructor (context){
         super();
         this.context = context;
-        this.logger = this.context.getLogger();
+        this.logger = this.context.registry.getLogger();
         this.name = "PRP RedisStore";
     }
 

@@ -34,7 +34,7 @@ class BlockOverrides {
     constructor (context){
         this.name = 'PDP';
         this.context = context;
-        this.logger = this.context.getLogger();
+        this.logger = this.context.registry.getLogger();
     }
     /**
      * Given an array of individual authorization decisions, prioritizes a positive one.
@@ -46,7 +46,7 @@ class BlockOverrides {
         let response = new Response();
         for (let i in responses){
             let res = responses[i];
-            response.addActions(res.actions);
+            response.addObligations(res.obligations);
             response.attachRule(res.rules[0]);
         }
         let decisions = responses.map(res=>{return res.effect});

@@ -7,15 +7,15 @@ class Response {
     constructor (effect = 'notApplicable'){
         this.name = "PDP Response";
         this.effect = effect;
-        this.actions = new Map();
+        this.obligations = new Map();
         this.rules = [];
     }
 
-    addActions(actions) {
-        if (Object.keys(actions).length){
-            for (let key in actions) {
-                if (!actions.hasOwnProperty(key)) continue;
-                this.actions.set(key, actions[key]);
+    addObligations(obligations) {
+        if (Object.keys(obligations).length){
+            for (let key in obligations) {
+                if (!obligations.hasOwnProperty(key)) continue;
+                this.obligations.set(key, obligations[key]);
             }
         }
 
@@ -25,8 +25,8 @@ class Response {
         this.effect = effect;
     }
 
-    clearActions() {
-        this.actions.clear();
+    clearObligations() {
+        this.obligations.clear();
     }
 
     attachRule(rule){

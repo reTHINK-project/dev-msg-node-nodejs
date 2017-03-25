@@ -32,11 +32,5 @@ class NodejsCtx extends ReThinkCtx {
     get useSSL(){
         return this.config.useSSL;
     }
-
-    getLogger(){
-        return this.registry.getLogger();
-    }
-
-
 }
 module.exports = NodejsCtx;

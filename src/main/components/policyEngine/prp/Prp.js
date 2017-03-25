@@ -10,7 +10,7 @@ class PRP {
     constructor(context) {
         this.name = "PRP";
         this.context = context;
-        this.logger = this.context.getLogger();
+        this.logger = this.context.registry.getLogger();
         this.fsStore = new FS(this.context);
         this.redisStore = new Redis(this.context);
         this.setPolicySrc();

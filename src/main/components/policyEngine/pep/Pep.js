@@ -16,7 +16,7 @@ class PEP {
         this.name = name;
         context.pep = this;
         this.context = context;
-        this.logger = this.context.getLogger();
+        this.logger = this.context.registry.getLogger();
         this.pdp = new PDP(this.context);
         this.contextHandler = new ContextHandler(this.context);
         this.logger.info(`[${this.name}] new instance`);

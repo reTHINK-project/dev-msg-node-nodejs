@@ -9,7 +9,7 @@ class FSStore extends IStore {
         super();
         this.name = "PRP FSStore";
         this.context = context;
-        this.logger = this.context.getLogger();
+        this.logger = this.context.registry.getLogger();
         this.srcPath = "../policy/policy.json";
         this.policySet = this.loadPolicies();
     }

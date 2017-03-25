@@ -7,7 +7,7 @@ class ContextHandler {
     constructor(context) {
         this.name = "PEP Context Handler";
         this.context = context;
-        this.logger = this.context.getLogger();
+        this.logger = this.context.registry.getLogger();
     }
 
     parseToAuthzRequest(msg) {

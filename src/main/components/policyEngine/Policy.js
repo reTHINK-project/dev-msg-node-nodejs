@@ -3,7 +3,7 @@
  */
 
 let Rule = require("./Rule");
-let Scope = require("./Scope");
+let Target = require("./Condition");
 let BlockOverrides = require('./algorithm/BlockOverrides');
 let AllowOverrides = require('./algorithm/AllowOverrides');
 let FirstApplicable = require('./algorithm/FirstApplicable');
@@ -12,23 +12,25 @@ class Policy {
 
     constructor(context, policyObj) {
         if (!("id" in policyObj)) throw new Error("id is not defined.");
-        if (!("scope" in policyObj)) throw new Error("scope is not defined.");
+        if (!("priority" in policyObj)) throw new Error("priority is not defined.");
+        if (!("target" in policyObj)) throw new Error("target is not defined.");
         if (!("rules" in policyObj)) throw new Error("rules is not defined.");
-        if (!("combiningAlgorithm" in policyObj)) throw new Error("combiningAlgorithm is not defined.");
-        if (!("conditionalActions" in policyObj)) throw new Error("conditionalActions is not defined.");
+        if (!("ruleCombiningAlgorithm" in policyObj)) throw new Error("ruleCombiningAlgorithm is not defined.");
+        if (!("obligations" in policyObj)) throw new Error("obligations is not defined.");
         this.context = context;
-        this.logger = this.context.getLogger();
+        this.logger = this.context.registry.getLogger();
         this.id = policyObj.id;
-        this.scope = new Scope(this.context, policyObj.scope);
-        this.conditionalActions = policyObj.conditionalActions;
-        this._setRules(policyObj.rules);
-        this._setCombiningAlgorithm(policyObj.combiningAlgorithm);
+        this.priority = policyObj.priority;
+        this.target = new Target(this.context, policyObj.target);
+        this.obligations = policyObj.obligations;
+        this.rules = this._setRules(policyObj.rules);
+        this.ruleCombiningAlgorithm = this._setRuleCombiningAlgorithm(policyObj.ruleCombiningAlgorithm);
         this.name = `PDP Policy ${this.id}`;
     }
 
     isApplicable(message){
         this.logger.info(`[${this.name}] checking applicability`);
-        let isApplicable = this.scope.isApplicable(message);
+        let isApplicable = this.target.isApplicable(message);
         this.logger.info(`[${this.name}] policy is applicable: ${isApplicable}`);
         return isApplicable;
     }
@@ -37,18 +39,18 @@ class Policy {
         this.logger.info(`[${this.name}] evaluating rules`);
         let results = [];
         for (let i in this.rules) {
+            if (!this.rules.hasOwnProperty(i)) continue;
             if (!this.rules[i].isApplicable(message)) continue;
             results.push(this.rules[i].evaluateCondition(message));
         }
-        let response = this.combiningAlgorithm.combine(results);
-        let actions = this.conditionalActions[response.effect];
-        if (actions) response.addActions(actions);
+        let response = this.ruleCombiningAlgorithm.combine(results);
+        let obligations = this.obligations[response.effect];
+        if (obligations) response.addObligations(obligations);
         return response;
     }
 
     _setRules(rules) {
-        this.rules = [];
-
+        let nrules = [];
         for (let i in rules) {
             if (!rules.hasOwnProperty(i)) continue;
             let rule = rules[i];
@@ -58,23 +60,24 @@ class Policy {
             if (!(rule instanceof Rule)) {
                 rule = new Rule(this.context, rule);
             }
-            this.rules.push(rule);
+            nrules.push(rule);
         }
+        return nrules;
     }
 
-    _setCombiningAlgorithm(combiningAlgorithm) {
+    _setRuleCombiningAlgorithm(combiningAlgorithm) {
         if (!combiningAlgorithm) {
-            combiningAlgorithm = 'blockOverrides';
+            return 'blockOverrides';
         }
         switch (combiningAlgorithm) {
             case 'blockOverrides':
-                this.combiningAlgorithm = new BlockOverrides(this.context);
+                return new BlockOverrides(this.context);
                 break;
             case 'allowOverrides':
-                this.combiningAlgorithm = new AllowOverrides(this.context);
+                return new AllowOverrides(this.context);
                 break;
             case 'firstApplicable':
-                this.combiningAlgorithm = new FirstApplicable(this.context);
+                return new FirstApplicable(this.context);
                 break;
             default:
                 throw Error('Unknown algorithm: ' + combiningAlgorithm);

@@ -15,7 +15,7 @@ class PDP {
         this.name = 'PDP';
         context.pdp = this;
         this.context = context;
-        this.logger = this.context.getLogger();
+        this.logger = this.context.registry.getLogger();
         this.prp = new PRP(this.context);
         this.logger.info(`[${this.name}] new instance`);
     }
