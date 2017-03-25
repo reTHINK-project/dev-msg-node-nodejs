@@ -40,6 +40,20 @@ class PolicySet {
         return isApplicable;
     }
 
+    evaluatePolicies(){
+        this.logger.info(`[${this.name}] evaluating policies`);
+        let results = [];
+        for (let i in this.policies) {
+            if (!this.policies.hasOwnProperty(i)) continue;
+            if (!this.policies[i].isApplicable(message)) continue;
+            results.push(this.policies[i].evaluateRules(message));
+        }
+        let response = this.policyCombiningAlgorithm.combine(results);
+        let obligations = this.obligations[response.effect];
+        if (obligations) response.addObligations(obligations);
+        return response;
+    }
+
     getPolicies(){
         return this.policies;
     }
@@ -71,13 +85,13 @@ class PolicySet {
         }
         switch (combiningAlgorithm) {
             case 'blockOverrides':
-                return new BlockOverrides(this.context);
+                return new BlockOverrides(this.context, this.name);
                 break;
             case 'allowOverrides':
-                return new AllowOverrides(this.context);
+                return new AllowOverrides(this.context, this.name);
                 break;
             case 'firstApplicable':
-                return new FirstApplicable(this.context);
+                return new FirstApplicable(this.context, this.name);
                 break;
             default:
                 throw Error('Unknown algorithm: ' + combiningAlgorithm);

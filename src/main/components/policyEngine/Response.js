@@ -4,11 +4,12 @@
 
 class Response {
 
-    constructor (effect = 'notApplicable'){
+    constructor (source, info = null, effect = 'notApplicable'){
         this.name = "PDP Response";
         this.effect = effect;
         this.obligations = new Map();
-        this.rules = [];
+        this.info = info;
+        this.source = source;
     }
 
     addObligations(obligations) {
@@ -29,8 +30,8 @@ class Response {
         this.obligations.clear();
     }
 
-    attachRule(rule){
-        this.rules.push(rule);
+    setInfo(info){
+        this.info = info
     }
 
 }

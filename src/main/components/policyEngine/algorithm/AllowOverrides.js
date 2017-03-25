@@ -31,8 +31,8 @@ let Response = require("../Response");
 
 class AllowOverrides {
 
-    constructor (context){
-        this.name = 'PDP';
+    constructor (context, name){
+        this.name = name;
         this.context = context;
         this.logger = this.context.registry.getLogger();
     }
@@ -44,11 +44,10 @@ class AllowOverrides {
      */
     combine(responses) {
         this.logger.info(`[${this.name}] applying allow-overrides combining algorithm`);
-        let response = new Response();
+        let response = new Response(this.name, 'resulted from AllowOverrides algorithm');
         for (let i in responses){
             let res = responses[i];
             response.addObligations(res.obligations);
-            response.attachRule(res.rules[0]);
         }
         let decisions = responses.map(res=>{return res.effect});
         if (decisions.indexOf("permit") !== -1) {

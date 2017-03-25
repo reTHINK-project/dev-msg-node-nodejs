@@ -1,6 +1,6 @@
 
 class IStore{
-    getPolicy(context, message){
+    getPolicySet(context, message){
         throw new Error("method must be implemented");
     }
 

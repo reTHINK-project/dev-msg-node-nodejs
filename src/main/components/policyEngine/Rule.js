@@ -32,14 +32,13 @@ class Rule {
     }
 
     evaluateCondition(message) {
-        let res = new Response();
+        let res = new Response(this.name);
         this.logger.info(`[${this.name}] evaluating condition`);
         let isApplicable = this.condition.isApplicable(message);
         this.logger.info(`[${this.name}] condition is fulfilled: ${isApplicable}, effect: ${this.effect}`);
         if (isApplicable) {
             res.setEffect(this.effect);
             res.addObligations(this.obligations);
-            res.attachRule(this);
             return res;
         }
         return res;

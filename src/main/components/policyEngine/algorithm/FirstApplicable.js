@@ -30,8 +30,8 @@ let Response = require("../Response");
 
 class FirstApplicable {
 
-    constructor (context){
-        this.name = 'PDP';
+    constructor (context, name){
+        this.name = name;
         this.context = context;
         this.logger = this.context.registry.getLogger();
     }
@@ -47,7 +47,7 @@ class FirstApplicable {
                 return responses[i];
             }
         }
-        return new Response();
+        return new Response(this.name, 'resulted from FirstApplicable algorithm');
     }
 
 }

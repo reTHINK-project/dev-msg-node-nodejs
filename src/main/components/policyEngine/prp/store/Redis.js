@@ -8,7 +8,7 @@ class RedisStore extends IStore{
         this.name = "PRP RedisStore";
     }
 
-    getPolicy(message){
+    getPolicySet(message){
         //todo get policy from redis
     }
 }

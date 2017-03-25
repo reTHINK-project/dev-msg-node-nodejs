@@ -9,6 +9,7 @@
 'use strict';
 
 let PRP = require("../prp/Prp");
+let Response = require("../Response");
 
 class PDP {
     constructor(context) {
@@ -26,9 +27,9 @@ class PDP {
 
         authorizationRequest = this._validate(authorizationRequest);
 
-        let policy = this.prp.getPolicy(authorizationRequest);
+        let policySet = this.prp.getPolicySet(authorizationRequest);
 
-        let response = policy.evaluateRules(authorizationRequest);
+        let response = policySet ? policySet.evaluate(authorizationRequest) : new Response(this.name, 'No policies could be found from PRP');
 
         return this._respond(response);
 

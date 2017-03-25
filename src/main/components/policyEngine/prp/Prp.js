@@ -41,8 +41,8 @@ class PRP {
         }
     }
 
-    getPolicy(request){
-        return this.getPolicySrc().getPolicy(request);
+    getPolicySet(request){
+        return this.getPolicySrc().getPolicySet(request);
     }
 
 }

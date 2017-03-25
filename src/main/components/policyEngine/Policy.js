@@ -71,13 +71,13 @@ class Policy {
         }
         switch (combiningAlgorithm) {
             case 'blockOverrides':
-                return new BlockOverrides(this.context);
+                return new BlockOverrides(this.context, this.name);
                 break;
             case 'allowOverrides':
-                return new AllowOverrides(this.context);
+                return new AllowOverrides(this.context, this.name);
                 break;
             case 'firstApplicable':
-                return new FirstApplicable(this.context);
+                return new FirstApplicable(this.context, this.name);
                 break;
             default:
                 throw Error('Unknown algorithm: ' + combiningAlgorithm);

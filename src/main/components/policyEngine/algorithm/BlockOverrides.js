@@ -31,8 +31,8 @@ let Response = require("../Response");
 class BlockOverrides {
 
 
-    constructor (context){
-        this.name = 'PDP';
+    constructor (context, name){
+        this.name = name;
         this.context = context;
         this.logger = this.context.registry.getLogger();
     }
@@ -43,11 +43,10 @@ class BlockOverrides {
      */
     combine(responses) {
         this.logger.info(`[${this.name}] applying block-overrides combining algorithm`);
-        let response = new Response();
+        let response = new Response(this.name, 'resulted from BlockOverrides algorithm');
         for (let i in responses){
             let res = responses[i];
             response.addObligations(res.obligations);
-            response.attachRule(res.rules[0]);
         }
         let decisions = responses.map(res=>{return res.effect});
         if (decisions.indexOf("deny") !== -1) {
