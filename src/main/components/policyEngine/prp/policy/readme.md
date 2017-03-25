@@ -298,7 +298,7 @@ The reThink PDL includes the concepts of obligation and advice expressions. An o
 
 ## PDL Example
 
-For a better understanding, Figure 6 gives an example of a policy in JSON.
+For a better understanding, Figure 6 gives an example of a policy set in JSON.
 
 ```json
 {
