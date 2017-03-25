@@ -7,13 +7,15 @@ let Operators = require("./Operators");
 
 class Condition {
 
-    constructor(context, condition){
-        this.name = "PDP";
+    constructor(owner, context, condition, usedFor = "Condition"){
+        this.name = owner;
+        this.usedFor = usedFor;
         this.context = context;
         this.logger = this.context.registry.getLogger();
         this.operators = new Operators();
         this.toString = JSON.stringify(condition);
         this.condition = this._buildCondition(condition);
+
     }
 
     _buildCondition(condition){
@@ -51,7 +53,7 @@ class Condition {
             }
             // else the map is empty
             else {
-                this.logger.info(`[${this.name}] warning: empty condition/target implies global applicability`);
+                this.logger.info(`[${this.name}] warning: empty ${this.usedFor} implies global applicability`);
             }
         }
         // if the condition is of ARRAY type, which contains subConditions with OR relations
@@ -63,14 +65,13 @@ class Condition {
     }
 
     isApplicable(message, condition = this.condition){
-        // if the condition is not of Object type
-        if (condition.constructor !== Object) {
-            throw new Error(`[${this.name}] syntax error: compiled condition should only be of Object type`);
-        }
-        // the condition is of Object type
-        // if the condition is an instance of AttributeCondition
-        else if (condition instanceof AttributeCondition){
+
+        if (condition instanceof AttributeCondition){
             return condition.isApplicable(message);
+        }
+        // if the condition is not of Object type
+        else if (condition.constructor !== Object) {
+            throw new Error(`[${this.name}] syntax error: compiled condition should only be of Object type`);
         }
         // the condition is not an instance of AttributeCondition
         // the condition contains multiple keys
@@ -95,7 +96,7 @@ class Condition {
         }
         // empty condition
         else {
-            this.logger.info(`[${this.name}] warning: applying empty condition/target`);
+            this.logger.info(`[${this.name}] warning: applying by default as empty ${this.usedFor}`);
             return true;
         }
     }

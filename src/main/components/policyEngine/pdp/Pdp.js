@@ -29,7 +29,7 @@ class PDP {
 
         let policySet = this.prp.getPolicySet(authorizationRequest);
 
-        let response = policySet ? policySet.evaluate(authorizationRequest) : new Response(this.name, 'No policies could be found from PRP');
+        let response = policySet ? policySet.evaluatePolicies(authorizationRequest) : new Response(this.name, 'No policies could be found from PRP');
 
         return this._respond(response);
 

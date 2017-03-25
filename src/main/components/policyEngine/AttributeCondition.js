@@ -34,7 +34,7 @@ class AttributeCondition {
                 let params = expression[operator];
                 // if logical operator
                 if (operator==="not" || operator==="allOf" || operator === "anyOf"){
-                    value = Array.isArray(value)?value:[value];
+                    params = Array.isArray(params)?params:[params];
                     result = this.operators[operator](params.map(param=>{return this.isApplicable(message, param)}));
                 }
                 // otherwise it is comparative operator

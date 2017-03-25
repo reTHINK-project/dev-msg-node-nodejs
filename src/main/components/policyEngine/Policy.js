@@ -20,12 +20,12 @@ class Policy {
         this.context = context;
         this.logger = this.context.registry.getLogger();
         this.id = policyObj.id;
+        this.name = `PDP Policy ${this.id}`;
         this.priority = policyObj.priority;
-        this.target = new Target(this.context, policyObj.target);
+        this.target = new Target(this.name, this.context, policyObj.target, 'Target');
         this.obligations = policyObj.obligations;
         this.rules = this._setRules(policyObj.rules);
         this.ruleCombiningAlgorithm = this._setRuleCombiningAlgorithm(policyObj.ruleCombiningAlgorithm);
-        this.name = `PDP Policy ${this.id}`;
     }
 
     isApplicable(message){
@@ -89,6 +89,7 @@ class Policy {
 
         if (this.rules.length !== 0) {
             for (let i in this.rules) {
+                if (!this.rules.hasOwnProperty(i)) continue;
                 priorities.push(this.rules[i].priority);
             }
             return Math.max.apply(Math, priorities);

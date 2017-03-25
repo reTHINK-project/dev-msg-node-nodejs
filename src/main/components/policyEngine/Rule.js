@@ -1,7 +1,7 @@
 /**
  * Created by hjiang on 3/1/17.
  */
-let Target = require("./Target");
+
 let Condition = require("./Condition");
 let Response = require("./Response");
 class Rule {
@@ -14,14 +14,15 @@ class Rule {
         if (!("effect" in rule)) throw new Error("effect is not defined.");
         if (!("priority" in rule)) throw new Error("priority is not defined.");
         this.context = context;
-        this.logger = this.context.registry.getLogger();
-        this.target = new Target(this.context, rule.target);
-        this.condition = new Condition(this.context, rule.condition);
         this.id = rule.id;
+        this.name = `PDP Rule ${this.id}`;
+        this.logger = this.context.registry.getLogger();
+        this.target = new Condition(this.name, this.context, rule.target, 'Target');
+        this.condition = new Condition(this.name, this.context, rule.condition);
         this.obligations = rule.obligations;
         this.effect = rule.effect;
         this.priority = rule.priority;
-        this.name = `PDP Rule ${this.id}`;
+
     }
 
     isApplicable(message){

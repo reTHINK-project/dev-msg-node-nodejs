@@ -12,7 +12,6 @@ let FirstApplicable = require('./algorithm/FirstApplicable');
 class PolicySet {
 
     constructor (context, policySetObj) {
-        this.name = "PDP Policy Set";
         if (!("id" in policySetObj)) throw new Error("id is not defined.");
         if (!("target" in policySetObj)) throw new Error("target is not defined.");
         if (!("version" in policySetObj)) throw new Error("version is not defined.");
@@ -24,7 +23,8 @@ class PolicySet {
         this.context = context;
         this.logger = this.context.registry.getLogger();
         this.id = policySetObj.id;
-        this.target = new Target(this.context, policySetObj.target);
+        this.name = `PDP PolicySet ${this.id}`;
+        this.target = new Target(this.name, this.context, policySetObj.target, 'Target');
         this.version = policySetObj.version;
         this.update = moment(policySetObj.update);
         this.policies = this._setPolicies(policySetObj.policies);
@@ -40,7 +40,7 @@ class PolicySet {
         return isApplicable;
     }
 
-    evaluatePolicies(){
+    evaluatePolicies(message){
         this.logger.info(`[${this.name}] evaluating policies`);
         let results = [];
         for (let i in this.policies) {
@@ -74,7 +74,7 @@ class PolicySet {
             if (!(policy instanceof Policy)) {
                 policy = new Policy(this.context, policy);
             }
-            this.policies.push(policy);
+            npolicies.push(policy);
         }
         return npolicies;
     }

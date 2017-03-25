@@ -15,14 +15,11 @@ class FSStore extends IStore {
     }
 
     loadPolicies(srcPath = this.srcPath){
-        try {
-            let policyFile = JSON.parse(
-                fs.readFileSync(path.resolve(__dirname, srcPath))
-            );
-            return policyFile.map(policySet=>{return new PolicySet(this.context, policySet)});
-        } catch (e) {
-            throw new Error(`[${this.name}] error when loading policies. ${e}`);
-        }
+
+        let policyFile = JSON.parse(
+            fs.readFileSync(path.resolve(__dirname, srcPath))
+        );
+        return policyFile.map(policySet=>{return new PolicySet(this.context, policySet)});
     }
 
     getSource() {
@@ -37,8 +34,9 @@ class FSStore extends IStore {
      * @param {Object} message
      */
     getPolicySet(message) {
-        for (let policySet in this.policySets) {
-            if (!this.policySets.hasOwnProperty(policySet)) continue;
+        for (let index in this.policySets) {
+            if (!this.policySets.hasOwnProperty(index)) continue;
+            let policySet = this.policySets[index];
             if (policySet.isApplicable(message)) {
                 return policySet;
             }
