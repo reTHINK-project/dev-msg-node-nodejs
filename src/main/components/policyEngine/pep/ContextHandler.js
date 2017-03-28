@@ -29,7 +29,6 @@ class ContextHandler {
         if (response.effect === "permit"){
             response.msg.body.auth = true;
             response.result = true;
-            this.logger.info(`[${this.name}] message permitted by ${response.source}`);
         } else if (response.effect === "notApplicable") {
             response.result = this.context.defaultBehaviour;
             response.msg.body.auth = false;
@@ -37,6 +36,7 @@ class ContextHandler {
             response.msg.body.auth = false;
             response.result = false;
         }
+        this.logger.info(`[${this.name}] ${response.getInfo()}`);
         return response;
     }
 

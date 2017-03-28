@@ -53,13 +53,13 @@ class Condition {
             }
             // else the map is empty
             else {
-                this.logger.info(`[${this.name}] warning: empty ${this.usedFor} implies global applicability`);
+            // this.logger.info(`[${this.name}] warning: empty ${this.usedFor} implies global applicability`);
             }
         }
         // if the condition is of ARRAY type, which contains subConditions with OR relations
         else {
-                condition = condition.map(subCondition=>{return this._buildCondition(subCondition)});
-                condition = {"anyOf": condition};
+            condition = condition.map(subCondition=>{return this._buildCondition(subCondition)});
+            condition = condition.length===0?{}:{"anyOf": condition};
         }
         return condition;
     }

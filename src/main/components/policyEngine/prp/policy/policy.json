@@ -15,9 +15,7 @@
       "obligations": {"permit": {"emailto": "admin@imt-atlantic.fr"}},
       "rules": [
         { "id": 1,
-          "target":[
-            {"srcDomain": {"equals": "gmail.com"}},
-            {"msgType": {"equals": ["create","update","open","subscribe","response", "handshake"]}}],
+          "target": {"srcDomain": {"equals": "gmail.com"}},
           "condition": [
             {
               "weekday": {"not": {"equals": ["saturday", "sunday"]}},
@@ -29,6 +27,13 @@
             }
           ],
           "effect": "deny",
+          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "priority": 0
+        },
+        { "id": 2,
+          "target":{"msgType": {"equals": ["create","update","open","subscribe","response", "handshake"]}},
+          "condition": [],
+          "effect": "permit",
           "obligations": {"emailto": "admin@imt-atlantic.fr"},
           "priority": 0
         }
