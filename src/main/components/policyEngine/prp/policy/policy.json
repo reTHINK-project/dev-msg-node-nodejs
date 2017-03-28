@@ -18,14 +18,16 @@
           "target":[
             {"srcDomain": {"equals": "gmail.com"}},
             {"msgType": {"equals": ["create","update","open","subscribe","response", "handshake"]}}],
-          "condition": {
-            "anyOf": [
-              {"allOf": [
-                {"weekday": {"not": {"equals": ["saturday", "sunday"]}}},
-                {"time": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}}]},
-              {"allOf": [
-                {"weekday": {"equals": ["saturday", "sunday"]}},
-                {"time": {"between": ["07:00:00 12:00:00", "13:30:00 22:30:00"]}}]}]},
+          "condition": [
+            {
+              "weekday": {"not": {"equals": ["saturday", "sunday"]}},
+              "time": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}
+            },
+            {
+              "weekday": {"equals": ["saturday", "sunday"]},
+              "time": {"between": ["07:00:00 12:00:00", "13:30:00 22:30:00"]}
+            }
+          ],
           "effect": "permit",
           "obligations": {"emailto": "admin@imt-atlantic.fr"},
           "priority": 0

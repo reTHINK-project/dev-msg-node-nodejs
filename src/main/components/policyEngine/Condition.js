@@ -23,13 +23,13 @@ class Condition {
         if (condition.constructor === Object) {
             // if the map has multiple keys, which are of AND relations
             if (Object.keys(condition).length > 1) {
-                condition["allOf"] = [];
+                let allOf = [];
                 for (let key in condition) {
                     if(!condition.hasOwnProperty(key)) continue;
                     let value = condition[key];
-                    delete condition[key];
-                    condition["allOf"].push(this._buildCondition({[key]: value}));
+                    allOf.push(this._buildCondition({[key]: value}));
                 }
+                condition = {"allOf": allOf};
             }
             // if the map contains exactly one key
             else if (Object.keys(condition).length === 1){
