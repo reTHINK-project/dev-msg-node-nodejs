@@ -44,16 +44,20 @@ class AllowOverrides {
      */
     combine(responses) {
         this.logger.info(`[${this.name}] applying allow-overrides combining algorithm`);
-        let response = new Response(this.name, 'resulted from AllowOverrides algorithm');
+        let response = new Response(this.name, `resulted from allow-overrides algorithm`);
         for (let i in responses){
             let res = responses[i];
             response.addObligations(res.obligations);
         }
         let decisions = responses.map(res=>{return res.effect});
-        if (decisions.indexOf("permit") !== -1) {
+        let idxPer = decisions.indexOf("permit");
+        if (idxPer !== -1) {
             response.setEffect("permit");
+            response.appendSource(responses[idxPer].source);
         } else if (decisions.indexOf("deny") !== -1) {
             response.setEffect("deny");
+        } else {
+            response.setInfo("not applicable to the targeted message");
         }
         return response;
     }

@@ -39,14 +39,11 @@ class PEP {
     analyse(msg) {
 
         msg = this._validate(msg);
-
         let authorizationRequest = this.contextHandler.parseToAuthzRequest(msg);
-
         let response = this.pdp.authorize(authorizationRequest);
-
+        response.msg = msg;
         let authorizationResponse = this.contextHandler.parseToAuthzResponse(response);
-
-        return this._enforce(authorizationResponse, msg);
+        return this._enforce(authorizationResponse);
     }
     // ======================== private =======================
 
@@ -63,13 +60,17 @@ class PEP {
         return msg;
     }
 
-    _enforce(response, msg) {
+    _enforce(response) {
 
         // Todo: take actions according to/specified in the decision from PDP
-        let permitted = response.effect === "permit";
-        this.logger.info(`[${this.name}] message authorized: ${permitted}, policing decision: ${response.effect}`);
-        msg.body.auth = permitted;
-        return msg;
+        this.logger.info(`[${this.name}] enforcing policies`);
+        if (Object.keys(response.obligations).length){
+            for (let key in response.obligations) {
+                if (!response.obligations.hasOwnProperty(key)) continue;
+                this.logger.info(`[${this.name}] ${key} ${response.obligations[key]}`);
+            }
+        }
+        return response;
     }
 }
 

@@ -43,16 +43,20 @@ class BlockOverrides {
      */
     combine(responses) {
         this.logger.info(`[${this.name}] applying block-overrides combining algorithm`);
-        let response = new Response(this.name, 'resulted from BlockOverrides algorithm');
+        let response = new Response(this.name, 'resulted from block-overrides algorithm');
         for (let i in responses){
             let res = responses[i];
             response.addObligations(res.obligations);
         }
         let decisions = responses.map(res=>{return res.effect});
-        if (decisions.indexOf("deny") !== -1) {
+        let idxDeny = decisions.indexOf("deny");
+        if (idxDeny !== -1) {
             response.setEffect("deny");
+            response.appendSource(responses[idxDeny].source);
         } else if (decisions.indexOf("permit") !== -1) {
             response.setEffect("permit");
+        } else {
+            response.setInfo("not applicable to the targeted message");
         }
         return response;
     }

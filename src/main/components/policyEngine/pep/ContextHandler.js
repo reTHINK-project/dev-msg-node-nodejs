@@ -5,7 +5,7 @@
 class ContextHandler {
 
     constructor(context) {
-        this.name = "PEP Context Handler";
+        this.name = "PEP";
         this.context = context;
         this.logger = this.context.registry.getLogger();
     }
@@ -23,11 +23,21 @@ class ContextHandler {
         return msg;
     }
 
-    parseToAuthzResponse(decision) {
+    parseToAuthzResponse(response) {
 
         // Todo: explore more capabilities and add more options. Translate into a set of actions for example.
-
-        return decision;
+        if (response.effect === "permit"){
+            response.msg.body.auth = true;
+            response.result = true;
+            this.logger.info(`[${this.name}] message permitted by ${response.source}`);
+        } else if (response.effect === "notApplicable") {
+            response.result = this.context.defaultBehaviour;
+            response.msg.body.auth = false;
+        } else if (response.effect === "deny"){
+            response.msg.body.auth = false;
+            response.result = false;
+        }
+        return response;
     }
 
 }

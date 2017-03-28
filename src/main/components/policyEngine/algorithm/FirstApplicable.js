@@ -47,7 +47,7 @@ class FirstApplicable {
                 return responses[i];
             }
         }
-        return new Response(this.name, 'resulted from FirstApplicable algorithm');
+        return new Response(this.name, "not applicable to the targeted message");
     }
 
 }

@@ -4,8 +4,7 @@
 
 class Response {
 
-    constructor (source, info = null, effect = 'notApplicable'){
-        this.name = "PDP Response";
+    constructor (source, info = '', effect = 'notApplicable'){
         this.effect = effect;
         this.obligations = new Map();
         this.info = info;
@@ -22,6 +21,10 @@ class Response {
 
     }
 
+    appendSource(child){
+        this.source = this.source + '/' + child.substr(3);
+    }
+
     setEffect(effect){
         this.effect = effect;
     }
@@ -32,6 +35,10 @@ class Response {
 
     setInfo(info){
         this.info = info
+    }
+
+    getInfo(){
+        return `${this.source} determined to ${this.effect}. ${this.info}`
     }
 
 }

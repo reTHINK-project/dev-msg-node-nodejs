@@ -34,6 +34,7 @@ class FSStore extends IStore {
      * @param {Object} message
      */
     getPolicySet(message) {
+        // Returns First Applicable Policy Set
         for (let index in this.policySets) {
             if (!this.policySets.hasOwnProperty(index)) continue;
             let policySet = this.policySets[index];
