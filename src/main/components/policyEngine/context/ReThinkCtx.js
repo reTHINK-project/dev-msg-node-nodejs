@@ -13,6 +13,8 @@ class ReThinkCtx {
         this.groups  = {};
     }
 
+    // ==================================== Getters ======================================
+
     get scheme() {
         return this._scheme;
     }
@@ -23,6 +25,10 @@ class ReThinkCtx {
 
     get srcDomain() {
         return this._srcDomain;
+    }
+
+    get dstDomain() {
+        return this._dstDomain;
     }
 
     get rscType() {
@@ -41,6 +47,22 @@ class ReThinkCtx {
         return this._srcUser;
     }
 
+    get dstUser() {
+        return this._dstUser;
+    }
+
+    get idp() {
+        return this._idp;
+    }
+
+    get srcHyperty(){
+        return this._srcHyperty;
+    }
+
+    get dstHyperty(){
+        return this._dstHyperty;
+    }
+
     get msgFrom() {
         return this._msgFrom;
     }
@@ -56,6 +78,18 @@ class ReThinkCtx {
     get weekday() {
         return this._weekday;
     }
+
+    get authorization() {
+        return this._authorization;
+    }
+
+    get authentication() {
+        return this._authentication;
+    }
+
+
+
+    // ===================================== Setters =====================================
 
     set scheme(params) {
         let from = params.message.from;

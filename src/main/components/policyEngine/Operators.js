@@ -117,6 +117,13 @@ class Operators {
         }
         return true;
     }
+
+    in(value, param, attribute = null) {
+        /**
+         * @param [array] a list
+         * */
+        return param.includes(value);
+    }
 }
 
 module.exports = Operators;

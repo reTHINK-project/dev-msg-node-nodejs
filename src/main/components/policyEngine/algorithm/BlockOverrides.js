@@ -42,7 +42,6 @@ class BlockOverrides {
      * @returns  {Response}
      */
     combine(responses) {
-        this.logger.info(`[${this.name}] applying block-overrides combining algorithm`);
         let response = new Response(this.name, 'resulted from block-overrides algorithm');
         for (let i in responses){
             let res = responses[i];
@@ -58,6 +57,7 @@ class BlockOverrides {
         } else {
             response.setInfo("not applicable to the targeted message");
         }
+        this.logger.info(`[${this.name}] applying block-overrides combining algorithm: ${response.effect}`);
         return response;
     }
 

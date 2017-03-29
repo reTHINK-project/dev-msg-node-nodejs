@@ -41,13 +41,14 @@ class FirstApplicable {
      * @returns  {Response}
      */
     combine(responses) {
-        this.logger.info(`[${this.name}] applying first-applicable combining algorithm`);
+        let response = new Response(this.name, "not applicable to the targeted message");
         for (let i in responses) {
             if (responses[i].effect !== 'notApplicable') {
-                return responses[i];
+                response = responses[i];
             }
         }
-        return new Response(this.name, "not applicable to the targeted message");
+        this.logger.info(`[${this.name}] applying first-applicable combining algorithm: ${response.effect}`);
+        return response;
     }
 
 }

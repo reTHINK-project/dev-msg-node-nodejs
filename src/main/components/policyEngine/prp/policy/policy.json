@@ -3,7 +3,7 @@
   "version": 1,
   "update" : "2017-03-14 17:18:31",
   "target": {},
-  "policyCombiningAlgorithm": "firstApplicable",
+  "policyCombiningAlgorithm": "allowOverrides",
   "obligations": {},
   "priority": 0,
   "policies": [
@@ -11,6 +11,29 @@
       "id": 1,
       "target": {},
       "ruleCombiningAlgorithm": "blockOverrides",
+      "priority": 0,
+      "obligations": {"permit": {"emailto": "admin@imt-atlantic.fr"}},
+      "rules": [
+        { "id": 1,
+          "target": {},
+          "condition": [],
+          "effect": "deny",
+          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "priority": 0
+        },
+        { "id": 2,
+          "target":{},
+          "condition": [],
+          "effect": "permit",
+          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "target": {},
+      "ruleCombiningAlgorithm": "allowOverrides",
       "priority": 0,
       "obligations": {"permit": {"emailto": "admin@imt-atlantic.fr"}},
       "rules": [
@@ -32,6 +55,13 @@
         },
         { "id": 2,
           "target":{"msgType": {"equals": ["create","update","open","subscribe","response", "handshake"]}},
+          "condition": [],
+          "effect": "deny",
+          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "priority": 0
+        },
+        { "id": 3,
+          "target":{},
           "condition": [],
           "effect": "permit",
           "obligations": {"emailto": "admin@imt-atlantic.fr"},

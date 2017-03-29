@@ -96,7 +96,6 @@ class Condition {
         }
         // empty condition
         else {
-            this.logger.info(`[${this.name}] warning: applying by default as empty ${this.usedFor}`);
             return true;
         }
     }
