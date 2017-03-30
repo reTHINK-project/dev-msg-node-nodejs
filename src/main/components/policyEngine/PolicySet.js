@@ -34,14 +34,10 @@ class PolicySet {
     }
 
     isApplicable(message){
-        this.logger.info(`[${this.name}] checking applicability`);
-        let isApplicable = this.target.isApplicable(message);
-        this.logger.info(`[${this.name}] policySet is applicable: ${isApplicable}`);
-        return isApplicable;
+        return this.target.isApplicable(message);
     }
 
     evaluatePolicies(message){
-        this.logger.info(`[${this.name}] evaluating policies`);
         let results = [];
         for (let i in this.policies) {
             if (!this.policies.hasOwnProperty(i)) continue;

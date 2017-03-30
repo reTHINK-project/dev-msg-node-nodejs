@@ -58,9 +58,6 @@ class AttributeCondition {
         } else {
             throw new Error(`Unsupported condition format`);
         }
-        if (expression === this.expression) {
-            this.logger.info(`[${this.name}] ${this.attribute} ${value} fulfils ${JSON.stringify(expression)}: ${final}`);
-        }
         return final;
     }
 }

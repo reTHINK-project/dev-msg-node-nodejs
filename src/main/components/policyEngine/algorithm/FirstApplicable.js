@@ -47,7 +47,6 @@ class FirstApplicable {
                 response = responses[i];
             }
         }
-        this.logger.info(`[${this.name}] applying first-applicable combining algorithm: ${response.effect}`);
         return response;
     }
 

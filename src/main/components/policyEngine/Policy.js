@@ -29,14 +29,10 @@ class Policy {
     }
 
     isApplicable(message){
-        this.logger.info(`[${this.name}] checking applicability`);
-        let isApplicable = this.target.isApplicable(message);
-        this.logger.info(`[${this.name}] policy is applicable: ${isApplicable}`);
-        return isApplicable;
+        return this.target.isApplicable(message);
     }
 
     evaluateRules(message){
-        this.logger.info(`[${this.name}] evaluating rules`);
         let results = [];
         for (let i in this.rules) {
             if (!this.rules.hasOwnProperty(i)) continue;

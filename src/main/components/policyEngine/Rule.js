@@ -26,17 +26,12 @@ class Rule {
     }
 
     isApplicable(message){
-        this.logger.info(`[${this.name}] checking applicability`);
-        let isApplicable = this.target.isApplicable(message);
-        this.logger.info(`[${this.name}] rule is applicable: ${isApplicable}`);
-        return isApplicable;
+        return this.target.isApplicable(message);
     }
 
     evaluateCondition(message) {
         let res = new Response(this.name);
-        this.logger.info(`[${this.name}] evaluating condition`);
         let isApplicable = this.condition.isApplicable(message);
-        this.logger.info(`[${this.name}] condition is fulfilled: ${isApplicable}, effect: ${this.effect}`);
         if (isApplicable) {
             res.setEffect(this.effect);
             res.addObligations(this.obligations);

@@ -57,7 +57,6 @@ class BlockOverrides {
         } else {
             response.setInfo("not applicable to the targeted message");
         }
-        this.logger.info(`[${this.name}] applying block-overrides combining algorithm: ${response.effect}`);
         return response;
     }
 

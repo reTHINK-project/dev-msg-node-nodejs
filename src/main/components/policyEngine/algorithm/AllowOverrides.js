@@ -58,7 +58,6 @@ class AllowOverrides {
         } else {
             response.setInfo("not applicable to the targeted message");
         }
-        this.logger.info(`[${this.name}] applying allow-overrides combining algorithm: ${response.effect}`);
         return response;
     }
 
