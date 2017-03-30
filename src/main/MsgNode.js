@@ -127,7 +127,7 @@ class MsgNode {
     this.registry.registerComponent(pep);
     let sm = new SessionManager('mn:/session', this.registry);
     this.registry.registerComponent(sm);
-    let alm = new AddressAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/hyperty-address-allocation', this.registry);
+    let alm = new AddressAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/address-allocation', this.registry);
     this.registry.registerComponent(alm);
     let olm = new ObjectAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/object-address-allocation', this.registry);
     this.registry.registerComponent(olm);
