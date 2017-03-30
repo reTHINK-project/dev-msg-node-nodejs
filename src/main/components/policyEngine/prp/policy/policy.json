@@ -16,15 +16,15 @@
       "rules": [
         { "id": 1,
           "target": {},
-          "condition": [],
-          "effect": "deny",
+          "condition": {"idp":{"equals":"google.com"}},
+          "effect": "permit",
           "obligations": {"emailto": "admin@imt-atlantic.fr"},
           "priority": 0
         },
         { "id": 2,
           "target":{},
           "condition": [],
-          "effect": "permit",
+          "effect": "deny",
           "obligations": {"emailto": "admin@imt-atlantic.fr"},
           "priority": 0
         }
@@ -55,7 +55,7 @@
         },
         { "id": 2,
           "target":{"msgType": {"equals": ["create","update","open","subscribe","response", "handshake"]}},
-          "condition": [],
+          "condition": {"srcUser": {"like": "*@gmail.com"}},
           "effect": "deny",
           "obligations": {"emailto": "admin@imt-atlantic.fr"},
           "priority": 0
@@ -64,7 +64,7 @@
           "target":{},
           "condition": [],
           "effect": "permit",
-          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "obligations": {},
           "priority": 0
         }
       ]

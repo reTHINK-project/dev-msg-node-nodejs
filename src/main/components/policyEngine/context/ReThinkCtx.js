@@ -146,6 +146,12 @@ class ReThinkCtx {
         this._weekday = moment().format("dddd");
     }
 
+    set idp(params) {
+        if (params.message.body.identity !== undefined) {
+            this._idp = params.message.body.identity.idp;
+        }
+    }
+
 }
 
 module.exports = ReThinkCtx;

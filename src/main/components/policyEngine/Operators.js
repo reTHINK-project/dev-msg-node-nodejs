@@ -103,9 +103,7 @@ class Operators {
         /**
          * @param [string] a pattern with wildcards (one or more "*")
          * */
-        if (!(typeof value === "string") || !(typeof param === "string")){
-            throw new Error("operator like not applicable");
-        }
+        if (value === undefined) return false;
         let keys = param.split("*");
         for (let i in keys){
             if (!(keys.hasOwnProperty(i))) continue;
