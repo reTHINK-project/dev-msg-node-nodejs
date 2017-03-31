@@ -1,0 +1,73 @@
+[{
+  "id": 1,
+  "version": 1,
+  "update" : "2017-03-14 17:18:31",
+  "target": {},
+  "policyCombiningAlgorithm": "allowOverrides",
+  "obligations": {},
+  "priority": 0,
+  "policies": [
+    {
+      "id": 1,
+      "target": {},
+      "ruleCombiningAlgorithm": "blockOverrides",
+      "priority": 0,
+      "obligations": {"permit": {"emailto": "admin@imt-atlantic.fr"}},
+      "rules": [
+        { "id": 1,
+          "target": {},
+          "condition": {"idp":{"equals":"google.com"}},
+          "effect": "permit",
+          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "priority": 0
+        },
+        { "id": 2,
+          "target":{},
+          "condition": {"scheme":{"equals": "hello"}},
+          "effect": "deny",
+          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "target": {},
+      "ruleCombiningAlgorithm": "allowOverrides",
+      "priority": 0,
+      "obligations": {"permit": {"emailto": "admin@imt-atlantic.fr"}},
+      "rules": [
+        { "id": 1,
+          "target": {"srcDomain": {"equals": "gmail.com"}},
+          "condition": [
+            {
+              "weekday": {"not": {"equals": ["saturday", "sunday"]}},
+              "time": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}
+            },
+            {
+              "weekday": {"equals": ["saturday", "sunday"]},
+              "time": {"between": ["07:00:00 12:00:00", "13:30:00 22:30:00"]}
+            }
+          ],
+          "effect": "deny",
+          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "priority": 0
+        },
+        { "id": 2,
+          "target":{"msgType": {"equals": ["create","update","open","subscribe","response", "handshake"]}},
+          "condition": {"srcUser": {"like": "*@gmail.com"}},
+          "effect": "deny",
+          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "priority": 0
+        },
+        { "id": 3,
+          "target":{},
+          "condition": [],
+          "effect": "permit",
+          "obligations": {},
+          "priority": 0
+        }
+      ]
+    }
+  ]
+}]
