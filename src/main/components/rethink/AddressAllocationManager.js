@@ -30,7 +30,7 @@ class AddressAllocationManager {
     this.registry = registry;
     this.mnPersist = this.registry.getComponent('mn:/MNpersistManager');
     this.name = name;
-    this.baseURL = 'hyperty://' + this.registry.getDomain() + '/';
+    this.baseURL = '://' + this.registry.getDomain() + '/';
     this.logger = this.registry.getLogger();
     this.allocationKeyList = [];
   }
@@ -42,6 +42,7 @@ class AddressAllocationManager {
   handle(clientMessage) {
     let msg = clientMessage.getMessage();
     let body = msg.getBody();
+    let scheme = body.scheme || "hyperty";
     let number = 0;
     let allocationKey = null;
     let childrenResources = null;
@@ -59,22 +60,11 @@ class AddressAllocationManager {
         childrenResources = body.value.childrenResources;
       }
     }
-    this.logger.info('-------------------------------------------msg :', msg )
-      // this.logger.info('-------------------------------------------msg.getType() is :', msg.getType() )
+
     if (msg.getType() === 'create') {
 
-      // this.logger.info('[', this.getName(), '] handle create msg');
-      this.logger.info('-------------------------------[AddressAllocationManager] handle create msg---------------------');
-
-      // this.logger.info('--------------------------------------  this.mnPersist',   this.mnPersist);
-      // this.logger.info('-------------------------------------------getRuntimeUrl() is :', msg.getRuntimeUrl() )
-
-
-      let allocated = this.allocate(clientMessage, number);
-            this.logger.info('-------------------------------[AddressAllocationManager] --------------------', allocated);
-      // this.mnPersist.setData(number,allocationKey);
-
-
+      this.logger.info('[', this.getName(), '] handle create msg');
+      let allocated = this.allocate(clientMessage, scheme, number);
 
       if (allocationKey !== null) {
         this.logger.info('[', this.getName(), '] associate', number, 'URLs for allocation key', allocationKey);
@@ -111,18 +101,17 @@ class AddressAllocationManager {
           this.deallocate(clientMessage, val);
         });
       }
-      this.logger.info('[--------------------------------------------------------------------------------------------------------------------------------------------' );
       this.logger.info('[', this.getName(), '] associate', number, 'URLs for allocation key', allocationKey);
 
       clientMessage.replyok(this.name);
     }
   }
 
-  allocate(clientMessage, number) {
+  allocate(clientMessage, scheme, number) {
     let list = [];
     let i;
     for (i = 0; i < number; i++) {
-      let url = this.baseURL + uuid.v4();
+      let url = scheme + this.baseURL + uuid.v4();
       list.push(url);
       clientMessage.getResource().subscribe(url);
     }

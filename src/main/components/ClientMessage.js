@@ -60,7 +60,6 @@ class ClientMessage {
       let response = this.registry.getComponent('PEP').analyse(this.msg.msg);
       if (response.result) {
           this.msg.msg = response.msg;
-          this.logger.info(`[${this.name}] ${response.getInfo()}`);
       } else {
           this.replyError('PEP', response.getInfo());
           return;

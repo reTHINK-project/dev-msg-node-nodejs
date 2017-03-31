@@ -36,6 +36,7 @@ class ContextHandler {
             response.msg.body.auth = false;
             response.result = false;
         }
+        this.logger.info(`[${this.name}] ${response.getInfo()}`);
         return response;
     }
 

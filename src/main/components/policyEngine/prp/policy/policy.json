@@ -23,7 +23,7 @@
         },
         { "id": 2,
           "target":{},
-          "condition": [],
+          "condition": {"scheme":{"equals": "hello"}},
           "effect": "deny",
           "obligations": {"emailto": "admin@imt-atlantic.fr"},
           "priority": 0
