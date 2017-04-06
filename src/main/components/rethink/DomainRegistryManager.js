@@ -44,6 +44,14 @@ class DomainRegistryManager {
     let msg = clientMessage.getMessage();
     this.logger.info('[Domain-Registry-Manager], [', this.getName(), ']: handle registry message :\n', msg.msg);
 
+    let parseObj = (obj)=>{
+      for (let i in Object.keys(obj)){
+        let key = Object.keys(obj)[i];
+        obj[key] = JSON.parse(obj[key]);
+      }
+      return obj;
+    };
+
     switch (msg.msg.type.toLowerCase()) {
       case 'create':
       case 'read':
@@ -54,15 +62,14 @@ class DomainRegistryManager {
           this.registryConnector.processMessage(msg.msg, (res) => {
             this.logger.info('[', this.getName(), '] Reply from domain registry :\n ', res);
             this.logger.debug('  this.registryConnector : ',   this.registryConnector);
-            let reply = new Message();
-            reply = {
+
+            let reply = {
                 id: msg.msg.id,
                 type: 'response',
                 from:msg.msg.to,
                 to: msg.msg.from,
-                body: res
-              };
-              // reply.body.code = 200;
+                body: parseObj(res)
+            };
             clientMessage.replyDomain(reply);
           });
         } catch (e) {
