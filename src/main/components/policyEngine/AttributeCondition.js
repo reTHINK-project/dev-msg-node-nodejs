@@ -39,7 +39,7 @@ class AttributeCondition {
                 }
                 // otherwise it is comparative operator
                 // if params is an array
-                else if (params.constructor === Array) {
+                else if (operator !== "in" && params.constructor === Array) {
                     result = params.some(param => {
                         return this.operators[operator](value, param, this.attribute);
                     });
