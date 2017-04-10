@@ -43,7 +43,7 @@ class AllowOverrides {
      * @returns  {Response}
      */
     combine(responses) {
-        let response = new Response(this.name, `resulted from allow-overrides algorithm`);
+        let response = new Response(this.name, `resulted from allow-overrides algorithm of ${this.name}`);
         for (let i in responses){
             let res = responses[i];
             response.addObligations(res.obligations);

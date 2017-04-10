@@ -16,14 +16,14 @@
       "rules": [
         { "id": 1,
           "target": {},
-          "condition": {"idp":{"equals":"google.com"}},
+          "condition": {"srcIDP":{"equals":"google.com"}},
           "effect": "permit",
           "obligations": {"emailto": "admin@imt-atlantic.fr"},
           "priority": 0
         },
         { "id": 2,
           "target":{},
-          "condition": {"scheme":{"equals": "hello"}},
+          "condition": {"srcScheme":{"equals": "hello"}},
           "effect": "deny",
           "obligations": {"emailto": "admin@imt-atlantic.fr"},
           "priority": 0
@@ -38,14 +38,14 @@
       "obligations": {"permit": {"emailto": "admin@imt-atlantic.fr"}},
       "rules": [
         { "id": 1,
-          "target": {"srcDomain": {"equals": "gmail.com"}},
+          "target": {"srcIDPDomain": {"equals": "gmail.com"}},
           "condition": [
             {
-              "weekday": {"not": {"equals": ["saturday", "sunday"]}},
+              "weekday": {"not": {"in": ["saturday", "sunday"]}},
               "time": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}
             },
             {
-              "weekday": {"equals": ["saturday", "sunday"]},
+              "weekday": {"in": ["saturday", "sunday"]},
               "time": {"between": ["07:00:00 12:00:00", "13:30:00 22:30:00"]}
             }
           ],
@@ -54,13 +54,20 @@
           "priority": 0
         },
         { "id": 2,
-          "target":{"msgType": {"equals": ["create","update","open","subscribe","response", "handshake"]}},
-          "condition": {"srcUser": {"like": "*@gmail.com"}},
+          "target":{"actionType": {"in": ["create","update","open","subscribe","response", "handshake"]}},
+          "condition": {"srcUsername": {"like": "*@gmail.com"}},
           "effect": "deny",
           "obligations": {"emailto": "admin@imt-atlantic.fr"},
           "priority": 0
         },
         { "id": 3,
+          "target":{},
+          "condition": {"msgType": {"in": ["registration","addressAllocation","discovery","globalRegistry","identityManagement","dataSync","p2pConnection"]}},
+          "effect": "permit",
+          "obligations": {},
+          "priority": 0
+        },
+        { "id": 4,
           "target":{},
           "condition": [],
           "effect": "permit",

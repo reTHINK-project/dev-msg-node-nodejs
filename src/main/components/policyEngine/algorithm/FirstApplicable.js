@@ -41,7 +41,7 @@ class FirstApplicable {
      * @returns  {Response}
      */
     combine(responses) {
-        let response = new Response(this.name, "not applicable to the targeted message");
+        let response = new Response(this.name, `${this.name} not applicable to the targeted message`);
         for (let i in responses) {
             if (responses[i].effect !== 'notApplicable') {
                 response = responses[i];
