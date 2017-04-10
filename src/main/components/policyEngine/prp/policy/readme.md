@@ -4,7 +4,7 @@ A policy describes principles or strategies for a plan of action designed to ach
 
 ## Background
 
-The reThink project defines a PEP/PDP model for its [policy engines](https://github.com/Heriam/dev-msg-node-nodejs/tree/dev-policies/src/main/components/policyEngine). As shown in Figure 1, upon the interception of a message, the PEP analyzes it and collects necessary attributes into a authorization request to PDP. The PDP then gets the right policies for the request from a database remotely or locally, evaluates the attributes against the policies, and finally responds with a decision such as *permit*, *deny*, *not applicable*, or *indeterminate*. 
+The reThink project defines a PEP/PDP model for its [policy engines](../../readme.md). As shown in Figure 1, upon the interception of a message, the PEP analyzes it and collects necessary attributes into a authorization request to PDP. The PDP then gets the right policies for the request from a database remotely or locally, evaluates the attributes against the policies, and finally responds with a decision such as *permit*, *deny*, *not applicable*, or *indeterminate*. 
 
 ![](../../../../../../docs/images/pe_msging.png)
 
