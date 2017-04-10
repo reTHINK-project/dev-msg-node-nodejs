@@ -84,18 +84,20 @@ In a rule entry of a policy, the condition field represents the restriction unde
 
 | Attribute      | Description                              | Expected Parameter                       |
 | -------------- | ---------------------------------------- | ---------------------------------------- |
-| srcUser        | username of the source of the message    | String, a valid email. e.g., alice@gmail.com |
-| srcDomain      | domain of the source of the message      | String, a valid domain. e.g., gmail.com  |
-| srcHyperty     | hyperty of the source of the message     | String, a valid hyperty url              |
-| idp            | identity provider of the source of the message | String, a valid idp                      |
-| dstUser        | username of the recipient of the message | String, a valid email. e.g., alice@gmail.com |
-| dstDomain      | domain of the recipient of the message   | String, a valid domain. e.g., gmail.com  |
-| dstHyperty     | hyperty of the recipient of the message  | String, a valid hyperty url              |
-| msgType        | type of message                          | String. e.g., open, create, update, etc. |
-| rscType        | resource type                            | String, a valid resource type. e.g., audio |
-| schema         | data object schema                       | String, a valid data object scheme. e.g., comm |
-| authorization  | authorization status                     | Boolean, true or false                   |
-| authentication | authentication status                    | Boolean, true or false                   |
+| srcUsername    | username of the source of the message    | String, a valid email. e.g., alice@gmail.com |
+| srcIDPDomain   | ID domain of the source user of the message | String, a valid domain. e.g., gmail.com  |
+| srcSPDomain    | service domain of the source of the message     | String, a valid hyperty url              |
+| srcScheme      | data object scheme                       | String, a valid data object scheme. e.g., connection |
+| msgFrom        | source url of the message                | String, a valid url. e.g., domain://registry... |
+| srcIDP         | identity provider of the source of the message | String, a valid idp                      |
+| msgTo          | destination url of the message           | String, a valid url. e.g., domain://registry... |
+| dstSPDomain    | service domain of the recipient of the message   | String, a valid domain. e.g., gmail.com  |
+| dstSchema      | data object schema                       | String, a valid data object scheme. e.g., connection |
+| actionType     | type of action                           | String. e.g., open, create, update, etc. |
+| resource       | targeted resource                        | String, a valid resource type. e.g., an user |
+| auth           | authorization status                     | Boolean, true or false                   |
+| msgId          | id of the message                        | Number, a valid integer. e.g., 1         |
+| msgType        | type of the message                      | String, a valid message type. e.g., registration |
 | time           | time of the day, HH:mm:ss                | String, a valid time. e.g., 12:30:00     |
 | date           | date of the year, YYYY-MM-DD             | String, a valid date. e.g., 1992-10-23   |
 | weekday        | day of the week                          | String, a valid weekday. e.g., Sunday    |
