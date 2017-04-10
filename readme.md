@@ -203,3 +203,6 @@ The class AddressAllocationManager handles hyperty URLs allocations once client 
 
 ##### Message
 On each message received from ProtoStub, MsgNode instantiate a ClientMessage instance containing Messages, and dispatch to Client instances.
+
+##### Policy Management
+A PEP/PDP structured [Policy Engine](./src/main/components/policyEngine) is deployed to handle the authorization and access control of messages.
