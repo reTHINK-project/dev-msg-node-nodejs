@@ -42,7 +42,7 @@ class BlockOverrides {
      * @returns  {Response}
      */
     combine(responses) {
-        let response = new Response(this.name, 'resulted from block-overrides algorithm');
+        let response = new Response(this.name, `resulted from block-overrides algorithm of ${this.name}`);
         for (let i in responses){
             let res = responses[i];
             response.addObligations(res.obligations);
