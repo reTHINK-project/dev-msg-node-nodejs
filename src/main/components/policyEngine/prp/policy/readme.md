@@ -92,7 +92,7 @@ In a rule entry of a policy, the condition field represents the restriction unde
 | srcIDP         | identity provider of the source of the message | String, a valid idp                      |
 | msgTo          | destination url of the message           | String, a valid url. e.g., domain://registry... |
 | dstSPDomain    | service domain of the recipient of the message   | String, a valid domain. e.g., gmail.com  |
-| dstSchema      | data object schema                       | String, a valid data object scheme. e.g., connection |
+| dstScheme      | data object scheme                       | String, a valid data object scheme. e.g., connection |
 | actionType     | type of action                           | String. e.g., open, create, update, etc. |
 | resource       | targeted resource                        | String, a valid resource. e.g., an user |
 | auth           | authorization status                     | Boolean, true or false                   |
