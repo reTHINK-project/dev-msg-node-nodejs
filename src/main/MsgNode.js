@@ -123,7 +123,7 @@ class MsgNode {
     this.registry.registerComponent(MNpersistm);
     let bus = new MessageBus('MessageBus', this.registry);
     this.registry.registerComponent(bus);
-    let pep = new PEP('PEP', new NodejsCtx(this.registry, this.config));
+    let pep = new PEP('PEP', new NodejsCtx(this.registry));
     this.registry.registerComponent(pep);
     let sm = new SessionManager('mn:/session', this.registry);
     this.registry.registerComponent(sm);
