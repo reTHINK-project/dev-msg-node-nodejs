@@ -163,6 +163,16 @@ class ReThinkCtx {
     set msgType(params) {
         throw new Error("method must be implemented");
     }
+
+    get auth() {
+        return this._auth;
+    }
+
+    set auth(params) {
+        if (params.message.body.auth !== undefined) {
+            this._auth = params.message.body.auth;
+        }
+    }
 }
 
 module.exports = ReThinkCtx;
