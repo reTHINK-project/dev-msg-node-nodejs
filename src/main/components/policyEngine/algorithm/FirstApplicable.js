@@ -41,15 +41,17 @@ class FirstApplicable {
      * @returns  {Response}
      */
     combine(responses) {
-        let response = new Response(this.name, `${this.name} not applicable to the targeted message`);
+        let response = new Response(this.name, `${this.name} resulted no applicable policies for the targeted message`);
         for (let i in responses) {
             if (responses[i].effect !== 'notApplicable') {
                 response = responses[i];
+                response.pushSource(this.name.substr(4));
+                response.setInfo(`resulted from first-applicable algorithm of ${this.name}`);
+                return response;
             }
         }
         return response;
     }
-
 }
 
 module.exports = FirstApplicable;

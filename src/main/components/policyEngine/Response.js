@@ -8,21 +8,25 @@ class Response {
         this.effect = effect;
         this.obligations = new Map();
         this.info = info;
-        this.source = source;
+        this.source = source.substr(4);
     }
 
     addObligations(obligations) {
-        if (Object.keys(obligations).length){
-            for (let key in obligations) {
-                if (!obligations.hasOwnProperty(key)) continue;
-                this.obligations.set(key, obligations[key]);
-            }
+        for (let [key,value] of obligations) {
+            this.obligations.set(key, value);
         }
-
     }
 
     appendSource(child){
-        this.source = this.source + '/' + child.substr(3);
+        this.source = this.source + '/' + child;
+    }
+
+    pushSource(parent){
+        this.source =  parent + '/' + this.source;
+    }
+
+    popSource(){
+        this.source = this.source.substr(0, this.source.lastIndexOf("/"))
     }
 
     setEffect(effect){

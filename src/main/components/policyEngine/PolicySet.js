@@ -46,7 +46,7 @@ class PolicySet {
         }
         let response = this.policyCombiningAlgorithm.combine(results);
         let obligations = this.obligations[response.effect];
-        if (obligations) response.addObligations(obligations);
+        if (obligations) response.addObligations(new Map().set(this.name.substr(4), obligations));
         return response;
     }
 

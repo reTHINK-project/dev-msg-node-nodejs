@@ -34,7 +34,7 @@ class Rule {
         let isApplicable = this.condition.isApplicable(message);
         if (isApplicable) {
             res.setEffect(this.effect);
-            res.addObligations(this.obligations);
+            res.addObligations(new Map().set(this.name.substr(4),this.obligations));
             return res;
         }
         return res;

@@ -63,11 +63,8 @@ class PEP {
     _enforce(response) {
 
         // Todo: take actions according to/specified in the decision from PDP
-        if (Object.keys(response.obligations).length){
-            for (let key in response.obligations) {
-                if (!response.obligations.hasOwnProperty(key)) continue;
-                this.logger.info(`[${this.name}] ${key} ${response.obligations[key]}`);
-            }
+        if (response.obligations.size){
+            this.logger.info(`[${this.name}] Obligation`, response.obligations);
         }
         return response;
     }

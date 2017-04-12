@@ -4,7 +4,7 @@
   "update" : "2017-03-14 17:18:31",
   "target": {},
   "policyCombiningAlgorithm": "allowOverrides",
-  "obligations": {},
+  "obligations": {"permit": {"info": "determines to permit"}},
   "priority": 0,
   "policies": [
     {
@@ -12,20 +12,20 @@
       "target": {},
       "ruleCombiningAlgorithm": "blockOverrides",
       "priority": 0,
-      "obligations": {"permit": {"emailto": "admin@imt-atlantic.fr"}},
+      "obligations": {"deny": {"info": "determines to deny"}},
       "rules": [
         { "id": 1,
           "target": {},
           "condition": {"srcIDP":{"equals":"google.com"}},
           "effect": "permit",
-          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "obligations": {"info": "determines to permit"},
           "priority": 0
         },
         { "id": 2,
           "target":{},
-          "condition": {"srcScheme":{"equals": "hello"}},
+          "condition": {"srcScheme":{"equals": ["hello","runtime"]}},
           "effect": "deny",
-          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "obligations": {"info": "determines to deny"},
           "priority": 0
         }
       ]
@@ -35,7 +35,7 @@
       "target": {},
       "ruleCombiningAlgorithm": "allowOverrides",
       "priority": 0,
-      "obligations": {"permit": {"emailto": "admin@imt-atlantic.fr"}},
+      "obligations": {"permit": {"info": "determines to permit"}},
       "rules": [
         { "id": 1,
           "target": {"srcIDPDomain": {"equals": "gmail.com"}},
@@ -50,28 +50,28 @@
             }
           ],
           "effect": "deny",
-          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "obligations": {"info": "determines to deny"},
           "priority": 0
         },
         { "id": 2,
           "target":{"actionType": {"in": ["create","update","open","subscribe","response", "handshake"]}},
           "condition": {"srcUsername": {"like": "*@gmail.com"}},
           "effect": "deny",
-          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "obligations": {"info": "determines to deny"},
           "priority": 0
         },
         { "id": 3,
           "target":{},
           "condition": {"msgType": {"in": ["registration","addressAllocation","discovery","globalRegistry","identityManagement","dataSync","p2pConnection"]}},
           "effect": "permit",
-          "obligations": {},
+          "obligations": {"info": "determines to permit"},
           "priority": 0
         },
         { "id": 4,
           "target":{},
           "condition": [],
           "effect": "permit",
-          "obligations": {},
+          "obligations": {"info": "determines to permit"},
           "priority": 0
         }
       ]
