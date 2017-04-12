@@ -43,18 +43,19 @@ class Condition {
                     });
                 }
                 // if the key is an attribute
-                else if (key in this.context){
-                    condition = new AttributeCondition(this.context, condition);
-                }
-                // else invalid
                 else {
-                    this.logger.info(`[${this.name}] warning: unrecognized key when building condition: ${key}`);
+                    key = this.context.isAttribute(key);
+                    if (key) {
+                        condition = new AttributeCondition(this.context, key, value);
+                    } else {
+                        this.logger.info(`[${this.name}] warning: unrecognized key when building condition: ${key}!`);
+                    }
                 }
             }
             // else the map is empty
-            else {
+            // else {
             // this.logger.info(`[${this.name}] warning: empty ${this.usedFor} implies global applicability`);
-            }
+            // }
         }
         // if the condition is of ARRAY type, which contains subConditions with OR relations
         else {
@@ -71,12 +72,12 @@ class Condition {
         }
         // if the condition is not of Object type
         else if (condition.constructor !== Object) {
-            throw new Error(`[${this.name}] syntax error: compiled condition should only be of Object type`);
+            throw new Error(`[${this.name}] syntax error: compiled condition should only be of Object type!`);
         }
         // the condition is not an instance of AttributeCondition
         // the condition contains multiple keys
         else if (Object.keys(condition).length > 1){
-            throw new Error(`[${this.name}] syntax error: compiled condition contains multiple keys in a map`);
+            throw new Error(`[${this.name}] syntax error: compiled condition contains multiple keys in a map!`);
         }
         // the condition contains only one key
         else if (Object.keys(condition).length === 1) {
@@ -88,10 +89,10 @@ class Condition {
                         return this.isApplicable(message, subCondition);
                     })
                 );
-            } else if (key in this.context){
-                throw new Error(`[${this.name}] syntax error: attribute is failed to build attribute condition object: ${key}`);
+            } else if (this.context.isAttribute(key)){
+                throw new Error(`[${this.name}] syntax error: attribute is failed to build attribute condition object: ${key}!`);
             } else {
-                throw new Error(`[${this.name}] syntax error: unrecognized key in condition field: ${key}`);
+                throw new Error(`[${this.name}] syntax error: unrecognized key in condition field: ${key}!`);
             }
         }
         // empty condition

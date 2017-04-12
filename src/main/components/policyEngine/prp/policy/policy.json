@@ -16,14 +16,14 @@
       "rules": [
         { "id": 1,
           "target": {},
-          "condition": {"srcIDP":{"equals":"google.com"}},
+          "condition": {"<srcIDP>":{"equals":"google.com"}},
           "effect": "permit",
           "obligations": {"info": "determines to permit"},
           "priority": 0
         },
         { "id": 2,
           "target":{},
-          "condition": {"srcScheme":{"equals": ["hello","runtime"]}},
+          "condition": {"<srcScheme>":{"equals": ["hello","runtime"]}},
           "effect": "deny",
           "obligations": {"info": "determines to deny"},
           "priority": 0
@@ -38,15 +38,15 @@
       "obligations": {"permit": {"info": "determines to permit"}},
       "rules": [
         { "id": 1,
-          "target": {"srcIDPDomain": {"equals": "gmail.com"}},
+          "target": {"<srcIDPDomain>": {"equals": "gmail.com"}},
           "condition": [
             {
-              "weekday": {"not": {"in": ["saturday", "sunday"]}},
-              "time": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}
+              "<weekday>": {"not": {"in": ["saturday", "sunday"]}},
+              "<time>": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}
             },
             {
-              "weekday": {"in": ["saturday", "sunday"]},
-              "time": {"between": ["07:00:00 12:00:00", "13:30:00 22:30:00"]}
+              "<weekday>": {"in": ["saturday", "sunday"]},
+              "<time>": {"between": ["07:00:00 12:00:00", "13:30:00 22:30:00"]}
             }
           ],
           "effect": "deny",
@@ -54,20 +54,27 @@
           "priority": 0
         },
         { "id": 2,
-          "target":{"actionType": {"in": ["create","update","open","subscribe","response", "handshake"]}},
-          "condition": {"srcUsername": {"like": "*@gmail.com"}},
+          "target":{"<actionType>": {"in": ["create","update","open","subscribe","response", "handshake"]}},
+          "condition": {"<srcUsername>": {"like": "*@gmail.com"}},
           "effect": "deny",
           "obligations": {"info": "determines to deny"},
           "priority": 0
         },
         { "id": 3,
           "target":{},
-          "condition": {"msgType": {"in": ["registration","addressAllocation","discovery","globalRegistry","identityManagement","dataSync","p2pConnection"]}},
+          "condition": {"<msgType>": {"in": ["registration","addressAllocation","discovery","globalRegistry","identityManagement","dataSync","p2pConnection"]}},
           "effect": "permit",
           "obligations": {"info": "determines to permit"},
           "priority": 0
         },
         { "id": 4,
+          "target":{},
+          "condition": {"<srcScheme>":{"in": ["hello","<dstScheme>"]}},
+          "effect": "permit",
+          "obligations": {"info": "determines to permit"},
+          "priority": 0
+        },
+        { "id": 5,
           "target":{},
           "condition": [],
           "effect": "permit",

@@ -6,11 +6,11 @@ let Operators = require('./Operators');
 
 class AttributeCondition {
 
-    constructor(context, condition) {
+    constructor(context, attribute, expression) {
         this.context = context;
         this.logger = this.context.registry.getLogger();
-        this.attribute = Object.keys(condition)[0];
-        this.expression = condition[Object.keys(condition)[0]];
+        this.attribute = attribute;
+        this.expression = expression;
         this.operators = new Operators();
         this.name = "PDP AttrCond";
     }
@@ -23,8 +23,8 @@ class AttributeCondition {
          * by executing the operator implementation.
          * @param  {Object}    message
          */
-        this.context[this.attribute] = {message: message};
-        let value = this.context[this.attribute];
+
+        let value = this._getAttributeValue(this.attribute, message);
         let final = false;
         if (expression.constructor === Object) {
             let results = [];
@@ -37,16 +37,22 @@ class AttributeCondition {
                     params = Array.isArray(params)?params:[params];
                     result = this.operators[operator](params.map(param=>{return this.isApplicable(message, param)}));
                 }
-                // otherwise it is comparative operator
-                // if params is an array
-                else if (operator !== "in" && params.constructor === Array) {
-                    result = params.some(param => {
-                        return this.operators[operator](value, param, this.attribute);
-                    });
-                }
-                // otherwise it is a value
+                // otherwise it is comparative operator, and params is really params
                 else {
-                    result = this.operators[operator](value, params, this.attribute);
+                    // read attribute value
+                    params = Array.isArray(params) ?
+                        params.map(param=>{return this._getAttributeValue(param, message)}) :
+                        this._getAttributeValue(params, message);
+                    // if params is an array
+                    if (operator !== "in" && params.constructor === Array) {
+                        result = params.some(param => {
+                            return this.operators[operator](value, param, this.attribute);
+                        });
+                    }
+                    // otherwise it is a value
+                    else {
+                        result = this.operators[operator](value, params, this.attribute);
+                    }
                 }
                 results.push(result);
             }
@@ -59,6 +65,21 @@ class AttributeCondition {
             throw new Error(`Unsupported condition format`);
         }
         return final;
+    }
+
+    _getAttributeValue(attribute, msg){
+        if (attribute !== this.attribute) {
+            let attr = this.context.isAttribute(attribute);
+            if (attr) {
+                this.context[attr] = {message: msg};
+                return this.context[attr];
+            } else {
+                return attribute;
+            }
+        } else {
+            this.context[attribute] = {message: msg};
+            return this.context[attribute];
+        }
     }
 }
 

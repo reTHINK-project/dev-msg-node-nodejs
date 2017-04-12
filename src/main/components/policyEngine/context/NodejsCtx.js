@@ -9,6 +9,7 @@ class NodejsCtx extends ReThinkCtx {
         super();
         this.name = 'PDP';
         this.registry = registry;
+        this.logger = this.registry.getLogger();
         this.msg = null;
         this.msgTypes = {
             registration: function (msg) {
@@ -96,6 +97,14 @@ class NodejsCtx extends ReThinkCtx {
             if (this.msgTypes.hasOwnProperty(key) && this.msgTypes[key](params.message)) {
                 this._msgType = key;
             }
+        }
+    }
+
+    isAttribute(attr){
+        if (attr.startsWith("<") && attr.endsWith(">") && (attr.substr(1, attr.length - 2) in this)){
+            return attr.substr(1, attr.length - 2);
+        } else {
+            return null;
         }
     }
 }

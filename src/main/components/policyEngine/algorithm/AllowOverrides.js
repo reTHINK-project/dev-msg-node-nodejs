@@ -43,19 +43,22 @@ class AllowOverrides {
      * @returns  {Response}
      */
     combine(responses) {
-        let response = new Response(this.name, `${this.name} resulted no applicable policies for the targeted message`);
-        let decisions = responses.map(res=>{return res.effect});
+        let response = new Response(this.name);
+        let decisions = responses.map(res=>{
+            this.logger.info(`[${this.name}] ${res.source} evaluated to ${res.effect}`);
+            return res.effect
+        });
         let idxPer = decisions.indexOf("permit");
         let idxDen = decisions.indexOf("deny");
         if (idxPer !== -1) {
             response = responses[idxPer];
+            response.pushSource(this.name.substr(4));
         } else if (idxDen !== -1) {
             response = responses[idxDen];
-        } else {
-            return response;
+            response.pushSource(this.name.substr(4));
         }
-        response.pushSource(this.name.substr(4));
-        response.setInfo(`resulted from allow-overrides algorithm of ${this.name}`);
+        response.setInfo(`resulted from allow-overrides algorithm`);
+        this.logger.info(`[${this.name}] ${response.getInfo()}`);
         return response;
     }
 
