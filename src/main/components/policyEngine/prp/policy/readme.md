@@ -63,7 +63,7 @@ Each policy, as show in Figure 4, contains id, target, priority, and obligations
 
 **Figure 4:** Policy syntax
 
-As show in Figure 5, in addition to a target, a rule includes one or a combination of Boolean conditions that, if evaluated true, have an effect of either Permit or Deny. If the target condition evaluates to True for a Rule and the Rule’s condition fails to evaluate for any reason, the effect of the Rule is Indeterminate. In comparison to the (matching) condition of a target, the conditions of a Rule or Policy are typically more complex and may include functions (e.g., "greater-than", "less-than", "equal") for the comparison of attribute values, and operations (e.g., "not", "and", "or") for the computation of Boolean values.
+As show in Figure 5, in addition to a target, a rule includes one or a combination of Boolean conditions that, if evaluated true, have an effect of either Permit or Deny, otherwise the effect is not taken. If the target condition evaluates to True for a Rule and the Rule’s condition fails to evaluate for any reason, the effect of the Rule is Indeterminate. In comparison to the (matching) condition of a target, the conditions of a Rule or Policy are typically more complex and may include functions (e.g., "greater-than", "less-than", "equal") for the comparison of attribute values, and operations (e.g., "not", "and", "or") for the computation of Boolean values.
 
 ```json
 {
