@@ -218,7 +218,7 @@ However, there are also cases that we may need multiple constrains (operator-par
   }
   ```
 
-Therefore, an *Attribute Condition* could be simple but flexible and expressive as below for example. Please note that the attribute keywords are marked with "<>". Also note that the value of another attribute can be used as a parameter for the condition, as the attribute "dstScheme" below.
+Therefore, an *Attribute Condition* could be simple but flexible and expressive as below for example. Please note that the attribute keywords are marked with "<>". Also note that the value of another attribute can be used as a parameter for the condition. As the attribute "dstScheme" shown below, it is used as a parameter in the "srcScheme" *Attribute Condition*. And when the policy is evaluated, PDP would first get the value of the "dstScheme" attribute from the message, and then compare the value with "srcScheme" attribute.
 
 ```json
 {"<srcScheme>": {
