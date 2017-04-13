@@ -222,9 +222,10 @@ Therefore, an *Attribute Condition* could be simple but flexible and expressive 
 
 ```json
 {"<srcScheme>": {
-                "in": ["connection", "hyperty"]},
+                "in": ["connection", "hyperty"],
                 "equals": "<dstScheme>"
                 }
+}
 ```
 
 ***Complex Condition***
