@@ -218,10 +218,13 @@ However, there are also cases that we may need multiple constrains (operator-par
   }
   ```
 
-Therefore, an *Attribute Condition* could be simple but flexible and expressive as below for example:
+Therefore, an *Attribute Condition* could be simple but flexible and expressive as below for example. Please note that the attribute keywords are marked with "<>". Also note that the value of another attribute can be used as a parameter for the condition, as the attribute "dstScheme" below.
 
 ```json
-{"time": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}}
+{"<srcScheme>": {
+                "in": ["connection", "hyperty"]},
+                "equals": "<dstScheme>"
+                }
 ```
 
 ***Complex Condition***
@@ -303,13 +306,13 @@ The reThink PDL includes the concepts of obligation and advice expressions. An o
 For a better understanding, Figure 6 gives an example of a policy set in JSON.
 
 ```json
-{
+[{
   "id": 1,
   "version": 1,
   "update" : "2017-03-14 17:18:31",
   "target": {},
-  "policyCombiningAlgorithm": "firstApplicable",
-  "obligations": {},
+  "policyCombiningAlgorithm": "allowOverrides",
+  "obligations": {"permit": {"info": "determines to permit"}},
   "priority": 0,
   "policies": [
     {
@@ -317,28 +320,79 @@ For a better understanding, Figure 6 gives an example of a policy set in JSON.
       "target": {},
       "ruleCombiningAlgorithm": "blockOverrides",
       "priority": 0,
-      "obligations": {"deny": {"emailto": "admin@imt-atlantic.fr"}},
+      "obligations": {"deny": {"info": "determines to deny"}},
       "rules": [
         { "id": 1,
-          "target":[
-            {"srcDomain": {"equals": "gmail.com"}},
-            {"msgType": {"equals": ["create","update","open","subscribe","response", "handshake"]}}],
-          "condition": {
-            "anyOf": [
-              {"allOf": [
-                {"weekday": {"not": {"equals": ["saturday", "sunday"]}}},
-                {"time": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}}]},
-              {"allOf": [
-                {"weekday": {"equals": ["saturday", "sunday"]}},
-                {"time": {"between": ["07:00:00 12:00:00", "13:30:00 22:30:00"]}}]}]},
+          "target": {},
+          "condition": {"<srcIDP>":{"equals":"google.com"}},
           "effect": "permit",
-          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "obligations": {"info": "determines to permit"},
+          "priority": 0
+        },
+        { "id": 2,
+          "target":{},
+          "condition": {"<srcScheme>":{"equals": ["hello","runtime"]}},
+          "effect": "deny",
+          "obligations": {"info": "determines to deny"},
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "target": {},
+      "ruleCombiningAlgorithm": "allowOverrides",
+      "priority": 0,
+      "obligations": {"permit": {"info": "determines to permit"}},
+      "rules": [
+        { "id": 1,
+          "target": {"<srcIDPDomain>": {"equals": "gmail.com"}},
+          "condition": [
+            {
+              "<weekday>": {"not": {"in": ["saturday", "sunday"]}},
+              "<time>": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}
+            },
+            {
+              "<weekday>": {"in": ["saturday", "sunday"]},
+              "<time>": {"between": ["07:00:00 12:00:00", "13:30:00 22:30:00"]}
+            }
+          ],
+          "effect": "deny",
+          "obligations": {"info": "determines to deny"},
+          "priority": 0
+        },
+        { "id": 2,
+          "target":{"<actionType>": {"in": ["create","update","open","subscribe","response", "handshake"]}},
+          "condition": {"<srcUsername>": {"like": "*@gmail.com"}},
+          "effect": "deny",
+          "obligations": {"info": "determines to deny"},
+          "priority": 0
+        },
+        { "id": 3,
+          "target":{},
+          "condition": {"<msgType>": {"in": ["registration","addressAllocation","discovery","globalRegistry","identityManagement","dataSync","p2pConnection"]}},
+          "effect": "permit",
+          "obligations": {"info": "determines to permit"},
+          "priority": 0
+        },
+        { "id": 4,
+          "target":{},
+          "condition": {"<srcScheme>":{"in": ["hello","<dstScheme>"]}},
+          "effect": "permit",
+          "obligations": {"info": "determines to permit"},
+          "priority": 0
+        },
+        { "id": 5,
+          "target":{},
+          "condition": [],
+          "effect": "permit",
+          "obligations": {"info": "determines to permit"},
           "priority": 0
         }
       ]
     }
   ]
-}
+}]
 ```
 
 **Figure 6:** Policy example
