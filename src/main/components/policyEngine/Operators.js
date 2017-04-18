@@ -66,7 +66,6 @@ class Operators {
                 value = parseInt(value);
                 start = parseInt(start);
                 end = parseInt(end);
-                console.log(`${attribute} is not explicitly specified for between operation.`);
         }
         return (value > start && value < end);
     }

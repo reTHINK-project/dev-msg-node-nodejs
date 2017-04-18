@@ -48,7 +48,7 @@ class Condition {
                     if (key) {
                         condition = new AttributeCondition(this.context, key, value);
                     } else {
-                        this.logger.info(`[${this.name}] warning: unrecognized key when building condition: ${key}!`);
+                        this.logger.error(`[${this.name}] unrecognized key when building condition: ${key}!`);
                     }
                 }
             }

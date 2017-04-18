@@ -33,7 +33,12 @@ module.exports = {
           enabled: false
       }
   },
-  redisURL:process.env.redisURL || 'localhost',
+  redisConfig: {
+      url:process.env.redisURL || 'localhost',
+      port: 6379,
+      policyDB: 15,
+      persisDB: 0,
+  },
   port: process.env.PORT || '9090',
   ioConfig: {
     transports: [

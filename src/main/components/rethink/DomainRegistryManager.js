@@ -23,7 +23,6 @@
 
 'use strict';
 let Message = require('./../Message');
-
 const RegistryDomainConnector = require('dev-registry-domain/connector');
 
 class DomainRegistryManager {
@@ -33,7 +32,6 @@ class DomainRegistryManager {
     this.registry = registry;
     this.registryConnector = new RegistryDomainConnector(this.registry.getConfig().domainRegistryConfig);
     this.logger = this.registry.getLogger();
-
   }
 
   getName() {
@@ -41,15 +39,19 @@ class DomainRegistryManager {
   }
 
   handle(clientMessage) {
+    let _this = this;
     let msg = clientMessage.getMessage();
-    this.logger.info('[Domain-Registry-Manager], [', this.getName(), ']: handle registry message :\n', msg.msg);
+    _this.logger.info('[Domain-Registry-Manager], [', _this.getName(), ']: handle registry message :\n', msg.msg);
 
-    let parseObj = (obj)=>{
-      for (let i in Object.keys(obj)){
-        let key = Object.keys(obj)[i];
-        obj[key] = JSON.parse(obj[key]);
-      }
-      return obj;
+    let parseObj = (obj)=> {
+        if (obj.constructor === Object) {
+            for (let i in Object.keys(obj)) {
+                let key = Object.keys(obj)[i];
+                obj[key] = JSON.parse(obj[key]);
+            }
+            return obj;
+        }
+        return obj;
     };
 
     switch (msg.msg.type.toLowerCase()) {
@@ -57,28 +59,25 @@ class DomainRegistryManager {
       case 'read':
       case 'delete':
       case 'update':
-        try {
-          this.logger.info('msg.msg.type.toLowerCase() is:', msg.msg.type.toLowerCase());
-          this.registryConnector.processMessage(msg.msg, (res) => {
-            this.logger.info('[', this.getName(), '] Reply from domain registry :\n ', res);
-            this.logger.debug('  this.registryConnector : ',   this.registryConnector);
-
-            let reply = {
-                id: msg.msg.id,
-                type: 'response',
-                from:msg.msg.to,
-                to: msg.msg.from,
-                body: parseObj(res)
-            };
-            clientMessage.replyDomain(reply);
-          });
-        } catch (e) {
-          this.logger.error('[', this.getName(), ']: Error while processing message:\n', e);
-        }
-
-      break;
+          try {
+              _this.registryConnector.processMessage(msg.msg, (res) => {
+                  _this.logger.info('[', _this.getName(), '] Reply from domain registry :\n ', res);
+                  let body = parseObj(res);
+                  let reply = {
+                      id: msg.msg.id,
+                      type: 'response',
+                      from: msg.msg.to,
+                      to: msg.msg.from,
+                      body: body
+                  };
+                  clientMessage.replyDomain(reply);
+              });
+          } catch (e) {
+              _this.logger.error('[', _this.getName(), ']: Error while processing message:\n', e);
+          }
+          break;
       default:
-        clientMessage.replyError(this.getName(), 'Unrecognized type :"' + msg.getType() + '"');
+        clientMessage.replyError(_this.getName(), 'Unrecognized type :"' + msg.getType() + '"');
     }
   }
 }
