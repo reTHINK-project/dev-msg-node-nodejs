@@ -32,6 +32,7 @@ class BlockOverrides {
 
     constructor (context, name){
         this.name = name;
+        this.develop = context.devMode;
         this.context = context;
         this.logger = this.context.registry.getLogger();
     }
@@ -44,20 +45,22 @@ class BlockOverrides {
     combine(responses) {
         let response = new Response(this.name);
         let decisions = responses.map(res=>{
-            this.logger.info(`[${this.name}] ${res.source} evaluated to ${res.effect}`);
+            if (this.develop){
+                this.logger.info(`[${res.source}] evaluated to ${res.effect}`);
+            }
             return res.effect
         });
         let idxDen = decisions.indexOf("deny");
         let idxPer = decisions.indexOf("permit");
         if (idxDen !== -1) {
             response = responses[idxDen];
-            response.pushSource(this.name.substr(4));
         } else if (idxPer !== -1) {
             response = responses[idxPer];
-            response.pushSource(this.name.substr(4));
         }
         response.setInfo(`resulted from block-overrides algorithm`);
-        this.logger.info(`[${this.name}] ${response.getInfo()}`);
+        if (this.develop){
+            this.logger.info(`${response.getInfo()}`);
+        }
         return response;
     }
 

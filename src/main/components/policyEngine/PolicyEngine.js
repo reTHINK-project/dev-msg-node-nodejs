@@ -11,12 +11,12 @@ class PolicyEngine {
         this.name = name;
         context.policyEngine = this;
         this.context = context;
-        this.logger = this.context.registry.getLogger();
-        this.pip = new pip(this.context);
-        this.prp = new prp(this.context);
-        this.pdp = new pdp(this.context, this.prp);
-        this.pep = new pep(this.context, this.pdp);
-        this.logger.info(`[${this.name}] started`);
+        this.logger = context.registry.getLogger();
+        this.pip = new pip(context);
+        this.prp = new prp(context);
+        this.pdp = new pdp(context, this.prp);
+        this.pep = new pep(context, this.pdp);
+        this.logger.info(`[${this.name}] started ${context.devMode? "in development mode": ""}`);
     }
 
     getName(){

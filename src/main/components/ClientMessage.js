@@ -62,7 +62,7 @@ class ClientMessage {
       if (response.result) {
           this.msg.msg = response.msg;
       } else {
-          this.replyError('PEP', response.getInfo());
+          this.replyError('PolicyEngine', response.getInfo());
           return;
       }
       let comp = this.registry.getComponent(this.msg.getTo());

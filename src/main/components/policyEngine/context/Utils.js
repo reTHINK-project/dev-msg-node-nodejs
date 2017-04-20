@@ -121,7 +121,7 @@ getUserURLFromEmail: function (userEmail) {
  */
 
 getUserEmailFromURL: function (userURL) {
-    let url = divideURL(userURL);
+    let url = module.exports.divideURL(userURL);
     return url.identity.replace('/', '') + '@' + url.domain; // identity field has '/exampleID' instead of 'exampleID'
 },
 
@@ -135,7 +135,7 @@ convertToUserURL: function (identifier) {
 
     // check if the identifier is already in the url format
     if (identifier.substring(0, 7) === 'user://') {
-        let dividedURL = divideURL(identifier);
+        let dividedURL = module.exports.divideURL(identifier);
 
         //check if the url is well formated
         if (dividedURL.domain && dividedURL.identity) {

@@ -32,6 +32,7 @@ class FirstApplicable {
 
     constructor (context, name){
         this.name = name;
+        this.develop = context.devMode;
         this.context = context;
         this.logger = this.context.registry.getLogger();
     }
@@ -45,12 +46,13 @@ class FirstApplicable {
         for (let i in responses) {
             if (responses[i].effect !== 'notApplicable') {
                 response = responses[i];
-                response.pushSource(this.name.substr(4));
                 break;
             }
         }
         response.setInfo(`resulted from first-applicable algorithm`);
-        this.logger.info(`[${this.name}] ${response.getInfo()}`);
+        if (this.develop){
+            this.logger.info(`${response.getInfo()}`);
+        }
         return response;
     }
 }

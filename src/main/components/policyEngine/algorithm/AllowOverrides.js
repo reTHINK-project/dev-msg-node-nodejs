@@ -33,6 +33,7 @@ class AllowOverrides {
 
     constructor (context, name){
         this.name = name;
+        this.develop = context.devMode;
         this.context = context;
         this.logger = this.context.registry.getLogger();
     }
@@ -45,20 +46,22 @@ class AllowOverrides {
     combine(responses) {
         let response = new Response(this.name);
         let decisions = responses.map(res=>{
-            this.logger.info(`[${this.name}] ${res.source} evaluated to ${res.effect}`);
+            if (this.develop){
+                this.logger.info(`[${res.source}] evaluated to ${res.effect}`);
+            }
             return res.effect
         });
         let idxPer = decisions.indexOf("permit");
         let idxDen = decisions.indexOf("deny");
         if (idxPer !== -1) {
             response = responses[idxPer];
-            response.pushSource(this.name.substr(4));
         } else if (idxDen !== -1) {
             response = responses[idxDen];
-            response.pushSource(this.name.substr(4));
         }
         response.setInfo(`resulted from allow-overrides algorithm`);
-        this.logger.info(`[${this.name}] ${response.getInfo()}`);
+        if (this.develop){
+            this.logger.info(`${response.getInfo()}`);
+        }
         return response;
     }
 

@@ -24,7 +24,7 @@ class AttributeCondition {
          * @param  {Object}    message
          */
 
-        let value = this._getAttributeValue(this.attribute, message);
+        let value = this.getAttributeValue(message);
         let final = false;
         if (expression.constructor === Object) {
             let results = [];
@@ -41,8 +41,8 @@ class AttributeCondition {
                 else {
                     // read attribute value
                     params = Array.isArray(params) ?
-                        params.map(param=>{return this._getAttributeValue(param, message)}) :
-                        this._getAttributeValue(params, message);
+                        params.map(param=>{return this.getAttributeValue(message, param)}) :
+                        this.getAttributeValue(message, params);
                     // if params is an array
                     if (operator !== "in" && params.constructor === Array) {
                         result = params.some(param => {
@@ -62,23 +62,21 @@ class AttributeCondition {
                 return this.isApplicable(message, express);
             });
         } else {
-            throw new Error(`Unsupported condition format`);
+            throw new Error(`[${this.name}] Unsupported condition format`);
         }
         return final;
     }
 
-    _getAttributeValue(attribute, msg){
+    getAttributeValue(msg, attribute = this.attribute){
         if (attribute !== this.attribute) {
-            let attr = this.context.isAttribute(attribute);
+            let attr = this.context.isAttributed(attribute);
             if (attr) {
-                this.context[attr] = {message: msg};
-                return this.context[attr];
+                return this.context.extractValueOfAttribute(attr, msg)
             } else {
                 return attribute;
             }
         } else {
-            this.context[attribute] = {message: msg};
-            return this.context[attribute];
+            return this.context.extractValueOfAttribute(attribute, msg);
         }
     }
 }

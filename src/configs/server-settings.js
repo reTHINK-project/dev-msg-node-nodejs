@@ -55,5 +55,9 @@ module.exports = {
   sessionCookieSecret: '88HpNxVxm5k94AY2',
   useSSL: process.env.useSSL || false,
   sslCertificate: process.env.sslCertificate || path.resolve(path.join(__dirname, '../../', '/') + '/server.crt'),
-  sslPKey: process.env.sslPKey || path.resolve(path.join(__dirname, '../../', '/') + '/key.pem')
+  sslPKey: process.env.sslPKey || path.resolve(path.join(__dirname, '../../', '/') + '/key.pem'),
+  policyConfig: {
+      development: false,
+      defaultBehavior: false
+  }
 };

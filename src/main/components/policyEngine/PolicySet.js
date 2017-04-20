@@ -68,7 +68,7 @@ class PolicySet {
             if (!policies.hasOwnProperty(i)) continue;
             let policy = policies[i];
             if (!(policy instanceof Policy)) {
-                policy = new Policy(this.context, policy);
+                policy = new Policy(this.name, this.context, policy);
             }
             npolicies.push(policy);
         }

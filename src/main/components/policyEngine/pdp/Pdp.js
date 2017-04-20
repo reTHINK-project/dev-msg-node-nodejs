@@ -18,6 +18,7 @@ class PDP {
         this.logger = this.context.registry.getLogger();
         this.prp = prp;
         this.logger.info(`[${this.name}] new instance`);
+        this.develop = context.devMode;
     }
 
     // ========================= public =============================
@@ -26,6 +27,9 @@ class PDP {
         let policySet = null;
         let msg = this._validate(request);
         if (msg) {
+            if (this.develop){
+                this.logger.info(`[${this.name}] message attributes`, this.context.extractAllAttributeValues(msg));
+            }
             policySet = this.prp.getPolicySet(msg);
         }
         return this._respond(policySet, msg);
@@ -36,7 +40,7 @@ class PDP {
     _validate(request) {
         let msg = request.getMessage();
         if (!(msg && msg.id && msg.from && msg.to && msg.type)){
-            this.logger.info(`[${this.name}] Invalid message`);
+            this.logger.error(`[${this.name}] Invalid message`);
             return null;
         }
         return msg;

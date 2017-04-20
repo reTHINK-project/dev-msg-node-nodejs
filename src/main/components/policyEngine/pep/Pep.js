@@ -15,9 +15,10 @@ class PEP {
     constructor(context, pdp) {
         this.name = 'PEP';
         this.context = context;
+        this.develop = context.devMode;
         this.logger = this.context.registry.getLogger();
         this.pdp = pdp;
-        this.contextHandler = new ContextHandler(this.context);
+        this.contextHandler = new ContextHandler(context);
         this.logger.info(`[${this.name}] new instance`);
     }
 
@@ -36,7 +37,10 @@ class PEP {
             let authorizationResponse = this.contextHandler.parseToAuthzResponse(response);
             return this._enforce(authorizationResponse);
         } else {
-            return {};
+            return {
+                result: false,
+                getInfo: ()=>{return 'invalid message'}
+            };
         }
     }
     // ======================== private =======================
@@ -51,7 +55,9 @@ class PEP {
 
     _enforce(response) {
         if (response.obligations.size){
-            this.logger.info(`[${this.name}] Obligation`, response.obligations);
+            if (this.develop) {
+                this.logger.info(`[${this.name}] Obligation`, response.obligations);
+            }
         }
         return response;
     }

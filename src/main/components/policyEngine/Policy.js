@@ -10,7 +10,7 @@ let FirstApplicable = require('./algorithm/FirstApplicable');
 
 class Policy {
 
-    constructor(context, policyObj) {
+    constructor(owner, context, policyObj) {
         if (!("id" in policyObj)) throw new Error("id is not defined.");
         if (!("priority" in policyObj)) throw new Error("priority is not defined.");
         if (!("target" in policyObj)) throw new Error("target is not defined.");
@@ -20,7 +20,7 @@ class Policy {
         this.context = context;
         this.logger = this.context.registry.getLogger();
         this.id = policyObj.id;
-        this.name = `PDP Policy ${this.id}`;
+        this.name = owner + ` | Policy ${this.id}`;
         this.priority = policyObj.priority;
         this.target = new Target(this.name, this.context, policyObj.target, 'Target');
         this.obligations = policyObj.obligations;
@@ -54,7 +54,7 @@ class Policy {
                 rule.priority = this._getLastPriority() + 1;
             }
             if (!(rule instanceof Rule)) {
-                rule = new Rule(this.context, rule);
+                rule = new Rule(this.name, this.context, rule);
             }
             nrules.push(rule);
         }

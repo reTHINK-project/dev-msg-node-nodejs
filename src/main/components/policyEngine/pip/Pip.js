@@ -8,18 +8,17 @@ const RegistryDomainConnector = require('dev-registry-domain/connector');
 
 class PIP {
     constructor (context) {
-        let _this = this;
-        _this.name = "PIP";
-        _this.registry = context.registry;
-        _this.cacheTTL = 3600;
-        _this.logger = _this.registry.getLogger();
-        _this.registryConnector = new RegistryDomainConnector(_this.registry.getConfig().domainRegistryConfig);
-        _this.cache = new NodeCache({ stdTTL: _this.cacheTTL, checkperiod: 600 });
-        _this.logger.info(`[${_this.name}] new instance`);
+        this.name = "PIP";
+        this.registry = context.registry;
+        this.develop = context.devMode;
+        this.cacheTTL = 3600;
+        this.logger = this.registry.getLogger();
+        this.registryConnector = new RegistryDomainConnector(this.registry.getConfig().domainRegistryConfig);
+        this.cache = new NodeCache({ stdTTL: this.cacheTTL, checkperiod: 600 });
+        this.logger.info(`[${this.name}] new instance`);
     }
 
     setRegistryCacheEntry(msg, res){
-        let _this = this;
         let value = null;
         if (msg.type === 'create' && msg.body.value.url.startsWith('hyperty') && res.body.code === 200) {
             value = {
@@ -38,15 +37,17 @@ class PIP {
                 descriptor: msg.body.value.descriptor,
                 hypertyID: msg.body.resource,
                 resources: msg.body.value.resources,
-                expires: msg.body.value.expires || _this.cacheTTL,
+                expires: msg.body.value.expires || this.cacheTTL,
                 dataSchemes: msg.body.value.dataSchemes,
                 status: msg.body.value.status,
                 runtime: msg.from.startsWith('runtime')? removePathFromURL(msg.from): undefined,
             };
         }
         if (value) {
-            _this.cache.set(value.userID+ ' ' +value.hypertyID+ ' ' +value.runtime, JSON.stringify(value), value.expires);
-            console.log(`[${_this.name}] setting registry cache entry`, JSON.stringify(value));
+            if (this.develop){
+                this.logger.info(`[${this.name}] setting registry cache entry`, value);
+            }
+            this.cache.set(value.userID+ ' ' +value.hypertyID+ ' ' +value.runtime, value, value.expires);
         }
     }
 
@@ -57,6 +58,9 @@ class PIP {
             if (key.split(' ').includes(objURL)) {
                 results.push(this.cache.get(key));
             }
+        }
+        if (this.develop){
+            this.logger.info(`[${this.name}] getting registry cache entry`, results);
         }
         return results;
     }
