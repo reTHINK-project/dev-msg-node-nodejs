@@ -15,11 +15,20 @@ class NodejsCtx extends ReThinkCtx {
         this.attri = new Attributes();
     }
 
-    extractValueOfAttribute(attr, msg) {
+    setValueOfAttribute(attr, msg, newValue){
+        // todo: currently only valueNumber and valueAllocated support to set new values. Enable others if needed.
+        if (attr in this.attri) {
+            return this.attri[attr](msg, this, newValue);
+        } else {
+            this.logger.error(`[${this.name}] attribute ${attr} is not valid`);
+        }
+    }
+
+    getValueOfAttribute(attr, msg) {
         if (attr in this.attri) {
             return this.attri[attr](msg, this);
         } else {
-            this.logger.error(`[${this.name}] attribute ${attr} is not extractable for the message ${msg}`);
+            this.logger.error(`[${this.name}] attribute ${attr} is not valid`);
         }
     }
 
@@ -35,7 +44,7 @@ class NodejsCtx extends ReThinkCtx {
         }
     }
 
-    extractAllAttributeValues(msg){
+    getAllAttributeValues(msg){
 
         let [attributes, attributeValues] = [Object.getOwnPropertyNames(this.attri.__proto__).slice(1), new Map()];
         for (let index in attributes) {

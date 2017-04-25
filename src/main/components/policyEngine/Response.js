@@ -9,6 +9,7 @@ class Response {
         this.obligations = new Map();
         this.info = info;
         this.source = source;
+        this.msg = null;
     }
 
     addObligations(obligations) {
@@ -32,6 +33,15 @@ class Response {
     getInfo(){
         return `[${this.source}] determined to ${this.effect}. ${this.info}`
     }
+
+    getMessage(){
+        return this.msg;
+    }
+
+    setMessage(msg){
+        this.msg = msg;
+    }
+
 
 }
 

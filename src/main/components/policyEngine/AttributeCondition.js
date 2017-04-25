@@ -71,12 +71,12 @@ class AttributeCondition {
         if (attribute !== this.attribute) {
             let attr = this.context.isAttributed(attribute);
             if (attr) {
-                return this.context.extractValueOfAttribute(attr, msg)
+                return this.context.getValueOfAttribute(attr, msg)
             } else {
                 return attribute;
             }
         } else {
-            return this.context.extractValueOfAttribute(attribute, msg);
+            return this.context.getValueOfAttribute(attribute, msg);
         }
     }
 }

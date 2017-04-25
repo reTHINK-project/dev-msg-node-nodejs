@@ -70,24 +70,24 @@ let msgTypes = {
 
 class Attributes {
     // ============================== environment attributes =============================
-    date(msg, context){
+    date(msg, context, newValue = null){
         return moment().format("YYYY-MM-DD");
     }
-    time(msg, context){
+    time(msg, context, newValue = null){
         return moment().format("HH:mm:ss");
     }
-    weekday(msg, context){
+    weekday(msg, context, newValue = null){
         return moment().format("dddd");
     }
     // ============================== subject attributes =================================
-    srcIDPDomain(msg, context){
+    srcIDPDomain(msg, context, newValue = null){
         if (msg.body.identity !== undefined) {
             return divideEmail(msg.body.identity.userProfile.username).domain;
         } else {
             return undefined;
         }
     }
-    srcUsername(msg, context){
+    srcUsername(msg, context, newValue = null){
         if (msg.body.identity !== undefined) {
             return msg.body.identity.userProfile.username;
         } else if (msg.from.startsWith('hyperty://'|| msg.from.startsWith('runtime://'))){
@@ -101,7 +101,7 @@ class Attributes {
             return undefined;
         }
     }
-    srcRuntime(msg, context){
+    srcRuntime(msg, context, newValue = null){
         if (msg.from.startsWith('runtime://')) {
             return removePathFromURL(msg.from);
         } else if (msg.from.startsWith('hyperty://')) {
@@ -115,44 +115,44 @@ class Attributes {
             return undefined;
         }
     }
-    srcHyperty(msg, context){
+    srcHyperty(msg, context, newValue = null){
         if (msg.from.startsWith('hyperty://')) {
             return removePathFromURL(msg.from);
         } else {
             return undefined;
         }
     }
-    srcIDP(msg, context){
+    srcIDP(msg, context, newValue = null){
         if (msg.body.identity !== undefined) {
             return msg.body.identity.idp;
         } else {
             return undefined;
         }
     }
-    srcSPDomain(msg, context){
+    srcSPDomain(msg, context, newValue = null){
         let from = msg.from;
         return divideURL(from).domain;
     }
-    srcScheme(msg, context){
+    srcScheme(msg, context, newValue = null){
         let from = msg.from;
         return divideURL(from).type;
     }
-    msgFrom(msg, context){
+    msgFrom(msg, context, newValue = null){
         return msg.from;
     }
     // ==================================== object attributes =========================================
-    msgTo(msg, context){
+    msgTo(msg, context, newValue = null){
         return msg.to;
     }
-    dstScheme(msg, context){
+    dstScheme(msg, context, newValue = null){
         let to = msg.to;
         return divideURL(to).type;
     }
-    dstSPDomain(msg, context){
+    dstSPDomain(msg, context, newValue = null){
         let to = msg.to;
         return divideURL(to).domain;
     }
-    dstUsername(msg, context){
+    dstUsername(msg, context, newValue = null){
         if (msg.to.startsWith('hyperty://'|| msg.to.startsWith('runtime://'))){
             let infoList = context.policyEngine.pip.getRegistryCacheEntry(removePathFromURL(msg.to));
             if (infoList.length) {
@@ -164,7 +164,7 @@ class Attributes {
             return undefined;
         }
     }
-    dstRuntime(msg, context){
+    dstRuntime(msg, context, newValue = null){
         if (msg.to.startsWith('runtime://')) {
             return removePathFromURL(msg.to);
         } else if (msg.to.startsWith('hyperty://')) {
@@ -178,7 +178,7 @@ class Attributes {
             return undefined;
         }
     }
-    dstHyperty(msg, context){
+    dstHyperty(msg, context, newValue = null){
         if (msg.to.startsWith('hyperty://')) {
             return removePathFromURL(msg.to);
         } else {
@@ -186,21 +186,21 @@ class Attributes {
         }
     }
     // ==================================== resource & action attributes ==========================================
-    actionType(msg, context){
+    actType(msg, context, newValue = null){
         return msg.type;
     }
-    resource(msg, context){
-        if (msg.body.resource !== undefined) {
+    resource(msg, context, newValue = null){
+        if (msg.body !== undefined) {
             return msg.body.resource;
         } else {
             return undefined;
         }
     }
     // ===================================== system attributes =========================================
-    msgId(msg, context){
+    msgId(msg, context, newValue = null){
         return msg.id;
     }
-    msgType(msg, context){
+    msgType(msg, context, newValue = null){
         for (let key in msgTypes) {
             if (msgTypes.hasOwnProperty(key) && msgTypes[key](msg)) {
                 return key;
@@ -208,25 +208,63 @@ class Attributes {
         }
         return undefined;
     }
-    auth(msg, context){
-        if (msg.body.auth !== undefined) {
+    auth(msg, context, newValue = null){
+        if (msg.body !== undefined) {
             return msg.body.auth;
         } else {
             return undefined;
         }
     }
-    domain(msg, context){
+    domain(msg, context, newValue = null){
         return config.MNdomain;
     }
 
-    domainRegistry(msg, context){
+    domainRegistry(msg, context, newValue = null){
         return config.domainRegistryConfig.url;
     }
-    port(msg, context){
+    port(msg, context, newValue = null){
         return config.port;
     }
-    useSSL(msg, context){
+    useSSL(msg, context, newValue = null){
         return config.useSSL;
+    }
+    // ===================================== message specific attributes ==================================
+    // e.g., address allocation messages
+    valueNumber(msg, context, newValue = null){
+        if (newValue){
+            if (msg.body.value !== undefined) {
+                msg.body.value.number = newValue;
+                return msg;
+            }
+        } else {
+            if (msg.body.value !== undefined) {
+                return msg.body.value.number;
+            } else {
+                return undefined;
+            }
+        }
+    }
+    valueAllocated(msg, context, newValue = null){
+        if (newValue) {
+            if (msg.body.value !== undefined) {
+                msg.body.value.allocated = newValue;
+                return msg;
+            }
+        } else {
+            if (msg.body.value !== undefined) {
+                return msg.body.value.allocated;
+            } else {
+                return undefined;
+            }
+        }
+    }
+    // ====================================== others ==========================================
+    userRegistries(msg, context, newValue = null) {
+        if (msg.body.value !== undefined){
+            return context.policyEngine.pip.getRegistryCacheEntry(msg.body.value.user);
+        } else {
+            return undefined;
+        }
     }
 }
 module.exports = Attributes;

@@ -28,7 +28,7 @@ class PDP {
         let msg = this._validate(request);
         if (msg) {
             if (this.develop){
-                this.logger.info(`[${this.name}] message attributes`, this.context.extractAllAttributeValues(msg));
+                this.logger.info(`[${this.name}] message attributes`, this.context.getAllAttributeValues(msg));
             }
             policySet = this.prp.getPolicySet(msg);
         }

@@ -98,7 +98,7 @@ In a rule entry of a policy, the condition field represents the restriction unde
 | dstUsername    | username of the recipient of the message    | String, a valid email. e.g., alice@gmail.com |
 | dstRuntime     | runtime of the recipient of the message     | String, a valid runtime url. e.g., runtime://hjiang-rethink.com/046f2989-d1d7-cb82-74fa-92088436dce4 |
 | dstHyperty     | hypertyURL of the recipient of the message  | String, a valid hyperty url. e.g., hyperty://hjiang-rethink.com/2ada7f7a-e395-45a3-86c8-3f9c07451d40 |
-| actionType     | type of action                           | String. e.g., open, create, update, etc. |
+| actType     | type of action                           | String. e.g., open, create, update, etc. |
 | resource       | targeted resource                        | String, a valid resource. e.g., an user |
 | auth           | authorization status                     | Boolean, true or false                   |
 | msgId          | id of the message                        | Number, a valid integer. e.g., 1         |
@@ -110,6 +110,9 @@ In a rule entry of a policy, the condition field represents the restriction unde
 | domainRegistry | registry url of the domain               | String, a valid url. |
 | port           | the port of the messaging node           | Number, a valid port number. e.g., 9090 |
 | useSSL         | if using ssl                             | Boolean, true of false                 |
+| valueNumber    | number in the value field of message body| Number, a valid interger. e.g., 1      |
+| valueAllocated | allocated addresses in the value field   | List, a list of valid hyperty addresses. |
+| userRegistries | registries associated to the user        | List, a list of user registries        |
 
 **Table 1:** Attributes
 
@@ -313,7 +316,8 @@ The reThink PDL includes the concepts of obligation and advice expressions. An o
 
 ## PDL Example
 
-For a better understanding, Figure 6 gives an example of a policy set in JSON.
+For a better understanding, Figure 6 gives an example of a policy set in JSON. 
+In order to further analyze and evaluate our PDL, based on the *Connector* hyperty, a set of policy control points(PCPs) and policy examples are identified and illustrated in detail [here](./ReTHINK%20Policy%20Examples%20for%20Nodejs%20Messaging%20Node.md).
 
 ```json
 [{
@@ -411,7 +415,7 @@ For a better understanding, Figure 6 gives an example of a policy set in JSON.
 
 - [Policy Engine in the Node.js Messaging Node of reThink](../../readme.md)
 - [Policy Description Language in the Runtime of reThink](https://github.com/reTHINK-project/specs/blob/master/policy-management/policy-specification-language.md)
-
+- [ReTHINK Policy Examples for Nodejs Messaging Node](./ReTHINK%20Policy%20Examples%20for%20Nodejs%20Messaging%20Node.md)
 
 
 

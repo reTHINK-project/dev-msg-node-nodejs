@@ -62,6 +62,7 @@ Please refer to [here](https://github.com/Heriam/dev-msg-node-nodejs/blob/master
 # Policy Description Language
 
 - [Policy Description Language](./prp/policy)
+- [ReTHINK Policy Examples for Nodejs Messaging Node](./prp/policy/ReTHINK%20Policy%20Examples%20for%20Nodejs%20Messaging%20Node.md)
 
   ​
 

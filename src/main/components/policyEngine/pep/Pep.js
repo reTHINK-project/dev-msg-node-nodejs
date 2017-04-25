@@ -10,6 +10,7 @@
 * */
 let ContextHandler = require("./ContextHandler");
 let PDP = require("../pdp/Pdp");
+let Obligator = require("./Obligator");
 
 class PEP {
     constructor(context, pdp) {
@@ -19,6 +20,7 @@ class PEP {
         this.logger = this.context.registry.getLogger();
         this.pdp = pdp;
         this.contextHandler = new ContextHandler(context);
+        this.obligator = new Obligator(context);
         this.logger.info(`[${this.name}] new instance`);
     }
 
@@ -33,7 +35,7 @@ class PEP {
         if (msg) {
             let request  = this.contextHandler.parseToAuthzRequest(clientMsg);
             let response = this.pdp.authorize(request);
-            response.msg = msg;
+            response.setMessage(msg);
             let authorizationResponse = this.contextHandler.parseToAuthzResponse(response);
             return this._enforce(authorizationResponse);
         } else {
@@ -58,8 +60,10 @@ class PEP {
             if (this.develop) {
                 this.logger.info(`[${this.name}] Obligation`, response.obligations);
             }
+            return this.obligator.obligate(response);
+        } else {
+            return response;
         }
-        return response;
     }
 }
 
