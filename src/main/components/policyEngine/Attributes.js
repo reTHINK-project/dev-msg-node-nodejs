@@ -90,6 +90,8 @@ class Attributes {
     srcUsername(msg, context, newValue = null){
         if (msg.body.identity !== undefined) {
             return msg.body.identity.userProfile.username;
+        } else if (msg.body.value && msg.body.value.user){
+            return getUserEmailFromURL(msg.body.value.user);
         } else if (msg.from.startsWith('hyperty://'|| msg.from.startsWith('runtime://'))){
             let infoList = context.policyEngine.pip.getRegistryCacheEntry(removePathFromURL(msg.from));
             if (infoList.length) {
@@ -196,6 +198,13 @@ class Attributes {
             return undefined;
         }
     }
+    valueResources(msg, context, newValue = null) {
+        if (msg.body.value !== undefined) {
+            return msg.body.value.resources;
+        } else {
+            return undefined;
+        }
+    }
     // ===================================== system attributes =========================================
     msgId(msg, context, newValue = null){
         return msg.id;
@@ -258,9 +267,16 @@ class Attributes {
             }
         }
     }
+    valueExpires(msg, context, newValue = null) {
+        if (msg.body.value && msg.body.value.expires){
+            return msg.body.value.expires;
+        } else {
+            return undefined;
+        }
+    }
     // ====================================== others ==========================================
     userRegistries(msg, context, newValue = null) {
-        if (msg.body.value !== undefined){
+        if (msg.body.value && msg.body.value.user){
             return context.policyEngine.pip.getRegistryCacheEntry(msg.body.value.user);
         } else {
             return undefined;

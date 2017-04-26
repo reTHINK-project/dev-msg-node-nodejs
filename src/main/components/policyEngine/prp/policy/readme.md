@@ -87,32 +87,34 @@ In a rule entry of a policy, the condition field represents the restriction unde
 | srcUsername    | username of the source of the message    | String, a valid email. e.g., alice@gmail.com |
 | srcRuntime     | runtime of the source of the message     | String, a valid runtime url. e.g., runtime://hjiang-rethink.com/046f2989-d1d7-cb82-74fa-92088436dce4 |
 | srcHyperty     | hypertyURL of the source of the message  | String, a valid hyperty url. e.g., hyperty://hjiang-rethink.com/2ada7f7a-e395-45a3-86c8-3f9c07451d40 |
-| srcIDPDomain   | ID domain of the source user of the message | String, a valid id domain. e.g., gmail.com  |
-| srcSPDomain    | service domain of the source of the message     | String, a valid service domain.        |
+| srcIDPDomain   | ID domain of the source user of the message | String, a valid id domain. e.g., gmail.com |
+| srcSPDomain    | service domain of the source of the message | String, a valid service domain.          |
 | srcScheme      | data object scheme                       | String, a valid data object scheme. e.g., connection |
 | msgFrom        | source url of the message                | String, a valid url. e.g., domain://registry.hjiang-rethink.com/ |
 | srcIDP         | identity provider of the source of the message | String, a valid idp                      |
 | msgTo          | destination url of the message           | String, a valid url. e.g., domain://registry.hjiang-rethink.com/ |
-| dstSPDomain    | service domain of the recipient of the message   | String, a valid domain. e.g., gmail.com  |
+| dstSPDomain    | service domain of the recipient of the message | String, a valid domain. e.g., gmail.com  |
 | dstScheme      | data object scheme                       | String, a valid data object scheme. e.g., connection |
-| dstUsername    | username of the recipient of the message    | String, a valid email. e.g., alice@gmail.com |
-| dstRuntime     | runtime of the recipient of the message     | String, a valid runtime url. e.g., runtime://hjiang-rethink.com/046f2989-d1d7-cb82-74fa-92088436dce4 |
-| dstHyperty     | hypertyURL of the recipient of the message  | String, a valid hyperty url. e.g., hyperty://hjiang-rethink.com/2ada7f7a-e395-45a3-86c8-3f9c07451d40 |
-| actType     | type of action                           | String. e.g., open, create, update, etc. |
-| resource       | targeted resource                        | String, a valid resource. e.g., an user |
+| dstUsername    | username of the recipient of the message | String, a valid email. e.g., alice@gmail.com |
+| dstRuntime     | runtime of the recipient of the message  | String, a valid runtime url. e.g., runtime://hjiang-rethink.com/046f2989-d1d7-cb82-74fa-92088436dce4 |
+| dstHyperty     | hypertyURL of the recipient of the message | String, a valid hyperty url. e.g., hyperty://hjiang-rethink.com/2ada7f7a-e395-45a3-86c8-3f9c07451d40 |
+| actType        | type of action                           | String. e.g., open, create, update, etc. |
+| resource       | targeted resource                        | String, a valid resource. e.g., an user  |
 | auth           | authorization status                     | Boolean, true or false                   |
 | msgId          | id of the message                        | Number, a valid integer. e.g., 1         |
 | msgType        | type of the message                      | String, a valid message type. e.g., registration |
 | time           | time of the day, HH:mm:ss                | String, a valid time. e.g., 12:30:00     |
 | date           | date of the year, YYYY-MM-DD             | String, a valid date. e.g., 1992-10-23   |
 | weekday        | day of the week                          | String, a valid weekday. e.g., Sunday    |
-| domain         | service domain url of the messaging node | String, a valid url. |
-| domainRegistry | registry url of the domain               | String, a valid url. |
-| port           | the port of the messaging node           | Number, a valid port number. e.g., 9090 |
-| useSSL         | if using ssl                             | Boolean, true of false                 |
-| valueNumber    | number in the value field of message body| Number, a valid interger. e.g., 1      |
-| valueAllocated | allocated addresses in the value field   | List, a list of valid hyperty addresses. |
-| userRegistries | registries associated to the user        | List, a list of user registries        |
+| domain         | service domain url of the messaging node | String, a valid url.                     |
+| domainRegistry | registry url of the domain               | String, a valid url.                     |
+| port           | the port of the messaging node           | Number, a valid port number. e.g., 9090  |
+| useSSL         | true if using ssl                        | Boolean, true of false                   |
+| valueNumber    | number in the value field of message body | Number, a valid interger. e.g., 1        |
+| valueAllocated | allocated addresses in the value field   | List, a list of valid hyperty addresses  |
+| valueResources | requested resources                      | List, a list of requested resources. e.g., audio, video |
+| userRegistries | registries associated to the user        | List, a list of user registries          |
+| valueExpires   | valid duration of the entry in second    | Number, a valid interger. e.g., 3600     |
 
 **Table 1:** Attributes
 
