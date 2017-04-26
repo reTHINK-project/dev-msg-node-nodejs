@@ -63,7 +63,7 @@ Each policy, as show in Figure 4, contains id, target, priority, and obligations
 
 **Figure 4:** Policy syntax
 
-As show in Figure 5, in addition to a target, a rule includes one or a combination of Boolean conditions that, if evaluated true, have an effect of either Permit or Deny. If the target condition evaluates to True for a Rule and the Rule’s condition fails to evaluate for any reason, the effect of the Rule is Indeterminate. In comparison to the (matching) condition of a target, the conditions of a Rule or Policy are typically more complex and may include functions (e.g., "greater-than", "less-than", "equal") for the comparison of attribute values, and operations (e.g., "not", "and", "or") for the computation of Boolean values.
+As show in Figure 5, in addition to a target, a rule includes one or a combination of Boolean conditions that, if evaluated true, have an effect of either Permit or Deny, otherwise the effect is not taken. If the target condition evaluates to True for a Rule and the Rule’s condition fails to evaluate for any reason, the effect of the Rule is Indeterminate. In comparison to the (matching) condition of a target, the conditions of a Rule or Policy are typically more complex and may include functions (e.g., "greater-than", "less-than", "equal") for the comparison of attribute values, and operations (e.g., "not", "and", "or") for the computation of Boolean values.
 
 ```json
 {
@@ -85,22 +85,36 @@ In a rule entry of a policy, the condition field represents the restriction unde
 | Attribute      | Description                              | Expected Parameter                       |
 | -------------- | ---------------------------------------- | ---------------------------------------- |
 | srcUsername    | username of the source of the message    | String, a valid email. e.g., alice@gmail.com |
-| srcIDPDomain   | ID domain of the source user of the message | String, a valid id domain. e.g., gmail.com  |
-| srcSPDomain    | service domain of the source of the message     | String, a valid service domain.        |
+| srcRuntime     | runtime of the source of the message     | String, a valid runtime url. e.g., runtime://hjiang-rethink.com/046f2989-d1d7-cb82-74fa-92088436dce4 |
+| srcHyperty     | hypertyURL of the source of the message  | String, a valid hyperty url. e.g., hyperty://hjiang-rethink.com/2ada7f7a-e395-45a3-86c8-3f9c07451d40 |
+| srcIDPDomain   | ID domain of the source user of the message | String, a valid id domain. e.g., gmail.com |
+| srcSPDomain    | service domain of the source of the message | String, a valid service domain.          |
 | srcScheme      | data object scheme                       | String, a valid data object scheme. e.g., connection |
-| msgFrom        | source url of the message                | String, a valid url. e.g., domain://registry... |
+| msgFrom        | source url of the message                | String, a valid url. e.g., domain://registry.hjiang-rethink.com/ |
 | srcIDP         | identity provider of the source of the message | String, a valid idp                      |
-| msgTo          | destination url of the message           | String, a valid url. e.g., domain://registry... |
-| dstSPDomain    | service domain of the recipient of the message   | String, a valid domain. e.g., gmail.com  |
+| msgTo          | destination url of the message           | String, a valid url. e.g., domain://registry.hjiang-rethink.com/ |
+| dstSPDomain    | service domain of the recipient of the message | String, a valid domain. e.g., gmail.com  |
 | dstScheme      | data object scheme                       | String, a valid data object scheme. e.g., connection |
-| actionType     | type of action                           | String. e.g., open, create, update, etc. |
-| resource       | targeted resource                        | String, a valid resource. e.g., an user |
+| dstUsername    | username of the recipient of the message | String, a valid email. e.g., alice@gmail.com |
+| dstRuntime     | runtime of the recipient of the message  | String, a valid runtime url. e.g., runtime://hjiang-rethink.com/046f2989-d1d7-cb82-74fa-92088436dce4 |
+| dstHyperty     | hypertyURL of the recipient of the message | String, a valid hyperty url. e.g., hyperty://hjiang-rethink.com/2ada7f7a-e395-45a3-86c8-3f9c07451d40 |
+| actType        | type of action                           | String. e.g., open, create, update, etc. |
+| resource       | targeted resource                        | String, a valid resource. e.g., an user  |
 | auth           | authorization status                     | Boolean, true or false                   |
 | msgId          | id of the message                        | Number, a valid integer. e.g., 1         |
 | msgType        | type of the message                      | String, a valid message type. e.g., registration |
 | time           | time of the day, HH:mm:ss                | String, a valid time. e.g., 12:30:00     |
 | date           | date of the year, YYYY-MM-DD             | String, a valid date. e.g., 1992-10-23   |
 | weekday        | day of the week                          | String, a valid weekday. e.g., Sunday    |
+| domain         | service domain url of the messaging node | String, a valid url.                     |
+| domainRegistry | registry url of the domain               | String, a valid url.                     |
+| port           | the port of the messaging node           | Number, a valid port number. e.g., 9090  |
+| useSSL         | true if using ssl                        | Boolean, true of false                   |
+| valueNumber    | number in the value field of message body | Number, a valid interger. e.g., 1        |
+| valueAllocated | allocated addresses in the value field   | List, a list of valid hyperty addresses  |
+| valueResources | requested resources                      | List, a list of requested resources. e.g., audio, video |
+| userRegistries | registries associated to the user        | List, a list of user registries          |
+| valueExpires   | valid duration of the entry in second    | Number, a valid interger. e.g., 3600     |
 
 **Table 1:** Attributes
 
@@ -218,10 +232,14 @@ However, there are also cases that we may need multiple constrains (operator-par
   }
   ```
 
-Therefore, an *Attribute Condition* could be simple but flexible and expressive as below for example:
+Therefore, an *Attribute Condition* could be simple but flexible and expressive as below for example. Please note that the attribute keywords are marked with "<>". Also note that the value of another attribute can be used as a parameter for the condition. As the attribute "dstScheme" shown below, it is used as a parameter in the "srcScheme" *Attribute Condition*. And when the policy is evaluated, PDP would first get the value of the "dstScheme" attribute from the message, and then compare the value with "srcScheme" attribute.
 
 ```json
-{"time": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}}
+{"<srcScheme>": {
+                "in": ["connection", "hyperty"],
+                "equals": "<dstScheme>"
+                }
+}
 ```
 
 ***Complex Condition***
@@ -300,16 +318,17 @@ The reThink PDL includes the concepts of obligation and advice expressions. An o
 
 ## PDL Example
 
-For a better understanding, Figure 6 gives an example of a policy set in JSON.
+For a better understanding, Figure 6 gives an example of a policy set in JSON. 
+In order to further analyze and evaluate our PDL, based on the *Connector* hyperty, a set of policy control points(PCPs) and policy examples are identified and illustrated in detail [here](./ReTHINK%20Policy%20Examples%20for%20Nodejs%20Messaging%20Node.md).
 
 ```json
-{
+[{
   "id": 1,
   "version": 1,
   "update" : "2017-03-14 17:18:31",
   "target": {},
-  "policyCombiningAlgorithm": "firstApplicable",
-  "obligations": {},
+  "policyCombiningAlgorithm": "allowOverrides",
+  "obligations": {"permit": {"info": "determines to permit"}},
   "priority": 0,
   "policies": [
     {
@@ -317,28 +336,79 @@ For a better understanding, Figure 6 gives an example of a policy set in JSON.
       "target": {},
       "ruleCombiningAlgorithm": "blockOverrides",
       "priority": 0,
-      "obligations": {"deny": {"emailto": "admin@imt-atlantic.fr"}},
+      "obligations": {"deny": {"info": "determines to deny"}},
       "rules": [
         { "id": 1,
-          "target":[
-            {"srcDomain": {"equals": "gmail.com"}},
-            {"msgType": {"equals": ["create","update","open","subscribe","response", "handshake"]}}],
-          "condition": {
-            "anyOf": [
-              {"allOf": [
-                {"weekday": {"not": {"equals": ["saturday", "sunday"]}}},
-                {"time": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}}]},
-              {"allOf": [
-                {"weekday": {"equals": ["saturday", "sunday"]}},
-                {"time": {"between": ["07:00:00 12:00:00", "13:30:00 22:30:00"]}}]}]},
+          "target": {},
+          "condition": {"<srcIDP>":{"equals":"google.com"}},
           "effect": "permit",
-          "obligations": {"emailto": "admin@imt-atlantic.fr"},
+          "obligations": {"info": "determines to permit"},
+          "priority": 0
+        },
+        { "id": 2,
+          "target":{},
+          "condition": {"<srcScheme>":{"equals": ["hello","runtime"]}},
+          "effect": "deny",
+          "obligations": {"info": "determines to deny"},
+          "priority": 0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "target": {},
+      "ruleCombiningAlgorithm": "allowOverrides",
+      "priority": 0,
+      "obligations": {"permit": {"info": "determines to permit"}},
+      "rules": [
+        { "id": 1,
+          "target": {"<srcIDPDomain>": {"equals": "gmail.com"}},
+          "condition": [
+            {
+              "<weekday>": {"not": {"in": ["saturday", "sunday"]}},
+              "<time>": {"between": ["06:00:00 12:30:00", "13:00:00 23:00:00"]}
+            },
+            {
+              "<weekday>": {"in": ["saturday", "sunday"]},
+              "<time>": {"between": ["07:00:00 12:00:00", "13:30:00 22:30:00"]}
+            }
+          ],
+          "effect": "deny",
+          "obligations": {"info": "determines to deny"},
+          "priority": 0
+        },
+        { "id": 2,
+          "target":{"<actionType>": {"in": ["create","update","open","subscribe","response", "handshake"]}},
+          "condition": {"<srcUsername>": {"like": "*@gmail.com"}},
+          "effect": "deny",
+          "obligations": {"info": "determines to deny"},
+          "priority": 0
+        },
+        { "id": 3,
+          "target":{},
+          "condition": {"<msgType>": {"in": ["registration","addressAllocation","discovery","globalRegistry","identityManagement","dataSync","p2pConnection"]}},
+          "effect": "permit",
+          "obligations": {"info": "determines to permit"},
+          "priority": 0
+        },
+        { "id": 4,
+          "target":{},
+          "condition": {"<srcScheme>":{"in": ["hello","<dstScheme>"]}},
+          "effect": "permit",
+          "obligations": {"info": "determines to permit"},
+          "priority": 0
+        },
+        { "id": 5,
+          "target":{},
+          "condition": [],
+          "effect": "permit",
+          "obligations": {"info": "determines to permit"},
           "priority": 0
         }
       ]
     }
   ]
-}
+}]
 ```
 
 **Figure 6:** Policy example
@@ -347,7 +417,7 @@ For a better understanding, Figure 6 gives an example of a policy set in JSON.
 
 - [Policy Engine in the Node.js Messaging Node of reThink](../../readme.md)
 - [Policy Description Language in the Runtime of reThink](https://github.com/reTHINK-project/specs/blob/master/policy-management/policy-specification-language.md)
-
+- [ReTHINK Policy Examples for Nodejs Messaging Node](./ReTHINK%20Policy%20Examples%20for%20Nodejs%20Messaging%20Node.md)
 
 
 

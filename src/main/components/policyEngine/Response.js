@@ -9,20 +9,13 @@ class Response {
         this.obligations = new Map();
         this.info = info;
         this.source = source;
+        this.msg = null;
     }
 
     addObligations(obligations) {
-        if (Object.keys(obligations).length){
-            for (let key in obligations) {
-                if (!obligations.hasOwnProperty(key)) continue;
-                this.obligations.set(key, obligations[key]);
-            }
+        for (let [key,value] of obligations) {
+            this.obligations.set(key, value);
         }
-
-    }
-
-    appendSource(child){
-        this.source = this.source + '/' + child.substr(3);
     }
 
     setEffect(effect){
@@ -38,8 +31,17 @@ class Response {
     }
 
     getInfo(){
-        return `${this.source} determined to ${this.effect}. ${this.info}`
+        return `[${this.source}] determined to ${this.effect}. ${this.info}`
     }
+
+    getMessage(){
+        return this.msg;
+    }
+
+    setMessage(msg){
+        this.msg = msg;
+    }
+
 
 }
 

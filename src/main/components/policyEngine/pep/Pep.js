@@ -10,66 +10,60 @@
 * */
 let ContextHandler = require("./ContextHandler");
 let PDP = require("../pdp/Pdp");
+let Obligator = require("./Obligator");
 
 class PEP {
-    constructor(name, context) {
-        this.name = name;
-        context.pep = this;
+    constructor(context, pdp) {
+        this.name = 'PEP';
         this.context = context;
+        this.develop = context.devMode;
         this.logger = this.context.registry.getLogger();
-        this.pdp = new PDP(this.context);
-        this.contextHandler = new ContextHandler(this.context);
+        this.pdp = pdp;
+        this.contextHandler = new ContextHandler(context);
+        this.obligator = new Obligator(context);
         this.logger.info(`[${this.name}] new instance`);
     }
-    /**
-     * @param {Object} msg
-     * @param {String} msg.id
-     * @param {String} msg.type
-     * @param {String} msg.from
-     * @param {String} msg.to
-     * @param {Object} msg.body
-     * @returns {denied:Boolean,error:Object}
-     */
+
     // ======================== public ========================
 
     getName(){
         return this.name
     }
 
-    analyse(msg) {
-
-        msg = this._validate(msg);
-        let authorizationRequest = this.contextHandler.parseToAuthzRequest(msg);
-        let response = this.pdp.authorize(authorizationRequest);
-        response.msg = msg;
-        let authorizationResponse = this.contextHandler.parseToAuthzResponse(response);
-        return this._enforce(authorizationResponse);
+    analyse(clientMsg) {
+        let msg = this._validate(clientMsg.msg.msg);
+        if (msg) {
+            let request  = this.contextHandler.parseToAuthzRequest(clientMsg);
+            let response = this.pdp.authorize(request);
+            response.setMessage(msg);
+            let authorizationResponse = this.contextHandler.parseToAuthzResponse(response);
+            return this._enforce(authorizationResponse);
+        } else {
+            return {
+                result: false,
+                getInfo: ()=>{return 'invalid message'}
+            };
+        }
     }
     // ======================== private =======================
 
     _validate(msg) {
-
-        // Todo: enrich with more means appropriate to check the validity of the message
-
-        if (!msg) throw new Error('message is not defined');
-        if (!msg.id) throw new Error('message.id is not defined');
-        if (!msg.from) throw new Error('message.from is not defined');
-        if (!msg.to) throw new Error('message.to is not defined');
-        if (!msg.type) throw new Error('message.type is not defined');
-        msg.body = msg.body || {};
+        if (!(msg && msg.id && msg.from && msg.to && msg.type)){
+            this.logger.info(`[${this.name}] Invalid message`);
+            return null;
+        }
         return msg;
     }
 
     _enforce(response) {
-
-        // Todo: take actions according to/specified in the decision from PDP
-        if (Object.keys(response.obligations).length){
-            for (let key in response.obligations) {
-                if (!response.obligations.hasOwnProperty(key)) continue;
-                this.logger.info(`[${this.name}] ${key} ${response.obligations[key]}`);
+        if (response.obligations.size){
+            if (this.develop) {
+                this.logger.info(`[${this.name}] Obligation`, response.obligations);
             }
+            return this.obligator.obligate(response);
+        } else {
+            return response;
         }
-        return response;
     }
 }
 

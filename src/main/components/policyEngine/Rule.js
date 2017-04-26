@@ -6,7 +6,7 @@ let Condition = require("./Condition");
 let Response = require("./Response");
 class Rule {
 
-    constructor(context, rule) {
+    constructor(owner, context, rule) {
         if (!("id" in rule)) throw new Error("id is not defined.");
         if (!("target" in rule)) throw new Error("target is not defined.");
         if (!("condition" in rule)) throw new Error("condition is not defined.");
@@ -15,7 +15,7 @@ class Rule {
         if (!("priority" in rule)) throw new Error("priority is not defined.");
         this.context = context;
         this.id = rule.id;
-        this.name = `PDP Rule ${this.id}`;
+        this.name = owner+` | Rule ${this.id}`;
         this.logger = this.context.registry.getLogger();
         this.target = new Condition(this.name, this.context, rule.target, 'Target');
         this.condition = new Condition(this.name, this.context, rule.condition);
@@ -34,7 +34,7 @@ class Rule {
         let isApplicable = this.condition.isApplicable(message);
         if (isApplicable) {
             res.setEffect(this.effect);
-            res.addObligations(this.obligations);
+            res.addObligations(new Map().set(this.name.substr(4),this.obligations));
             return res;
         }
         return res;

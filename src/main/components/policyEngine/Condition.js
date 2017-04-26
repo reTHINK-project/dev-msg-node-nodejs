@@ -8,14 +8,12 @@ let Operators = require("./Operators");
 class Condition {
 
     constructor(owner, context, condition, usedFor = "Condition"){
-        this.name = owner;
-        this.usedFor = usedFor;
+        this.name = owner+' '+usedFor;
+        this.develop = context.devMode;
         this.context = context;
         this.logger = this.context.registry.getLogger();
         this.operators = new Operators();
-        this.toString = JSON.stringify(condition);
         this.condition = this._buildCondition(condition);
-
     }
 
     _buildCondition(condition){
@@ -43,18 +41,19 @@ class Condition {
                     });
                 }
                 // if the key is an attribute
-                else if (key in this.context){
-                    condition = new AttributeCondition(this.context, condition);
-                }
-                // else invalid
                 else {
-                    this.logger.info(`[${this.name}] warning: unrecognized key when building condition: ${key}`);
+                    key = this.context.isAttributed(key);
+                    if (key) {
+                        condition = new AttributeCondition(this.context, key, value);
+                    } else {
+                        this.logger.error(`[${this.name}] unrecognized key when building condition: ${key}!`);
+                    }
                 }
             }
             // else the map is empty
-            else {
+            // else {
             // this.logger.info(`[${this.name}] warning: empty ${this.usedFor} implies global applicability`);
-            }
+            // }
         }
         // if the condition is of ARRAY type, which contains subConditions with OR relations
         else {
@@ -67,16 +66,20 @@ class Condition {
     isApplicable(message, condition = this.condition){
 
         if (condition instanceof AttributeCondition){
-            return condition.isApplicable(message);
+            let _applicable = condition.isApplicable(message);
+            if (this.develop){
+                this.logger.info(`[${this.name}] ${condition.attribute} ${condition.getAttributeValue(message)} ${JSON.stringify(condition.expression).slice(1,-1)}: ${_applicable}`);
+            }
+            return _applicable;
         }
         // if the condition is not of Object type
         else if (condition.constructor !== Object) {
-            throw new Error(`[${this.name}] syntax error: compiled condition should only be of Object type`);
+            throw new Error(`[${this.name}] syntax error: compiled condition should only be of Object type!`);
         }
         // the condition is not an instance of AttributeCondition
         // the condition contains multiple keys
         else if (Object.keys(condition).length > 1){
-            throw new Error(`[${this.name}] syntax error: compiled condition contains multiple keys in a map`);
+            throw new Error(`[${this.name}] syntax error: compiled condition contains multiple keys in a map!`);
         }
         // the condition contains only one key
         else if (Object.keys(condition).length === 1) {
@@ -88,14 +91,17 @@ class Condition {
                         return this.isApplicable(message, subCondition);
                     })
                 );
-            } else if (key in this.context){
-                throw new Error(`[${this.name}] syntax error: attribute is failed to build attribute condition object: ${key}`);
+            } else if (this.context.isAttributed(key)){
+                throw new Error(`[${this.name}] syntax error: attribute is failed to build attribute condition object: ${key}!`);
             } else {
-                throw new Error(`[${this.name}] syntax error: unrecognized key in condition field: ${key}`);
+                throw new Error(`[${this.name}] syntax error: unrecognized key in condition field: ${key}!`);
             }
         }
         // empty condition
         else {
+            if (this.develop){
+                this.logger.info(`[${this.name}] is globally applicable`);
+            }
             return true;
         }
     }

@@ -30,32 +30,36 @@ let Response = require("../Response");
 
 class BlockOverrides {
 
-
     constructor (context, name){
         this.name = name;
+        this.develop = context.devMode;
         this.context = context;
         this.logger = this.context.registry.getLogger();
     }
+
     /**
      * Given an array of individual authorization decisions, prioritizes a positive one.
      * @param    {boolean[]}   responses
      * @returns  {Response}
      */
     combine(responses) {
-        let response = new Response(this.name, `resulted from block-overrides algorithm of ${this.name}`);
-        for (let i in responses){
-            let res = responses[i];
-            response.addObligations(res.obligations);
+        let response = new Response(this.name);
+        let decisions = responses.map(res=>{
+            if (this.develop){
+                this.logger.info(`[${res.source}] evaluated to ${res.effect}`);
+            }
+            return res.effect
+        });
+        let idxDen = decisions.indexOf("deny");
+        let idxPer = decisions.indexOf("permit");
+        if (idxDen !== -1) {
+            response = responses[idxDen];
+        } else if (idxPer !== -1) {
+            response = responses[idxPer];
         }
-        let decisions = responses.map(res=>{return res.effect});
-        let idxDeny = decisions.indexOf("deny");
-        if (idxDeny !== -1) {
-            response.setEffect("deny");
-            response.appendSource(responses[idxDeny].source);
-        } else if (decisions.indexOf("permit") !== -1) {
-            response.setEffect("permit");
-        } else {
-            response.setInfo("not applicable to the targeted message");
+        response.setInfo(`resulted from block-overrides algorithm`);
+        if (this.develop){
+            this.logger.info(`${response.getInfo()}`);
         }
         return response;
     }

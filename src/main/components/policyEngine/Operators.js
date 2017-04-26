@@ -66,7 +66,6 @@ class Operators {
                 value = parseInt(value);
                 start = parseInt(start);
                 end = parseInt(end);
-                console.log(`${attribute} is not explicitly specified for between operation.`);
         }
         return (value > start && value < end);
     }
@@ -75,6 +74,17 @@ class Operators {
         /**
          * @param [number/string] a parameter for comparison
          * */
+        if (Array.isArray(value) && Array.isArray(param)) {
+            if (value.length === param.length) {
+                return value.every((u, i)=>{
+                    return u === param[i];
+                });
+            } else {
+                return false;
+            }
+        } else if(Array.isArray(value) && typeof param === 'number'){
+            return value.length === param;
+        }
         return String(param)==='*' || String(param)===String(value);
     }
 
@@ -82,6 +92,11 @@ class Operators {
         /**
          * @param [number/string] a parameter for comparison
          * */
+        if (Array.isArray(value) && Array.isArray(param)) {
+            return value.length > param.length;
+        } else if(Array.isArray(value) && typeof param === 'number'){
+            return value.length > param;
+        }
         return parseInt(value) > parseInt(param);
     }
 
@@ -89,6 +104,11 @@ class Operators {
         /**
          * @param [number/string] a parameter for comparison
          * */
+        if (Array.isArray(value) && Array.isArray(param)) {
+            return value.length < param.length;
+        } else if(Array.isArray(value) && typeof param === 'number'){
+            return value.length < param;
+        }
         return parseInt(value) < parseInt(param);
     }
 
