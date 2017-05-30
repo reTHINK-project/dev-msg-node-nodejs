@@ -47,6 +47,8 @@ class NodejsProtoStub {
       this._assumeOpen = true;
       this._sendMsg(msg);
     });
+    this._assumeOpen = false;
+    this._sendStatus("created");
   }
 
   /**
@@ -72,13 +74,14 @@ class NodejsProtoStub {
       let _this = this;
 
       if (this._sock !== null && this._sock.connected) {
-        // console.log('io already defined');
+        console.log('io already defined');
         resolve(this._sock);
         return;
       }
 
       //   console.log('init socket.io');
-    if(typeof window === 'undefined'){
+      this._sendStatus("in-progress");
+      if(typeof window === 'undefined'){
           console.log('Node environment');
           this._sock = io.connect('http://'+ this._config.url);
         } else {
@@ -107,7 +110,7 @@ class NodejsProtoStub {
         if (msg.hasOwnProperty('from') && msg.from === 'mn:/session') {
           //   console.log('msg from mn:/session', msg.type, msg.id);
           if (msg.body.code === 200) {
-            _this._sendStatus('connected');
+             _this._sendStatus('live');
           } else {
             _this._sendStatus('disconnected', reply.body.desc);
           }
@@ -124,6 +127,7 @@ class NodejsProtoStub {
       });
 
       this._sock.on('error', function(reason) {
+        _this._sendStatus("failed", reason);
       });
     });
   }
