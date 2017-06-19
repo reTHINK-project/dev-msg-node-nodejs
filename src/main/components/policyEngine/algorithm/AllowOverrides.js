@@ -31,10 +31,11 @@ let Response = require("../Response");
 
 class AllowOverrides {
 
-    constructor (context){
-        this.name = 'PDP';
+    constructor (context, name){
+        this.name = name;
+        this.develop = context.devMode;
         this.context = context;
-        this.logger = this.context.getLogger();
+        this.logger = this.context.registry.getLogger();
     }
 
     /**
@@ -43,18 +44,23 @@ class AllowOverrides {
      * @returns  {Response}
      */
     combine(responses) {
-        this.logger.info(`[${this.name}] applying allow-overrides combining algorithm`);
-        let response = new Response();
-        for (let i in responses){
-            let res = responses[i];
-            response.addActions(res.actions);
-            response.attachRule(res.rules[0]);
+        let response = new Response(this.name);
+        let decisions = responses.map(res=>{
+            if (this.develop){
+                this.logger.info(`[${res.source}] evaluated to ${res.effect}`);
+            }
+            return res.effect
+        });
+        let idxPer = decisions.indexOf("permit");
+        let idxDen = decisions.indexOf("deny");
+        if (idxPer !== -1) {
+            response = responses[idxPer];
+        } else if (idxDen !== -1) {
+            response = responses[idxDen];
         }
-        let decisions = responses.map(res=>{return res.effect});
-        if (decisions.indexOf("permit") !== -1) {
-            response.setEffect("permit");
-        } else if (decisions.indexOf("deny") !== -1) {
-            response.setEffect("deny");
+        response.setInfo(`resulted from allow-overrides algorithm`);
+        if (this.develop){
+            this.logger.info(`${response.getInfo()}`);
         }
         return response;
     }

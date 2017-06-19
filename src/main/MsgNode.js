@@ -42,7 +42,7 @@ let FileStore = require('session-file-store')(expressSession);
 let Client = require('./components/Client');
 let Registry = require('./components/Registry');
 let Message = require('./components/Message');
-let PEP = require('./components/policyEngine/pep/Pep');
+let PolicyEngine = require('./components/policyEngine/PolicyEngine');
 let NodejsCtx = require('./components/policyEngine/context/NodejsCtx');
 let MessageBus = require('./components/MessageBus');
 let SessionManager = require('./components/SessionManager');
@@ -64,9 +64,10 @@ class MsgNode {
   constructor(config) {
     let _this = this;
     this.config = config;
-    this.config.domainRegistryUrl = this.config.domainRegistryUrl.replace(/\/$/, '') + '/';
+    this.config.domainRegistryUrl = this.config.domainRegistryConfig.url.replace(/\/$/, '') + '/';
     // redis.createClient(port, host); e.g host=this.config.redisURL
-    this.storage = redis.createClient(6379, this.config.redisURL.slice(7));
+    let redisConfig = this.config.redisConfig;
+    this.storage = redis.createClient(redisConfig.port, redisConfig.url.slice(7), {db: redisConfig.persisDB});
     this.domain = this.config.MNdomain;
 
     // define logger configuration
@@ -96,7 +97,7 @@ class MsgNode {
       res.send({
         status:'up',
         domain: this.config.MNdomain,
-        domainRegistry: this.config.domainRegistryUrl,
+        domainRegistry: this.config.domainRegistryConfig.url,
         globalRegistry: this.config.globalRegistryUrl,
         time: (new Date()).toISOString(),
         connected: Object.keys(this.io.sockets.sockets).length
@@ -123,11 +124,11 @@ class MsgNode {
     this.registry.registerComponent(MNpersistm);
     let bus = new MessageBus('MessageBus', this.registry);
     this.registry.registerComponent(bus);
-    let pep = new PEP('PEP', new NodejsCtx(this.registry, this.config));
-    this.registry.registerComponent(pep);
+    let pe = new PolicyEngine('PolicyEngine', new NodejsCtx(this.registry));
+    this.registry.registerComponent(pe);
     let sm = new SessionManager('mn:/session', this.registry);
     this.registry.registerComponent(sm);
-    let alm = new AddressAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/hyperty-address-allocation', this.registry);
+    let alm = new AddressAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/address-allocation', this.registry);
     this.registry.registerComponent(alm);
     let olm = new ObjectAllocationManager('domain://msg-node.' + this.registry.getDomain()  + '/object-address-allocation', this.registry);
     this.registry.registerComponent(olm);

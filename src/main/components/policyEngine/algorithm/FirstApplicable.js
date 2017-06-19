@@ -30,10 +30,11 @@ let Response = require("../Response");
 
 class FirstApplicable {
 
-    constructor (context){
-        this.name = 'PDP';
+    constructor (context, name){
+        this.name = name;
+        this.develop = context.devMode;
         this.context = context;
-        this.logger = this.context.getLogger();
+        this.logger = this.context.registry.getLogger();
     }
     /**
      * Given an array of individual authorisation decisions, returns the first one different from 'Not Applicable', either positive or negative.
@@ -41,15 +42,19 @@ class FirstApplicable {
      * @returns  {Response}
      */
     combine(responses) {
-        this.logger.info(`[${this.name}] applying first-applicable combining algorithm`);
+        let response = new Response(this.name);
         for (let i in responses) {
             if (responses[i].effect !== 'notApplicable') {
-                return decisions[i];
+                response = responses[i];
+                break;
             }
         }
-        return new Response();
+        response.setInfo(`resulted from first-applicable algorithm`);
+        if (this.develop){
+            this.logger.info(`${response.getInfo()}`);
+        }
+        return response;
     }
-
 }
 
 module.exports = FirstApplicable;

@@ -30,30 +30,36 @@ let Response = require("../Response");
 
 class BlockOverrides {
 
-
-    constructor (context){
-        this.name = 'PDP';
+    constructor (context, name){
+        this.name = name;
+        this.develop = context.devMode;
         this.context = context;
-        this.logger = this.context.getLogger();
+        this.logger = this.context.registry.getLogger();
     }
+
     /**
      * Given an array of individual authorization decisions, prioritizes a positive one.
      * @param    {boolean[]}   responses
      * @returns  {Response}
      */
     combine(responses) {
-        this.logger.info(`[${this.name}] applying block-overrides combining algorithm`);
-        let response = new Response();
-        for (let i in responses){
-            let res = responses[i];
-            response.addActions(res.actions);
-            response.attachRule(res.rules[0]);
+        let response = new Response(this.name);
+        let decisions = responses.map(res=>{
+            if (this.develop){
+                this.logger.info(`[${res.source}] evaluated to ${res.effect}`);
+            }
+            return res.effect
+        });
+        let idxDen = decisions.indexOf("deny");
+        let idxPer = decisions.indexOf("permit");
+        if (idxDen !== -1) {
+            response = responses[idxDen];
+        } else if (idxPer !== -1) {
+            response = responses[idxPer];
         }
-        let decisions = responses.map(res=>{return res.effect});
-        if (decisions.indexOf("deny") !== -1) {
-            response.setEffect("deny");
-        } else if (decisions.indexOf("permit") !== -1) {
-            response.setEffect("permit");
+        response.setInfo(`resulted from block-overrides algorithm`);
+        if (this.develop){
+            this.logger.info(`${response.getInfo()}`);
         }
         return response;
     }

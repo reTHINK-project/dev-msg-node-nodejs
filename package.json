@@ -17,9 +17,10 @@
     "webRTC"
   ],
   "author": "reThink Project",
-  "contributors": [
-    "Frédéric Luart <frederic.luart@apizee.com>",
+  "contributors": [  
     "Nicolas Daviaud <nicolas.daviaud@apizee.com>",
+    "Jamal Boulmal <jamal.boulmal@apizee.com>",
+    "Frédéric Luart <frederic.luart@apizee.com>",
     "Arnaud Vallee <arnaud.vallee@apizee.com>",
     "Tuo Zhang <tuo.zhang@telecom-bretagne.eu>",
     "Hao Jiang <hao.jiang@telecom-bretagne.eu>"
@@ -97,6 +98,7 @@
     "jspm": "^0.16.15",
     "log4js": "^0.6.38",
     "moment": "^2.17.1",
+    "node-cache": "^4.1.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "passport.socketio": "^3.6.1",

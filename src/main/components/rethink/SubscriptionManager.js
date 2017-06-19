@@ -42,7 +42,7 @@ class SubscriptionManager {
     // this.logger.info('----------------------SubscriptionManager---------------------msg :', msg )
 
     if (msg.getType() === 'subscribe') {
-      resources = body.subscribe;
+      resources = body.resources;
       clientMessage.getResource().subscribe((typeof body.source !== 'undefined') ? body.source : msg.getFrom());
 
       if (resources) {
@@ -57,7 +57,7 @@ class SubscriptionManager {
       clientMessage.replyok(this.getName());
     } else if (msg.getType() === 'unsubscribe') {
 
-      resources = body.unsubscribe;
+      resources = body.resources;
 
       if (resources) {
         this.logger.info('[', this.getName(), '] handle unsubscribe of', msg.getFrom(), 'for resources', resources);

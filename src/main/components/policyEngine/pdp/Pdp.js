@@ -9,42 +9,48 @@
 'use strict';
 
 let PRP = require("../prp/Prp");
+let Response = require("../Response");
 
 class PDP {
-    constructor(context) {
+    constructor(context, prp) {
         this.name = 'PDP';
-        context.pdp = this;
         this.context = context;
-        this.logger = this.context.getLogger();
-        this.prp = new PRP(this.context);
+        this.logger = this.context.registry.getLogger();
+        this.prp = prp;
         this.logger.info(`[${this.name}] new instance`);
+        this.develop = context.devMode;
     }
 
     // ========================= public =============================
 
-    authorize(authorizationRequest) {
-
-        authorizationRequest = this._validate(authorizationRequest);
-
-        let policy = this.prp.getPolicy(authorizationRequest);
-
-        let response = policy.evaluateRules(authorizationRequest);
-
-        return this._respond(response);
-
+    authorize(request) {
+        let policySet = null;
+        let msg = this._validate(request);
+        if (msg) {
+            if (this.develop){
+                this.logger.info(`[${this.name}] message attributes`, this.context.getAllAttributeValues(msg));
+            }
+            policySet = this.prp.getPolicySet(msg);
+        }
+        return this._respond(policySet, msg);
     }
 
     // ========================= private ============================
 
-    _validate(authorizationRequest) {
-
-    // Todo: Identify fields to check for request validation.
-
-        return authorizationRequest;
+    _validate(request) {
+        let msg = request.getMessage();
+        if (!(msg && msg.id && msg.from && msg.to && msg.type)){
+            this.logger.error(`[${this.name}] Invalid message`);
+            return null;
+        }
+        return msg;
     }
 
-    _respond(response) {
-    // Todo
+    _respond(policySet, msg) {
+        let response = new Response(this.name, 'No policies could be found from PRP');
+        if (policySet) {
+            response = policySet.evaluatePolicies(msg);
+        }
         return response;
     }
 }

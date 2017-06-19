@@ -33,6 +33,7 @@ class ClientMessage {
     this.msg = msg;
     this.logger = registry.getLogger();
     this.name = 'ClientMessage';
+    this.pe = this.registry.getComponent('PolicyEngine');
   }
 
   getMessage() {
@@ -57,9 +58,13 @@ class ClientMessage {
   }
 
   dispatch() {
-      const pep = this.registry.getComponent('PEP');
-      this.msg.msg = pep.analyse(this.msg.msg);
-      if (!this.msg.msg.body.auth) return;
+      let response = this.pe.getPEP().analyse(this);
+      if (response.result) {
+          this.msg.msg = response.msg;
+      } else {
+          this.replyError('PolicyEngine', response.getInfo());
+          return;
+      }
       let comp = this.registry.getComponent(this.msg.getTo());
       if (comp) {
           // this.logger.info('-------------------------------------------------------------------- [ClientMessage] dispatch msg to internal:', comp.getName());
@@ -81,6 +86,7 @@ class ClientMessage {
 
   replyDomain(msg) {
     // msg.setType('response');
+    this.pe.getPIP().setRegistryCacheEntry(this.msg.msg, msg);
     this.client.replyDomain(msg);
   }
 

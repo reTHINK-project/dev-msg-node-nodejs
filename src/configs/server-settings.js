@@ -26,8 +26,19 @@ var path = require('path');
 
 module.exports = {
   MNdomain: process.env.MNdomain || 'localhost',
-  domainRegistryUrl: process.env.domainRegistryUrl || 'http://localhost:4567',
-  redisURL:process.env.redisURL || 'localhost',
+  domainRegistryConfig: {
+      url: process.env.domainRegistryUrl || 'http://localhost:4567',
+      retries: 2,
+      ssl: {
+          enabled: false
+      }
+  },
+  redisConfig: {
+      url:process.env.redisURL || 'localhost',
+      port: 6379,
+      policyDB: 15,
+      persisDB: 0,
+  },
   port: process.env.PORT || '9090',
   ioConfig: {
     transports: [
@@ -44,5 +55,9 @@ module.exports = {
   sessionCookieSecret: '88HpNxVxm5k94AY2',
   useSSL: process.env.useSSL || false,
   sslCertificate: process.env.sslCertificate || path.resolve(path.join(__dirname, '../../', '/') + '/server.crt'),
-  sslPKey: process.env.sslPKey || path.resolve(path.join(__dirname, '../../', '/') + '/key.pem')
+  sslPKey: process.env.sslPKey || path.resolve(path.join(__dirname, '../../', '/') + '/key.pem'),
+  policyConfig: {
+      development: false,
+      defaultBehavior: false
+  }
 };
