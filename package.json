@@ -17,9 +17,10 @@
     "webRTC"
   ],
   "author": "reThink Project",
-  "contributors": [
-    "Frédéric Luart <frederic.luart@apizee.com>",
+  "contributors": [  
     "Nicolas Daviaud <nicolas.daviaud@apizee.com>",
+    "Jamal Boulmal <jamal.boulmal@apizee.com>",
+    "Frédéric Luart <frederic.luart@apizee.com>",
     "Arnaud Vallee <arnaud.vallee@apizee.com>",
     "Tuo Zhang <tuo.zhang@telecom-bretagne.eu>",
     "Hao Jiang <hao.jiang@telecom-bretagne.eu>"
