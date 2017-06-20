@@ -54,7 +54,7 @@
           "priority": 0
         },
         { "id": 2,
-          "target":{"<actionType>": {"in": ["create","update","open","subscribe","response", "handshake"]}},
+          "target":{"<actType>": {"in": ["create","update","open","subscribe","response", "handshake"]}},
           "condition": {"<srcUsername>": {"like": "*@gmail.com"}},
           "effect": "deny",
           "obligations": {"info": "determines to deny"},
